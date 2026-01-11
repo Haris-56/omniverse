@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { authClient } from "../../lib/auth-client";
 // import { Eye, EyeOff } from "lucide-react";
 
@@ -19,24 +19,25 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [keepSignedIn, setKeepSignedIn] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   const { data, error } = await authClient.signUp.email({
-    email: email, // required
-    password: password, // required
+   await authClient.signUp.email({
+    email: email,
+    password: password,
     image: "https://example.com/image.png",
     callbackURL: "/dashboard",
-},{
+   }, {
         onRequest: (ctx) => {
-            //show loading
+            // show loading maybe
         },
         onSuccess: (ctx) => {
-            redirect('/dashboard')
+            router.push('/dashboard')
         },
         onError: (ctx) => {
-            alert(ctx.error.message);
+            alert(ctx.error?.message || "An unknown error occurred during signup");
         },
       });
       console.log("data" , data)
