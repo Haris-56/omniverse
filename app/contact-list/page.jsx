@@ -99,9 +99,8 @@ export default function ContactsPage() {
   };
 
   return (
-    <div className="w-full p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="w-full p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-4">
           {viewMode === "contacts" && (
             <button 
@@ -123,18 +122,19 @@ export default function ContactsPage() {
         <div className="flex gap-3">
           <button
             onClick={() => setIsUploadModalOpen(true)}
-            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm rounded-md hover:bg-gray-50 flex items-center gap-2"
+            className="flex-1 sm:flex-none px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm rounded-md hover:bg-gray-50 flex items-center justify-center gap-2"
           >
             <Upload size={16} />
-            Import CSV
+            <span className="hidden xs:inline">Import CSV</span>
+            <span className="xs:hidden">Import</span>
           </button>
           {viewMode === "contacts" && (
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="px-4 py-2 bg-[#6B4EFF] text-white text-sm rounded-md hover:bg-[#5a3ee0] flex items-center gap-2"
+              className="flex-1 sm:flex-none px-4 py-2 bg-[#6B4EFF] text-white text-sm rounded-md hover:bg-[#5a3ee0] flex items-center justify-center gap-2"
             >
               <Plus size={16} />
-              Add Contact
+              <span>Add Contact</span>
             </button>
           )}
         </div>

@@ -50,18 +50,18 @@ export default function InstagramPage() {
   };
 
   return (
-    <div className="w-full p-6">
-      <div className="flex items-center justify-between mb-8">
+    <div className="w-full p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-semibold text-black">Instagram Accounts</h1>
           <p className="text-sm text-gray-700 mt-1">Manage your connected Instagram accounts</p>
         </div>
         <button
           onClick={() => setIsConnectModalOpen(true)}
-          className="px-4 py-2 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white text-sm font-medium rounded-lg hover:opacity-90 transition flex items-center gap-2 shadow-sm"
+          className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white text-sm font-medium rounded-lg hover:opacity-90 transition flex items-center justify-center gap-2 shadow-sm"
         >
           <Plus size={18} />
-          Connect New Account
+          <span>Connect New Account</span>
         </button>
       </div>
 
