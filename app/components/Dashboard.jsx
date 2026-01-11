@@ -109,7 +109,7 @@ export default function DashboardPage() {
         {cards.map((item, index) => (
           <div
             key={index}
-            className="bg-white rounded-xl shadow-sm p-4 flex items-center justify-between border"
+            className="bg-white rounded-xl shadow-sm p-4 flex items-center justify-between border border-gray-100"
           >
             {/* Left Content */}
             <div>
