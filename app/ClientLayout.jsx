@@ -12,7 +12,7 @@ export default function ClientLayout({ children }) {
   const shouldHideSidebar = hideSidebarRoutes.includes(pathname);
 
   return (
-    <div className="flex h-screen w-full relative">
+    <div className="flex h-screen w-full relative overflow-hidden bg-gray-50">
       {!shouldHideSidebar && <Sidebar />}
       <main className="flex-1 overflow-auto bg-gray-50 relative pt-20">
         {!shouldHideSidebar && <UserMenu />}
