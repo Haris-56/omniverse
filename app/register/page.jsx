@@ -65,17 +65,17 @@ export default function Register() {
         </div>
 
         {/* RIGHT SECTION */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 flex flex-col justify-center overflow-y-auto">
+        <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 flex flex-col justify-center overflow-y-auto border-2 border-gray-100">
           <form
             onSubmit={handleSubmit}
             className="w-full"
           >
-            <h1 className="text-center text-3xl font-bold text-gray-900">Welcome!</h1>
+            <h1 className="text-center text-3xl font-black text-black">Welcome!</h1>
 
             {/* Google Btn */}
             <button
               type="button"
-              className="w-full border border-gray-300 mt-8 py-3 rounded-xl flex items-center justify-center gap-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
+              className="w-full border-2 border-gray-300 mt-8 py-3 rounded-xl flex items-center justify-center gap-3 text-sm font-bold text-black hover:bg-gray-50 transition"
             >
               <img src="/google.svg" alt="google" className="w-5 h-5" />
               Sign up with Google
@@ -83,14 +83,14 @@ export default function Register() {
 
             {/* Divider */}
             <div className="flex items-center gap-4 my-6">
-              <span className="grow border-t border-gray-200"></span>
-              <span className="text-gray-500 text-xs font-bold uppercase tracking-wider">OR</span>
-              <span className="grow border-t border-gray-200"></span>
+              <span className="grow border-t-2 border-gray-200"></span>
+              <span className="text-black text-xs font-black uppercase tracking-widest">OR</span>
+              <span className="grow border-t-2 border-gray-200"></span>
             </div>
 
             {/* Email */}
             <div className="space-y-1">
-              <label className="text-sm font-bold text-gray-800">
+              <label className="text-xs font-black text-black uppercase tracking-wider">
                 Email address*
               </label>
               <input
@@ -99,15 +99,15 @@ export default function Register() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none text-sm text-gray-900 focus:ring-2 focus:ring-[#7B4DFF] placeholder-gray-400"
+                className="w-full border-2 border-gray-400 rounded-xl px-4 py-3 outline-none text-sm text-black font-medium focus:ring-2 focus:ring-[#7B4DFF] placeholder-gray-500"
               />
             </div>
 
             {/* Password */}
             <div className="mt-5 space-y-1">
               <div className="flex justify-between items-center">
-                <label className="text-sm font-bold text-gray-800">Password</label>
-                <button type="button" className="text-xs font-bold text-[#7B4DFF] hover:underline">
+                <label className="text-xs font-black text-black uppercase tracking-wider">Password</label>
+                <button type="button" className="text-xs font-black text-[#7B4DFF] hover:underline uppercase tracking-tight">
                   Forgot password
                 </button>
               </div>
@@ -119,12 +119,12 @@ export default function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none text-sm text-gray-900 focus:ring-2 focus:ring-[#7B4DFF] placeholder-gray-400"
+                  className="w-full border-2 border-gray-400 rounded-xl px-4 py-3 outline-none text-sm text-black font-medium focus:ring-2 focus:ring-[#7B4DFF] placeholder-gray-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShow(!show)}
-                  className="absolute top-3.5 right-4 text-gray-600 font-medium"
+                  className="absolute top-3 right-4 h-full text-black font-bold uppercase text-[10px]"
                 >
                   {show ? "Hide" : "Show"}
                 </button>
@@ -132,28 +132,28 @@ export default function Register() {
             </div>
 
             {/* Checkbox */}
-            <div className="mt-5 flex items-center gap-2">
+            <div className="mt-6 flex items-center gap-2">
               <input
                 type="checkbox"
-                className="w-4 h-4 border-gray-300 rounded text-[#7B4DFF] focus:ring-[#7B4DFF]"
+                className="w-4 h-4 border-2 border-gray-400 rounded text-[#7B4DFF] focus:ring-[#7B4DFF]"
                 checked={keepSignedIn}
                 onChange={(e) => setKeepSignedIn(e.target.checked)}
               />
-              <span className="text-sm text-gray-800 font-medium">Keep me signed in</span>
+              <span className="text-sm text-black font-bold">Keep me signed in</span>
             </div>
 
             {/* Button */}
             <button
               type="submit"
-              className="w-full mt-8 py-4 bg-[#7B4DFF] text-white font-bold rounded-xl text-base shadow-lg hover:bg-[#6a3ee5] transition active:scale-[0.98]"
+              className="w-full mt-8 py-4 bg-[#6F3FF5] text-white font-black rounded-xl text-lg shadow-2xl hover:bg-[#5c2cd9] transition active:scale-[0.98] uppercase"
             >
               Sign Up
             </button>
 
             {/* Login */}
-            <p className="mt-6 text-center text-sm text-gray-700 font-medium">
+            <p className="mt-8 text-center text-sm text-black font-medium">
               Already have an account?{" "}
-              <a href="/login" className="text-[#7B4DFF] font-bold hover:underline">
+              <a href="/login" className="text-purple-700 font-extrabold hover:underline ml-1">
                 Login
               </a>
             </p>
