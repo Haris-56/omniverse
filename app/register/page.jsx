@@ -39,10 +39,11 @@ export default function Register() {
             router.push('/dashboard')
         },
         onError: (ctx) => {
+            console.error("SIGNUP_ERROR:", ctx.error);
             alert(ctx.error?.message || "An unknown error occurred during signup");
         },
       });
-      console.log("data" , data)
+      console.log("Signup Response Data:", data)
   };
 
   return (
