@@ -37,8 +37,8 @@ export default function UserMenu() {
         <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-sm">
           {session.user?.name?.charAt(0).toUpperCase() || "U"}
         </div>
-        <div className="text-left hidden md:block">
-          <p className="text-sm font-medium text-gray-700 max-w-[150px] truncate">
+        <div className="text-left hidden sm:block">
+          <p className="text-sm font-medium text-gray-700 max-w-[120px] lg:max-w-[150px] truncate">
             {session.user?.name}
           </p>
         </div>

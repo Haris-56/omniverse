@@ -101,7 +101,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className=" p-6 min-w-[1000px]">
+    <div className="p-4 md:p-6 w-full">
       {/* <h1 className="text-2xl font-semibold mb-6">Dashboard</h1> */}
 
       {/* Cards Grid */}

@@ -13,9 +13,10 @@ import {
   Bot,
   PenTool,
   HelpCircle,
+  X,
 } from "lucide-react";
 
-export default function Sidebar() {
+export default function Sidebar({ onClose }) {
   const [active, setActive] = useState("Dashboard");
 
   const menu = [
@@ -23,7 +24,7 @@ export default function Sidebar() {
       label: "Dashboard",
       icon: <LayoutDashboard size={18} />,
       route: "/",
-    }, // Use '/' for the main dashboard
+    },
     {
       label: "Contact list",
       icon: <Users size={18} />,
@@ -64,25 +65,34 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="h-screen w-64 bg-white px-4 py-6 flex flex-col">
-      {/* Logo */}
-      <div className="mb-10">
-        <div className="w-12 h-12 bg-gray-200 rounded-md" />
+    <div className="h-screen w-64 bg-white px-4 py-6 flex flex-col border-r border-gray-50 lg:border-none">
+      {/* Logo & Close Button (Mobile) */}
+      <div className="mb-10 flex items-center justify-between">
+        <div className="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center text-white font-bold text-xl">
+          Ω
+        </div>
+        <button 
+          onClick={onClose}
+          className="p-2 hover:bg-gray-100 rounded-lg lg:hidden text-gray-500"
+        >
+          <X size={20} />
+        </button>
       </div>
 
       {/* Menu */}
-      <nav className="space-y-1">
+      <nav className="space-y-1 overflow-y-auto flex-1 custom-scrollbar">
         {menu.map((item) => (
-          // Use Link component for routing
           <Link
             key={item.label}
-            href={item.route} // Use the predefined route
-            onClick={() => setActive(item.label)} // Keep setActive for styling
-            // NOTE: The 'className' is now applied directly to the Link component
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm ${
+            href={item.route}
+            onClick={() => {
+              setActive(item.label);
+              if (onClose) onClose();
+            }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
               active === item.label
-                ? "bg-[#6B4EFF] text-white"
-                : "text-gray-800 hover:bg-gray-100"
+                ? "bg-[#6B4EFF] text-white shadow-md shadow-[#6B4EFF]/20"
+                : "text-gray-600 hover:bg-gray-50"
             }`}
           >
             {item.icon}
