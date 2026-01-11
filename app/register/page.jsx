@@ -43,19 +43,19 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#7B4DFF] flex items-center justify-center px-4">
-      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div className="h-screen w-full bg-[#7B4DFF] flex items-center justify-center px-4 overflow-hidden">
+      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 h-auto md:h-[90vh]">
 
         {/* LEFT SECTION */}
-        <div className="text-white flex flex-col justify-center px-4">
-          <h2 className="font-semibold text-2xl mb-6">Omniwerse</h2>
+        <div className="text-white flex flex-col justify-center px-4 overflow-y-auto">
+          <h2 className="font-bold text-2xl mb-6 tracking-tight">Omniwerse</h2>
 
-          <h1 className="text-4xl font-semibold leading-tight">
+          <h1 className="text-4xl font-semibold leading-tight mb-8">
             Signup to enjoy the huge ton of{" "}
-            <span className="font-bold">exclusive</span> features
+            <span className="font-bold border-b-4 border-white/30">exclusive</span> features
           </h1>
 
-          <div className="mt-10 space-y-4">
+          <div className="space-y-5">
             <FeatureItem text="Special discounts rates" />
             <FeatureItem text="Unlimited free downloads" />
             <FeatureItem text="Special promotions" />
@@ -64,92 +64,100 @@ export default function Register() {
         </div>
 
         {/* RIGHT SECTION */}
-        <form
-          onSubmit={handleSubmit} // Added form submission
-          className="bg-white rounded-3xl shadow-xl p-10"
-        >
-          <h1 className="text-center text-3xl font-semibold">Welcome!</h1>
-
-          {/* Google Btn */}
-          <button
-            type="button"
-            className="w-full border border-gray-300 mt-8 py-3 rounded-md flex items-center justify-center gap-2 text-sm"
+        <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 flex flex-col justify-center overflow-y-auto">
+          <form
+            onSubmit={handleSubmit}
+            className="w-full"
           >
-            <img src="/google.svg" alt="google" className="w-5 h-5" />
-            Sign up with Google
-          </button>
+            <h1 className="text-center text-3xl font-bold text-gray-900">Welcome!</h1>
 
-          {/* Divider */}
-          <div className="flex items-center gap-4 my-6">
-            <span className="grow border-t"></span>
-            <span className="text-gray-400 text-sm">OR</span>
-            <span className="grow border-t"></span>
-          </div>
-
-          {/* Email */}
-          <label className="text-sm font-medium text-gray-700">
-            Email address*
-          </label>
-          <input
-            type="email"
-            placeholder="you@example.com"
-            value={email} // bind value
-            onChange={(e) => setEmail(e.target.value)} // capture input
-            className="mt-1 w-full border border-red-500 rounded-md px-4 py-3 outline-none text-sm"
-          />
-
-          {/* Password */}
-          <div className="flex justify-between mt-5">
-            <label className="text-sm font-medium text-gray-700">Password</label>
-            <button type="button" className="text-sm text-[#7B4DFF]">
-              Forgot password
-            </button>
-          </div>
-
-          <div className="relative">
-            <input
-              type={show ? "text" : "password"}
-              placeholder="••••••••"
-              value={password} // bind value
-              onChange={(e) => setPassword(e.target.value)} // capture input
-              className="mt-1 w-full border border-gray-300 rounded-md px-4 py-3 outline-none text-sm"
-            />
+            {/* Google Btn */}
             <button
               type="button"
-              onClick={() => setShow(!show)}
-              className="absolute top-3.5 right-4 text-gray-500"
+              className="w-full border border-gray-300 mt-8 py-3 rounded-xl flex items-center justify-center gap-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
             >
-              {/* {show ? <EyeOff size={20} /> : <Eye size={20} />} */}
+              <img src="/google.svg" alt="google" className="w-5 h-5" />
+              Sign up with Google
             </button>
-          </div>
 
-          {/* Checkbox */}
-          <div className="mt-4 flex items-center gap-2">
-            <input
-              type="checkbox"
-              className="w-4 h-4"
-              checked={keepSignedIn}
-              onChange={(e) => setKeepSignedIn(e.target.checked)}
-            />
-            <span className="text-sm text-gray-600">Keep me signed in</span>
-          </div>
+            {/* Divider */}
+            <div className="flex items-center gap-4 my-6">
+              <span className="grow border-t border-gray-200"></span>
+              <span className="text-gray-500 text-xs font-bold uppercase tracking-wider">OR</span>
+              <span className="grow border-t border-gray-200"></span>
+            </div>
 
-          {/* Button */}
-          <button
-            type="submit" // make it submit form
-            className="w-full mt-8 py-3 bg-[#7B4DFF] text-white font-medium rounded-md text-sm"
-          >
-            Sign Up
-          </button>
+            {/* Email */}
+            <div className="space-y-1">
+              <label className="text-sm font-bold text-gray-800">
+                Email address*
+              </label>
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none text-sm text-gray-900 focus:ring-2 focus:ring-[#7B4DFF] placeholder-gray-400"
+              />
+            </div>
 
-          {/* Login */}
-          <p className="mt-6 text-center text-sm text-gray-600">
-            Already Sign Up?{" "}
-            <a href="/login" className="text-[#7B4DFF] font-medium">
-              Login
-            </a>
-          </p>
-        </form>
+            {/* Password */}
+            <div className="mt-5 space-y-1">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-bold text-gray-800">Password</label>
+                <button type="button" className="text-xs font-bold text-[#7B4DFF] hover:underline">
+                  Forgot password
+                </button>
+              </div>
+
+              <div className="relative">
+                <input
+                  type={show ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none text-sm text-gray-900 focus:ring-2 focus:ring-[#7B4DFF] placeholder-gray-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShow(!show)}
+                  className="absolute top-3.5 right-4 text-gray-600 font-medium"
+                >
+                  {show ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            {/* Checkbox */}
+            <div className="mt-5 flex items-center gap-2">
+              <input
+                type="checkbox"
+                className="w-4 h-4 border-gray-300 rounded text-[#7B4DFF] focus:ring-[#7B4DFF]"
+                checked={keepSignedIn}
+                onChange={(e) => setKeepSignedIn(e.target.checked)}
+              />
+              <span className="text-sm text-gray-800 font-medium">Keep me signed in</span>
+            </div>
+
+            {/* Button */}
+            <button
+              type="submit"
+              className="w-full mt-8 py-4 bg-[#7B4DFF] text-white font-bold rounded-xl text-base shadow-lg hover:bg-[#6a3ee5] transition active:scale-[0.98]"
+            >
+              Sign Up
+            </button>
+
+            {/* Login */}
+            <p className="mt-6 text-center text-sm text-gray-700 font-medium">
+              Already have an account?{" "}
+              <a href="/login" className="text-[#7B4DFF] font-bold hover:underline">
+                Login
+              </a>
+            </p>
+          </form>
+        </div>
 
       </div>
     </div>
