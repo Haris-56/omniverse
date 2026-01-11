@@ -53,8 +53,8 @@ export default function LinkedInPage() {
     <div className="w-full p-6">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">LinkedIn Accounts</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage your connected LinkedIn accounts</p>
+          <h1 className="text-2xl font-semibold text-black">LinkedIn Accounts</h1>
+          <p className="text-sm text-gray-700 mt-1">Manage your connected LinkedIn accounts</p>
         </div>
         <button
           onClick={() => setIsConnectModalOpen(true)}
@@ -73,7 +73,7 @@ export default function LinkedInPage() {
             <Linkedin size={32} />
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No Accounts Connected</h3>
-          <p className="text-gray-500 max-w-sm mb-6">
+          <p className="text-gray-700 max-w-sm mb-6">
             Connect your LinkedIn account to start automating.
           </p>
           <button
@@ -132,7 +132,7 @@ export default function LinkedInPage() {
                   </div>
                 )}
 
-                <div className="pt-4 border-t border-gray-50 flex justify-between items-center text-sm text-gray-500">
+                <div className="pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-600">
                   <span>View Campaigns</span>
                   <span className="group-hover:translate-x-1 transition">→</span>
                 </div>

@@ -145,7 +145,7 @@ export default function ContactsPage() {
         <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-gray-500 border-b bg-gray-50/50">
+              <tr className="text-left text-gray-600 border-b bg-gray-50/50">
                 <th className="p-4 font-medium">List Name</th>
                 <th className="p-4 font-medium">Segment / Platform</th>
                 <th className="p-4 font-medium">Date Created</th>
@@ -174,19 +174,19 @@ export default function ContactsPage() {
                       </div>
                       {list.name}
                     </td>
-                    <td className="p-4 text-gray-600">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 text-xs font-medium">
+                    <td className="p-4 text-gray-700">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
                         <Tag size={12} />
                         {list.segment}
                       </span>
                     </td>
-                    <td className="p-4 text-gray-500">
+                    <td className="p-4 text-gray-600">
                       <div className="flex items-center gap-2">
                         <Calendar size={14} />
                         {new Date(list.createdAt).toLocaleDateString()}
                       </div>
                     </td>
-                    <td className="p-4 text-gray-500">{list.count || 0}</td>
+                    <td className="p-4 text-gray-600">{list.count || 0}</td>
                     <td className="p-4 text-right">
                       <button
                         onClick={(e) => handleDeleteList(e, list._id, list.name)}
@@ -222,7 +222,7 @@ export default function ContactsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-gray-500 border-b bg-gray-50/50">
+                  <tr className="text-left text-gray-600 border-b bg-gray-50/50">
                     {contacts.length > 0 &&
                       Object.keys(contacts[0])
                         .filter((key) => !["_id", "listId", "createdAt"].includes(key))
@@ -266,7 +266,7 @@ export default function ContactsPage() {
                             </td>
                           ))}
 
-                        <td className="p-4 text-gray-500 whitespace-nowrap">
+                        <td className="p-4 text-gray-600 whitespace-nowrap">
                           {contact.createdAt
                             ? new Date(contact.createdAt).toLocaleDateString()
                             : "-"}

@@ -82,7 +82,7 @@ export default function Sidebar() {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm ${
               active === item.label
                 ? "bg-[#6B4EFF] text-white"
-                : "text-gray-700 hover:bg-gray-100"
+                : "text-gray-800 hover:bg-gray-100"
             }`}
           >
             {item.icon}

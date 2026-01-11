@@ -36,7 +36,7 @@ export default function Register() {
             // show loading maybe
         },
         onSuccess: (ctx) => {
-            router.push('/dashboard')
+            router.push('/')
         },
         onError: (ctx) => {
             console.error("SIGNUP_ERROR:", ctx.error);
@@ -56,7 +56,7 @@ export default function Register() {
 
           <h1 className="text-4xl font-semibold leading-tight mb-8">
             Signup to enjoy the huge ton of{" "}
-            <span className="font-bold border-b-4 border-white/30">exclusive</span> features
+            <span className="font-bold border-b-4 border-white/60">exclusive</span> features
           </h1>
 
           <div className="space-y-5">
@@ -86,9 +86,9 @@ export default function Register() {
 
             {/* Divider */}
             <div className="flex items-center gap-4 my-6">
-              <span className="grow border-t border-gray-200"></span>
-              <span className="text-gray-500 text-xs font-medium uppercase tracking-wider">OR</span>
-              <span className="grow border-t border-gray-200"></span>
+              <span className="grow border-t border-gray-300"></span>
+              <span className="text-gray-600 text-xs font-medium uppercase tracking-wider">OR</span>
+              <span className="grow border-t border-gray-300"></span>
             </div>
 
             {/* Name */}
@@ -169,7 +169,7 @@ export default function Register() {
             </button>
 
             {/* Login */}
-            <p className="mt-8 text-center text-sm text-black">
+            <p className="mt-8 text-center text-sm text-gray-800">
               Already have an account?{" "}
               <a href="/login" className="text-[#6F3FF5] font-semibold hover:underline">
                 Login

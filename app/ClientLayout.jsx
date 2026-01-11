@@ -14,7 +14,7 @@ export default function ClientLayout({ children }) {
   return (
     <div className="flex h-screen w-full relative">
       {!shouldHideSidebar && <Sidebar />}
-      <main className="flex-1 overflow-auto bg-gray-50 relative">
+      <main className="flex-1 overflow-auto bg-gray-50 relative pt-20">
         {!shouldHideSidebar && <UserMenu />}
         {children}
       </main>
