@@ -132,7 +132,7 @@ export default function LinkedInPage() {
                   </div>
                 )}
 
-                <div className="pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-600">
+                <div className="pt-4 border-t border-gray-50 flex justify-between items-center text-sm text-gray-600">
                   <span>View Campaigns</span>
                   <span className="group-hover:translate-x-1 transition">→</span>
                 </div>

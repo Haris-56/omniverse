@@ -145,7 +145,7 @@ export default function ContactsPage() {
         <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-gray-600 border-b bg-gray-50/50">
+              <tr className="text-left text-gray-600 border-b border-gray-100 bg-gray-50/50">
                 <th className="p-4 font-medium">List Name</th>
                 <th className="p-4 font-medium">Segment / Platform</th>
                 <th className="p-4 font-medium">Date Created</th>
@@ -166,7 +166,7 @@ export default function ContactsPage() {
                       setSelectedList(list);
                       setViewMode("contacts");
                     }}
-                    className="border-b last:border-0 hover:bg-gray-50 transition cursor-pointer group"
+                    className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition cursor-pointer group"
                   >
                     <td className="p-4 font-medium text-gray-900 flex items-center gap-3">
                       <div className="w-8 h-8 bg-indigo-50 text-[#6B4EFF] rounded-full flex items-center justify-center">
@@ -222,7 +222,7 @@ export default function ContactsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-gray-600 border-b bg-gray-50/50">
+                  <tr className="text-left text-gray-600 border-b border-gray-100 bg-gray-50/50">
                     {contacts.length > 0 &&
                       Object.keys(contacts[0])
                         .filter((key) => !["_id", "listId", "createdAt"].includes(key))
@@ -245,7 +245,7 @@ export default function ContactsPage() {
                     contacts.map((contact) => (
                       <tr
                         key={contact._id}
-                        className="border-b last:border-0 hover:bg-gray-50 transition group"
+                        className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition group"
                       >
                         {Object.keys(contacts[0] || {})
                           .filter((key) => !["_id", "listId", "createdAt"].includes(key))

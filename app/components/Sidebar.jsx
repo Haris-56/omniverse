@@ -64,7 +64,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="h-screen w-64 bg-white border-r px-4 py-6 flex flex-col">
+    <div className="h-screen w-64 bg-white px-4 py-6 flex flex-col">
       {/* Logo */}
       <div className="mb-10">
         <div className="w-12 h-12 bg-gray-200 rounded-md" />
