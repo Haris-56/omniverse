@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "../../../lib/auth";
+import { auth } from "@/lib/auth";
 
 // Mock database reference (should access the same source as the main route)
 // For this session, we'll assume the same in-memory array is accessible or re-declared

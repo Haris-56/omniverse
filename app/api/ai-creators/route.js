@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "../../../lib/auth";
+import { auth } from "@/lib/auth";
 
 // Mock database (in-memory for now, replace with actual DB)
 let creators = [];
