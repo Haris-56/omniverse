@@ -43,7 +43,7 @@ export default function Register() {
             alert(ctx.error?.message || "An unknown error occurred during signup");
         },
       });
-      console.log("Signup Response Data:", data)
+
   };
 
   return (
