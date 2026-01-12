@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 export async function GET(request, { params }) {
   try {
     const db = await getDb();
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ error: "Campaign ID is required" }, { status: 400 });
@@ -27,7 +27,7 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const db = await getDb();
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     
     const { _id, ...updateData } = body;
@@ -55,7 +55,7 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const db = await getDb();
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ error: "Campaign ID is required" }, { status: 400 });

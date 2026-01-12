@@ -14,7 +14,7 @@ export async function PUT(req, { params }) {
   }
 
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
     
     // Simulating DB update with user check
@@ -33,7 +33,7 @@ export async function DELETE(req, { params }) {
   }
 
   try {
-    const { id } = params;
+    const { id } = await params;
     
     // Simulating DB delete with user check
     // In a real scenario: await db.collection('creators').deleteOne({ _id: id, userId: session.user.id })

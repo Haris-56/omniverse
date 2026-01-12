@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 export async function PUT(request, { params }) {
   try {
     const db = await getDb();
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     // Remove _id from body to avoid immutable field error
@@ -27,7 +27,7 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const db = await getDb();
-    const { id } = params;
+    const { id } = await params;
 
     await db.collection("contacts").deleteOne({ _id: new ObjectId(id) });
 

@@ -1,7 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { X, Mail, Loader2, AlertCircle, CheckCircle } from "lucide-react";
+import { 
+  X, 
+  Mail, 
+  Loader2, 
+  AlertCircle, 
+  CheckCircle, 
+  ShieldCheck, 
+  Key, 
+  Terminal,
+  Info,
+  Rocket,
+  Send,
+  Lock
+} from "lucide-react";
 
 export default function ConnectAccountModal({ isOpen, onClose, onAccountConnected }) {
   const [email, setEmail] = useState("");
@@ -60,94 +73,117 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="p-6 border-b flex justify-between items-center bg-orange-50">
-          <div className="flex items-center gap-2 text-orange-600">
-            <Mail size={24} />
-            <h2 className="text-xl font-semibold text-gray-900">Connect Email</h2>
+    <div className="fixed inset-0 bg-gray-900/60 flex items-center justify-center z-[100] p-4 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-white animate-in zoom-in duration-300">
+        
+        {/* Modal Header */}
+        <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-indigo-50/30">
+          <div className="flex items-center gap-4">
+             <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                <Send size={24} />
+             </div>
+             <div>
+                <h2 className="text-xl font-black text-gray-900 tracking-tight lowercase">Connect SMTP</h2>
+                <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] mt-0.5">Secure Relay Protocol</p>
+             </div>
           </div>
-          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={handleClose} className="p-2 hover:bg-white rounded-xl transition-all border border-transparent hover:border-gray-100 text-gray-400 hover:text-gray-900">
             <X size={20} />
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-8 md:p-10">
           {result ? (
-            <div className="text-center py-6">
+            <div className="text-center py-10 animate-in slide-in-from-bottom duration-500">
               {result.status === "Connected" ? (
                 <>
-                  <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner animate-bounce">
                     <CheckCircle size={32} />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Connected Successfully!</h3>
-                  <p className="text-gray-500">Your email account is now ready.</p>
+                  <h3 className="text-2xl font-black text-gray-900 lowercase tracking-tight mb-2">Relay Established</h3>
+                  <p className="text-gray-500 text-sm font-medium tracking-tight">SMTP handshake successful. Routing streams initialized.</p>
                 </>
               ) : (
                 <>
-                  <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
                     <AlertCircle size={32} />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Connection Failed</h3>
-                  <p className="text-red-600 font-medium mb-4">{result.reason}</p>
+                  <h3 className="text-2xl font-black text-gray-900 lowercase tracking-tight mb-2">Relay Failed</h3>
+                  <p className="text-red-500 font-bold mb-8 text-sm">{result.reason}</p>
                   <button 
                     onClick={() => setResult(null)}
-                    className="text-sm text-blue-600 hover:underline"
+                    className="px-8 py-4 bg-gray-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-gray-800 transition-all shadow-xl"
                   >
-                    Try Again
+                    Resubmit Relay Logic
                   </button>
                 </>
               )}
             </div>
           ) : (
-            <form onSubmit={handleConnect} className="space-y-4">
+            <form onSubmit={handleConnect} className="space-y-6">
               {error && (
-                <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg flex items-center gap-2">
+                <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-[11px] font-bold rounded-2xl flex items-center gap-3 animate-in slide-in-from-top">
                   <AlertCircle size={16} />
                   {error}
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 ml-1">
+                   <Mail size={12} className="text-indigo-600" />
+                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">SMTP Endpoint</label>
+                </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none bg-gray-50 text-gray-900 placeholder:text-gray-500"
-                  placeholder="user@example.com"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500/20 focus:bg-white transition-all shadow-sm"
+                  placeholder="relays@enterprise.com"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">App Password / Password</label>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 ml-1">
+                   <Lock size={12} className="text-indigo-600" />
+                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">App Password / Relay Key</label>
+                </div>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none bg-gray-50 text-gray-900 placeholder:text-gray-500"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500/20 focus:bg-white transition-all shadow-sm"
                   placeholder="••••••••"
                 />
-                <p className="text-xs text-gray-400 mt-1">
-                  (Tip: Use "fail" in password to simulate error)
-                </p>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-4 flex flex-col gap-4">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-orange-600 text-white py-2.5 rounded-lg font-medium hover:bg-orange-700 transition disabled:opacity-70 flex items-center justify-center gap-2"
+                  className="w-full bg-indigo-600 text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
                 >
                   {loading ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
-                      Connecting...
+                      Establishing Relay...
                     </>
                   ) : (
-                    "Connect Account"
+                    <>
+                      <Rocket size={18} />
+                      Establish Relay
+                    </>
                   )}
                 </button>
+                
+                <div className="p-4 bg-indigo-50/50 rounded-2xl border border-indigo-50 flex gap-3 text-left shadow-inner">
+                   <Info size={16} className="text-indigo-600 shrink-0" />
+                   <div className="space-y-1">
+                      <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Security compliance</p>
+                      <p className="text-[10px] font-medium text-indigo-600/80 leading-relaxed italic">
+                        Use app-specific passwords for major providers like Gmail or Outlook to ensure node persistence.
+                      </p>
+                   </div>
+                </div>
               </div>
             </form>
           )}

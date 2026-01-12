@@ -11,7 +11,7 @@ export async function PUT(request, { params }) {
 
   try {
     const db = await getDb();
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     
     // Remove _id from body if present to avoid immutable field error
@@ -45,7 +45,7 @@ export async function DELETE(request, { params }) {
 
   try {
     const db = await getDb();
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ error: "Agent ID is required" }, { status: 400 });

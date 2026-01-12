@@ -1,17 +1,50 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { auth } from "@/lib/auth";
 
-export async function DELETE(request, { params }) {
+export async function GET(req, { params: paramsPromise }) {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const params = await paramsPromise;
+  const id = params.id;
+
   try {
     const db = await getDb();
-    const { id } = params;
+    const account = await db.collection("email_accounts").findOne({ 
+      _id: new ObjectId(id),
+      userId: session.user.id 
+    });
 
-    if (!id) {
-      return NextResponse.json({ error: "Account ID is required" }, { status: 400 });
+    if (!account) {
+      return NextResponse.json({ error: "Account not found" }, { status: 404 });
     }
 
-    const result = await db.collection("email_accounts").deleteOne({ _id: new ObjectId(id) });
+    return NextResponse.json(account);
+  } catch (error) {
+    console.error("Error fetching email account:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req, { params: paramsPromise }) {
+  const session = await auth.api.getSession({ headers: req.headers });
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const params = await paramsPromise;
+  const id = params.id;
+
+  try {
+    const db = await getDb();
+    const result = await db.collection("email_accounts").deleteOne({
+      _id: new ObjectId(id),
+      userId: session.user.id,
+    });
 
     if (result.deletedCount === 0) {
       return NextResponse.json({ error: "Account not found" }, { status: 404 });
@@ -20,6 +53,6 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ message: "Account deleted successfully" });
   } catch (error) {
     console.error("Error deleting email account:", error);
-    return NextResponse.json({ error: "Failed to delete account" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

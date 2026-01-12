@@ -28,7 +28,7 @@ export async function POST(request) {
     const db = await getDb();
     const body = await request.json();
     
-    const { name, platform } = body;
+    const { name, platform, blocks, status } = body;
 
     if (!name) {
       return NextResponse.json({ error: "Campaign name is required" }, { status: 400 });
@@ -38,8 +38,8 @@ export async function POST(request) {
       userId: session.user.id,
       name,
       platform: platform || "facebook",
-      status: "Draft",
-      blocks: [], // Initial empty flow
+      status: status || "Draft",
+      blocks: blocks || [], // Use blocks from request if provided
       stats: {
         sent: 0,
         opened: 0,

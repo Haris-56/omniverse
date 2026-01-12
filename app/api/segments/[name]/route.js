@@ -4,7 +4,7 @@ import { getDb } from "@/lib/mongodb";
 export async function PUT(request, { params }) {
   try {
     const db = await getDb();
-    const { name } = params; // Old segment name
+    const { name } = await params; // Old segment name
     const { newName } = await request.json();
 
     if (!newName) {
@@ -30,7 +30,7 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const db = await getDb();
-    const { name } = params;
+    const { name } = await params;
 
     // Delete all contacts in this segment
     // Note: If a contact has multiple segments, this logic might be too aggressive if we only want to remove the tag.
