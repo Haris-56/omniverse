@@ -50,6 +50,7 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
   const [followUps, setFollowUps] = useState([]); 
   const [isMessageRequest, setIsMessageRequest] = useState(true);
   const [executionPriority, setExecutionPriority] = useState(['story', 'highlight', 'message']);
+  const [availableVariables, setAvailableVariables] = useState(["{{firstName}}", "{{lastName}}", "{{company}}", "{{username}}", "{{location}}"]);
 
   // Templates State
   const [templates, setTemplates] = useState([]);
@@ -70,6 +71,32 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
     fetchTemplates();
     fetchAgents();
   }, [accountId]);
+
+  useEffect(() => {
+    if (!listId) {
+      setAvailableVariables(["{{firstName}}", "{{lastName}}", "{{company}}", "{{username}}", "{{location}}"]);
+      return;
+    }
+    const fetchListVariables = async () => {
+      try {
+        const res = await fetch(`/api/contacts?listId=${listId}`);
+        if (res.ok) {
+           const contacts = await res.json();
+           if (contacts && contacts.length > 0) {
+              const firstContact = contacts[0];
+              const excludeKeys = ['_id', 'userId', 'listId', 'createdAt', 'updatedAt', 'segments'];
+              const customKeys = Object.keys(firstContact).filter(key => !excludeKeys.includes(key));
+              if (customKeys.length > 0) {
+                 setAvailableVariables(customKeys.map(k => `{{${k}}}`));
+                 return;
+              }
+           }
+        }
+      } catch (err) {}
+      setAvailableVariables(["{{firstName}}", "{{lastName}}", "{{company}}", "{{username}}", "{{location}}"]);
+    };
+    fetchListVariables();
+  }, [listId]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -433,8 +460,8 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                    <label className="text-sm font-bold text-gray-700 ml-1">Initial Message</label>
-                   <div className="flex items-center gap-2">
-                      {["{{firstName}}", "{{lastName}}", "{{company}}", "{{username}}", "{{location}}"].map(v => (
+                   <div className="flex items-center gap-2 flex-wrap">
+                      {availableVariables.map(v => (
                         <button
                           key={v}
                           type="button"
@@ -576,7 +603,7 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                            </div>
                         </div>
                         <div className="flex items-center gap-1 flex-wrap">
-                          {["{{firstName}}", "{{lastName}}", "{{company}}", "{{username}}", "{{location}}"].map(v => (
+                          {availableVariables.map(v => (
                             <button
                               key={v}
                               type="button"
