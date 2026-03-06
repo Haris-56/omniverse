@@ -859,7 +859,7 @@
   Required variables:
 
   MONGODB_URI         → Full MongoDB Atlas connection string
-                        e.g., mongodb+srv://user:pass@cluster.mongodb.net/
+                        e.g., <your_mongodb_connection_string_here>
 
   MONGODB_DB          → Database name (default: "omniverse")
 
