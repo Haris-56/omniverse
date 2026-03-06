@@ -27,50 +27,85 @@ export async function POST(request) {
 
   try {
     const db = await getDb();
-    const { email, password, cookies } = await request.json();
+    const { email, password, cookies, twoFactorCode } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
 
-    // Simulate connection delay (2-5 seconds)
-    const delay = Math.floor(Math.random() * 3000) + 2000;
-    await new Promise(resolve => setTimeout(resolve, delay));
-
-    // Mock Connection Logic
-    // If password contains "fail", we simulate a failure
-    let status = "Connected";
-    let failureReason = null;
-
-    if (password.toLowerCase().includes("fail")) {
-      status = "Failed";
-      const reasons = ["Incorrect password", "Two-factor authentication required", "Suspicious login attempt"];
-      failureReason = reasons[Math.floor(Math.random() * reasons.length)];
+    // Assign Proxy Systematically
+    const { getAssignedProxy } = await import("@/lib/proxy-allocator");
+    let assignedProxyDoc;
+    try {
+        assignedProxyDoc = await getAssignedProxy(session.user.id, 'facebook');
+    } catch (e) {
+        return NextResponse.json({ error: e.message }, { status: 503 });
     }
 
-    const newAccount = {
-      userId: session.user.id,
-      email,
-      // In a real app, NEVER store plain text passwords. This is for demo/mock purposes only as requested.
-      // Ideally we'd store a token or encrypted credentials.
-      // For this mock, we won't store the password at all, just the fact that it's connected.
-      cookies: cookies ? "Stored" : "None", 
-      status,
-      failureReason,
-      createdAt: new Date(),
-      campaigns: [] // Placeholder for campaigns
+    // Format for automation usage (flatten auth)
+    const proxy = {
+        host: assignedProxyDoc.host,
+        port: assignedProxyDoc.port,
+        protocol: assignedProxyDoc.protocol,
+        username: assignedProxyDoc.auth?.username,
+        password: assignedProxyDoc.auth?.password
     };
 
-    const result = await db.collection("facebook_accounts").insertOne(newAccount);
-    
-    if (status === "Failed") {
-      // Even if failed, we might want to log it, but maybe return 400/401 to frontend?
-      // The user requirement says "show status whether acc is connected successfully or not".
-      // So we return the account object with "Failed" status.
-      return NextResponse.json({ ...newAccount, _id: result.insertedId });
+    // Check for existing account
+    const existing = await db.collection("facebook_accounts").findOne({ 
+      userId: session.user.id, 
+      email: email 
+    });
+
+    let accountId;
+    if (existing) {
+      accountId = existing._id;
+      await db.collection("facebook_accounts").updateOne(
+        { _id: accountId },
+        { 
+          $set: { 
+            status: "Connecting...", 
+            failureReason: null, 
+            proxy: proxy,
+            updatedAt: new Date() 
+          } 
+        }
+      );
+    } else {
+      const newAccount = {
+        userId: session.user.id,
+        email,
+        cookies: cookies ? "Stored" : "None", 
+        proxy: proxy,
+        status: "Connecting...",
+        failureReason: null,
+        createdAt: new Date(),
+        campaigns: [] 
+      };
+      const result = await db.collection("facebook_accounts").insertOne(newAccount);
+      accountId = result.insertedId;
     }
 
-    return NextResponse.json({ ...newAccount, _id: result.insertedId });
+    const { loginToFacebook } = await import("@/lib/automation/facebook");
+
+    try {
+        await loginToFacebook(accountId, email, password, proxy, false, twoFactorCode);
+        const updatedAccount = await db.collection("facebook_accounts").findOne({ _id: accountId });
+        return NextResponse.json(updatedAccount);
+    } catch (automationError) {
+        let status = "Failed";
+        if (automationError.message.includes('approve') || automationError.message.includes('app')) {
+            status = "AppConfirmation";
+        } else if (automationError.message.includes('code') || automationError.message.includes('Checkpoint')) {
+            status = "Checkpoint";
+        }
+        
+        await db.collection("facebook_accounts").updateOne(
+            { _id: accountId },
+            { $set: { status, failureReason: automationError.message } }
+        );
+        return NextResponse.json({ status, failureReason: automationError.message, _id: accountId });
+    }
 
   } catch (error) {
     console.error("Error connecting facebook account:", error);

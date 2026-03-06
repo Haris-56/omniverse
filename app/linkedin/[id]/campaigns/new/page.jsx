@@ -202,7 +202,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
   if (loading) return (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50/50 space-y-6">
        <div className="animate-spin w-10 h-10 border-4 border-[#0077B5] border-t-transparent rounded-full" />
-       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Verifying B2B Modules...</p>
+       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Loading...</p>
     </div>
   );
 
@@ -218,10 +218,10 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
           <div className="h-10 w-px bg-gray-200 mx-2 hidden md:block" />
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-               <span className="px-2 py-0.5 bg-sky-50 text-[#0077B5] text-[9px] font-black uppercase tracking-widest rounded-full border border-sky-100">Professional Identity</span>
+               <span className="px-2 py-0.5 bg-sky-50 text-[#0077B5] text-[9px] font-black uppercase tracking-widest rounded-full border border-sky-100">LinkedIn</span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight truncate">Construct B2B Sequence</h1>
-            <p className="text-gray-500 text-xs md:text-sm font-medium mt-1">Configuring profile node for <span className="text-[#0077B5] font-bold">{account?.email}</span></p>
+            <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight truncate">Create New Campaign</h1>
+            <p className="text-gray-500 text-xs md:text-sm font-medium mt-1">Creating campaign for <span className="text-[#0077B5] font-bold">{account?.email}</span></p>
           </div>
         </div>
 
@@ -234,13 +234,13 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                 <Target size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-black text-gray-900 tracking-tight">Sequence Identity</h2>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Basic identification & targeting</p>
+                <h2 className="text-lg font-black text-gray-900 tracking-tight">Campaign Details</h2>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Name and targeting</p>
               </div>
             </div>
             <div className="p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Flow Identifier</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Campaign Name</label>
                 <input
                   type="text"
                   value={name}
@@ -251,14 +251,14 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                 />
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Prospect Population</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Contact List</label>
                 <select
                   value={listId}
                   onChange={(e) => setListId(e.target.value)}
                   className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/30 focus:bg-white transition-all font-bold text-gray-900 appearance-none"
                   required
                 >
-                  <option value="">-- Select Master List --</option>
+                  <option value="">-- Select List --</option>
                   {contactLists.map(list => (
                     <option key={list._id} value={list._id}>{list.name} ({list.count} units)</option>
                   ))}
@@ -274,15 +274,15 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                 <UserPlus size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-black text-gray-900 tracking-tight">Handshake Protocol</h2>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Connection & Acceptance logic</p>
+                <h2 className="text-lg font-black text-gray-900 tracking-tight">Connection Settings</h2>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Connect & Accept logic</p>
               </div>
             </div>
             <div className="p-8 md:p-10 space-y-8">
               <div className="flex items-center justify-between p-6 bg-blue-50/30 rounded-[2rem] border border-blue-50 group hover:bg-blue-50 transition-all duration-300">
                 <div className="pr-4 text-left">
-                  <h4 className="text-sm md:text-base font-black text-gray-900">Wait for Authentication</h4>
-                  <p className="text-[10px] md:text-xs text-gray-500 mt-1 font-medium italic">Only execute main payload and sequences after connection acceptance.</p>
+                  <h4 className="text-sm md:text-base font-black text-gray-900">Wait for Acceptance</h4>
+                  <p className="text-[10px] md:text-xs text-gray-500 mt-1 font-medium italic">Only send messages after connection request is accepted.</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input 
@@ -310,7 +310,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                  <textarea
                   value={connectionNote}
                   onChange={(e) => setConnectionNote(e.target.value.slice(0, 300))}
-                  placeholder="Initiate connection with a personalized handshake..."
+                  placeholder="Enter a connection note..."
                   rows={3}
                   className="w-full bg-gray-50 border border-gray-100 rounded-[2rem] px-8 py-6 font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/30 transition-all outline-none resize-none shadow-inner"
                 />
@@ -325,8 +325,8 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                 <Cpu size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-black text-gray-900 tracking-tight">Sequence Payload</h2>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Main message logic & variables</p>
+                <h2 className="text-lg font-black text-gray-900 tracking-tight">Message Settings</h2>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Message logic & variables</p>
               </div>
             </div>
             <div className="p-8 md:p-10 space-y-8">
@@ -387,7 +387,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Draft your professional B2B outreach payload..."
+                  placeholder="Enter your message..."
                   rows={6}
                   className="w-full bg-gray-50 border border-gray-100 rounded-[2rem] px-8 py-8 font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/30 transition-all outline-none resize-none shadow-inner"
                   required
@@ -403,13 +403,13 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                 <Clock size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-black text-gray-900 tracking-tight">Time Protocol</h2>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Scheduling & random latency</p>
+                <h2 className="text-lg font-black text-gray-900 tracking-tight">Schedule & Limits</h2>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Scheduling & time-delays</p>
               </div>
             </div>
             <div className="p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Action Cap</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Daily Limit</label>
                 <div className="relative">
                   <input
                     type="number"
@@ -423,7 +423,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                 </div>
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Stagger Latency (Min)</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Delay (Min-Max Secs)</label>
                 <div className="flex items-center gap-3">
                   <input type="number" min="5" value={minDelay} onChange={(e) => setMinDelay(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold" />
                   <span className="text-gray-300 font-black">{"->"}</span>
@@ -431,7 +431,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                 </div>
               </div>
                <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Temporal Alignment</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Timezone</label>
                 <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 font-bold text-xs appearance-none">
                   <option value="UTC">Universal (UTC)</option>
                   <option value="America/New_York">Eastern (EST)</option>
@@ -449,8 +449,8 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                   <Zap size={24} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-gray-900 tracking-tight">Sequence Layers</h2>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Multi-step professional follow-ups</p>
+                  <h2 className="text-lg font-black text-gray-900 tracking-tight">Follow-ups</h2>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Multi-step sequences</p>
                 </div>
               </div>
               <button
@@ -458,13 +458,13 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                 onClick={addFollowUp}
                 className="px-6 py-3 bg-sky-50 text-[#0077B5] font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-[#0077B5] hover:text-white transition-all flex items-center gap-2"
               >
-                <Plus size={16} /> Stack Follow-up Node
+                <Plus size={16} /> Add Follow-up
               </button>
             </div>
             <div className="p-8 md:p-10 space-y-8">
               {followUps.length === 0 ? (
                 <div className="text-center py-10 opacity-30 italic font-medium text-gray-400 text-sm">
-                  Single-layer sequence. No follow-up nodes active.
+                  No follow-ups added.
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -481,7 +481,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                         <div className="flex items-center gap-4">
                            <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center font-black text-[#0077B5]">{idx + 1}</div>
                            <div className="flex items-center gap-2">
-                             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Wait:</span>
+                             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Delay:</span>
                              <input
                                 type="number"
                                 min="1"
@@ -496,7 +496,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                       <textarea
                         value={step.message}
                         onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
-                        placeholder="Configure layer B2B payload..."
+                        placeholder="Enter message..."
                         rows={3}
                         className="w-full bg-white border border-gray-100 rounded-2xl p-6 text-sm font-medium outline-none focus:ring-4 focus:ring-sky-100 transition-all resize-none shadow-sm"
                       />
@@ -512,13 +512,13 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
              <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2 text-sky-400">
                    <ShieldCheck size={20} />
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.25em]">Response Intercept</h3>
+                   <h3 className="text-[10px] font-black uppercase tracking-[0.25em]">Security & Privacy</h3>
                 </div>
-                <h2 className="text-xl font-black text-white mb-4">Autonomous Stop-Logic</h2>
+                <h2 className="text-xl font-black text-white mb-4">Stop Settings</h2>
                 <div className="flex items-center justify-between p-6 bg-sky-950/20 rounded-3xl border border-sky-900/30">
                    <div className="pr-4 text-left">
-                      <p className="text-sm font-bold text-sky-50">Halt sequence on Reply</p>
-                      <p className="text-[10px] text-sky-400 mt-1 uppercase font-black">Pause all professional nodes if prospect engages</p>
+                      <p className="text-sm font-bold text-sky-50">Stop on Reply</p>
+                      <p className="text-[10px] text-sky-400 mt-1 uppercase font-black">Pause sequence if contact replies</p>
                    </div>
                    <label className="relative inline-flex items-center cursor-pointer">
                     <input 
@@ -538,7 +538,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                   disabled={submitting}
                   className="px-12 py-5 bg-[#0077B5] text-white font-black text-[10px] md:text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-[#006097] transition-all shadow-xl shadow-sky-900/40 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
                 >
-                  {submitting ? "Processing Handshake..." : "Deploy Network Sequence"}
+                  {submitting ? "Creating..." : "Create Campaign"}
                   <Linkedin size={18} />
                 </button>
                 <button
@@ -546,7 +546,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                   onClick={() => router.back()}
                   className="px-12 py-4 bg-sky-950/20 text-sky-400 font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-sky-950/40 transition-all flex items-center justify-center border border-sky-900/20"
                 >
-                  Abort Construction
+                  Cancel
                 </button>
              </div>
           </div>

@@ -27,39 +27,82 @@ export async function POST(request) {
 
   try {
     const db = await getDb();
-    const { email, password, cookies } = await request.json();
+    const { email, password, cookies, twoFactorCode } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
 
-    // Simulate connection delay (2-5 seconds)
-    const delay = Math.floor(Math.random() * 3000) + 2000;
-    await new Promise(resolve => setTimeout(resolve, delay));
-
-    // Mock Connection Logic
-    let status = "Connected";
-    let failureReason = null;
-
-    if (password.toLowerCase().includes("fail")) {
-      status = "Failed";
-      const reasons = ["Incorrect password", "Two-factor authentication required", "Security check required"];
-      failureReason = reasons[Math.floor(Math.random() * reasons.length)];
+    // Assign Proxy Systematically
+    const { getAssignedProxy } = await import("@/lib/proxy-allocator");
+    let assignedProxyDoc;
+    try {
+        assignedProxyDoc = await getAssignedProxy(session.user.id, 'linkedin');
+    } catch (e) {
+        return NextResponse.json({ error: e.message }, { status: 503 });
     }
 
-    const newAccount = {
-      userId: session.user.id,
-      email,
-      cookies: cookies ? "Stored" : "None", 
-      status,
-      failureReason,
-      createdAt: new Date(),
-      campaigns: [] 
+    // Format for automation usage (flatten auth)
+    const proxy = {
+        host: assignedProxyDoc.host,
+        port: assignedProxyDoc.port,
+        protocol: assignedProxyDoc.protocol,
+        username: assignedProxyDoc.auth?.username,
+        password: assignedProxyDoc.auth?.password
     };
 
-    const result = await db.collection("linkedin_accounts").insertOne(newAccount);
-    
-    return NextResponse.json({ ...newAccount, _id: result.insertedId });
+    const existing = await db.collection("linkedin_accounts").findOne({ 
+      userId: session.user.id, 
+      email: email 
+    });
+
+    let accountId;
+    if (existing) {
+      accountId = existing._id;
+      await db.collection("linkedin_accounts").updateOne(
+        { _id: accountId },
+        { 
+          $set: { 
+            status: "Connecting...", 
+            failureReason: null, 
+            proxy: proxy,
+            updatedAt: new Date() 
+          } 
+        }
+      );
+    } else {
+      const newAccount = {
+        userId: session.user.id,
+        email,
+        cookies: cookies ? "Stored" : "None", 
+        proxy,
+        status: "Connecting...",
+        failureReason: null,
+        createdAt: new Date(),
+        campaigns: [] 
+      };
+      const result = await db.collection("linkedin_accounts").insertOne(newAccount);
+      accountId = result.insertedId;
+    }
+
+    const { loginToLinkedIn } = await import("@/lib/automation/linkedin");
+
+    try {
+        await loginToLinkedIn(accountId, email, password, proxy, false, twoFactorCode);
+        const updatedAccount = await db.collection("linkedin_accounts").findOne({ _id: accountId });
+        return NextResponse.json(updatedAccount);
+    } catch (automationError) {
+        let status = "Failed";
+        if (automationError.message.includes('code') || automationError.message.includes('Checkpoint') || automationError.message.includes('verification')) {
+            status = "Checkpoint";
+        }
+        
+        await db.collection("linkedin_accounts").updateOne(
+            { _id: accountId },
+            { $set: { status, failureReason: automationError.message } }
+        );
+        return NextResponse.json({ status, failureReason: automationError.message, _id: accountId });
+    }
 
   } catch (error) {
     console.error("Error connecting linkedin account:", error);

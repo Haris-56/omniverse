@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   X, 
   Instagram, 
@@ -13,21 +13,38 @@ import {
   Terminal,
   Info,
   Rocket,
-  Camera
+  Camera,
+  Lock,
+  Smartphone
 } from "lucide-react";
 
-export default function ConnectAccountModal({ isOpen, onClose, onAccountConnected }) {
+export default function ConnectAccountModal({ isOpen, onClose, onAccountConnected, initialEmail = "" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cookies, setCookies] = useState("");
+  const [twoFactorCode, setTwoFactorCode] = useState("");
+  
+  // Proxy State
+  const [useProxy, setUseProxy] = useState(false);
+  const [proxyHost, setProxyHost] = useState("");
+  const [proxyPort, setProxyPort] = useState("");
+  const [proxyUsername, setProxyUsername] = useState("");
+  const [proxyPassword, setProxyPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
 
+  useEffect(() => {
+    if (isOpen) {
+        setEmail(initialEmail || "");
+    }
+  }, [isOpen, initialEmail]);
+
   if (!isOpen) return null;
 
   const handleConnect = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!email || !password) {
       setError("Username and Password are required");
       return;
@@ -35,18 +52,38 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
 
     setLoading(true);
     setError("");
-    setResult(null);
+    
+    // Preserve result if it's a challenge, so we don't hide the challenge UI while loading
+    if (result?.status !== "Checkpoint" && result?.status !== "AppConfirmation") {
+        setResult(null);
+    }
 
     try {
       const res = await fetch("/api/instagram/accounts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, cookies }),
+        body: JSON.stringify({ 
+          email, 
+          password, 
+          cookies,
+          twoFactorCode,
+          proxy: useProxy ? {
+            host: proxyHost,
+            port: proxyPort,
+            username: proxyUsername,
+            password: proxyPassword
+          } : null
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
+        // If it's a known checkpoint/confirmation, update result to show the specific UI
+        if (data.status === "Checkpoint" || data.status === "AppConfirmation") {
+           setResult({ status: data.status, reason: data.failureReason });
+           return;
+        }
         throw new Error(data.error || "Failed to connect");
       }
 
@@ -69,6 +106,7 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
     setEmail("");
     setPassword("");
     setCookies("");
+    setTwoFactorCode("");
     setError("");
     setResult(null);
     onClose();
@@ -85,8 +123,8 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
                 <Camera size={24} />
              </div>
              <div>
-                <h2 className="text-xl font-black text-gray-900 tracking-tight lowercase">Connect Instagram</h2>
-                <p className="text-[10px] font-black text-[#E1306C] uppercase tracking-[0.2em] mt-0.5">Visual Uplink Protocol</p>
+                <h2 className="text-xl font-bold text-gray-900 tracking-tight">Connect Instagram</h2>
+                <p className="text-xs font-medium text-[#E1306C] mt-0.5">Secure Login Assistant</p>
              </div>
           </div>
           <button onClick={handleClose} className="p-2 hover:bg-white rounded-xl transition-all border border-transparent hover:border-gray-100 text-gray-400 hover:text-gray-900">
@@ -95,28 +133,28 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
         </div>
 
         <div className="p-8 md:p-10">
-          {result ? (
+          {result && result.status !== "Checkpoint" && result.status !== "AppConfirmation" ? (
             <div className="text-center py-10 animate-in slide-in-from-bottom duration-500">
               {result.status === "Connected" ? (
                 <>
                   <div className="w-20 h-20 bg-pink-50 text-[#E1306C] rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner animate-bounce">
                     <CheckCircle size={32} />
                   </div>
-                  <h3 className="text-2xl font-black text-gray-900 lowercase tracking-tight mb-2">Node Connected</h3>
-                  <p className="text-gray-500 text-sm font-medium tracking-tight">Visual handshake successful. Ready for engagement streams.</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Connected successfully!</h3>
+                  <p className="text-gray-500 text-sm font-medium">Your Instagram account is now linked and ready for use.</p>
                 </>
               ) : (
                 <>
                   <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
                     <AlertCircle size={32} />
                   </div>
-                  <h3 className="text-2xl font-black text-gray-900 lowercase tracking-tight mb-2">Uplink Failed</h3>
-                  <p className="text-red-500 font-bold mb-8 text-sm">{result.reason}</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Login Failed</h3>
+                  <p className="text-red-500 font-medium mb-8 text-sm">{result.reason}</p>
                   <button 
                     onClick={() => setResult(null)}
-                    className="px-8 py-4 bg-gray-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-gray-800 transition-all shadow-xl"
+                    className="px-8 py-4 bg-gray-900 text-white font-bold text-xs uppercase tracking-wider rounded-2xl hover:bg-gray-800 transition-all shadow-xl"
                   >
-                    Resync Pulse
+                    Try Again
                   </button>
                 </>
               )}
@@ -124,76 +162,194 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
           ) : (
             <form onSubmit={handleConnect} className="space-y-6">
               {error && (
-                <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-[11px] font-bold rounded-2xl flex items-center gap-3 animate-in slide-in-from-top">
+                <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-xs font-semibold rounded-2xl flex items-center gap-3 animate-in slide-in-from-top">
                   <AlertCircle size={16} />
                   {error}
                 </div>
               )}
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 ml-1">
-                   <User size={12} className="text-[#E1306C]" />
-                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Username / Email</label>
-                </div>
-                <input
-                  type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm"
-                  placeholder="instagram_node"
-                />
-              </div>
+              {result?.status === "Checkpoint" ? (
+                <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
+                   <div className="p-4 bg-[#FFF5F7] border border-pink-100 rounded-2xl flex gap-4 items-start">
+                      <div className="p-2 bg-white rounded-xl text-[#E1306C] shadow-sm">
+                         <Lock size={18} />
+                      </div>
+                      <div>
+                         <p className="text-sm font-bold text-gray-900">Security Code Required</p>
+                         <p className="text-xs font-medium text-gray-500 mt-0.5">Please enter the 6-digit code sent to your email or mobile device.</p>
+                      </div>
+                   </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 ml-1">
-                   <Key size={12} className="text-[#E1306C]" />
-                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Entry Key</label>
+                   <div className="space-y-2">
+                    <div className="flex items-center gap-2 ml-1">
+                       <ShieldCheck size={14} className="text-[#E1306C]" />
+                       <label className="text-xs font-semibold text-gray-500">Security Code</label>
+                    </div>
+                    <input
+                      type="text"
+                      value={twoFactorCode}
+                      onChange={(e) => setTwoFactorCode(e.target.value)}
+                      className="w-full bg-pink-50/30 border border-pink-100 rounded-2xl px-6 py-4 text-center text-2xl font-bold tracking-[0.5em] text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm"
+                      placeholder="000000"
+                      maxLength={6}
+                    />
+                  </div>
                 </div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm"
-                  placeholder="••••••••"
-                />
-              </div>
+              ) : result?.status === "AppConfirmation" ? (
+                <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
+                   <div className="p-4 bg-[#F0F7FF] border border-blue-100 rounded-2xl flex gap-4 items-start">
+                      <div className="p-2 bg-white rounded-xl text-blue-600 shadow-sm">
+                         <Smartphone size={18} />
+                      </div>
+                      <div>
+                         <p className="text-sm font-bold text-gray-900">App Confirmation</p>
+                         <p className="text-xs font-medium text-gray-500 mt-0.5">Please open your Instagram or Facebook app on your mobile device and approve this login request.</p>
+                      </div>
+                   </div>
+                   
+                   <div className="py-2 text-center">
+                      <div className="inline-block px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-full animate-pulse">
+                         Waiting for your confirmation...
+                      </div>
+                   </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 ml-1">
-                   <Terminal size={12} className="text-[#E1306C]" />
-                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Session Logic (JSON)</label>
+                   <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 italic text-[10px] text-gray-400 text-center">
+                      Once you click "Approve" on your phone, click the button below.
+                   </div>
                 </div>
-                <textarea
-                  value={cookies}
-                  onChange={(e) => setCookies(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] px-6 py-4 text-xs font-mono text-gray-600 outline-none h-24 focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm resize-none"
-                  placeholder='[{"domain": ".instagram.com", ...}]'
-                />
-              </div>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 ml-1">
+                       <User size={14} className="text-[#E1306C]" />
+                       <label className="text-xs font-semibold text-gray-500">Username / Email</label>
+                    </div>
+                    <input
+                      type="text"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-medium text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm"
+                      placeholder="e.g. your_instagram_handle"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 ml-1">
+                       <Key size={14} className="text-[#E1306C]" />
+                       <label className="text-xs font-semibold text-gray-500">Password</label>
+                    </div>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-medium text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm"
+                      placeholder="••••••••"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 ml-1">
+                       <Terminal size={14} className="text-[#E1306C]" />
+                       <label className="text-xs font-semibold text-gray-500">Optional: Cookies (JSON)</label>
+                    </div>
+                    <textarea
+                      value={cookies}
+                      onChange={(e) => setCookies(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] px-6 py-4 text-xs font-mono text-gray-600 outline-none h-24 focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm resize-none"
+                      placeholder='[{"domain": ".instagram.com", ...}]'
+                    />
+                  </div>
+
+                   {/* Proxy Configuration */}
+                   <div className="space-y-4 pt-2 border-t border-dashed border-gray-100">
+                    <div className="flex items-center gap-2">
+                       <input
+                          type="checkbox"
+                          id="useProxy"
+                          checked={useProxy}
+                          onChange={(e) => setUseProxy(e.target.checked)}
+                          className="w-4 h-4 rounded text-pink-500 focus:ring-pink-500/20 border-gray-300"
+                       />
+                       <label htmlFor="useProxy" className="text-xs font-semibold text-gray-700 cursor-pointer select-none">
+                          Use Custom Proxy
+                       </label>
+                    </div>
+
+                    {useProxy && (
+                       <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-top-2 fade-in duration-300">
+                          <div className="space-y-1">
+                             <label className="text-xs font-semibold text-gray-500 pl-1">Host / IP</label>
+                             <input
+                                type="text"
+                                value={proxyHost}
+                                onChange={(e) => setProxyHost(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                placeholder="192.168.1.1"
+                             />
+                          </div>
+                          <div className="space-y-1">
+                             <label className="text-xs font-semibold text-gray-500 pl-1">Port</label>
+                             <input
+                                type="text"
+                                value={proxyPort}
+                                onChange={(e) => setProxyPort(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                placeholder="8080"
+                             />
+                          </div>
+                          <div className="space-y-1">
+                             <label className="text-xs font-semibold text-gray-500 pl-1">Proxy User</label>
+                             <input
+                                type="text"
+                                value={proxyUsername}
+                                onChange={(e) => setProxyUsername(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                placeholder="Optional"
+                             />
+                          </div>
+                          <div className="space-y-1">
+                             <label className="text-xs font-semibold text-gray-500 pl-1">Proxy Pass</label>
+                             <input
+                                type="password"
+                                value={proxyPassword}
+                                onChange={(e) => setProxyPassword(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                placeholder="Optional"
+                             />
+                          </div>
+                       </div>
+                    )}
+                   </div>
+                </>
+              )}
 
               <div className="pt-4 flex flex-col gap-4">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-pink-500/20 hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
+                  className="w-full bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-pink-500/20 hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
                 >
                   {loading ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
-                      Establishing Uplink...
+                      {result?.status === "Checkpoint" ? "Verifying Code..." : result?.status === "AppConfirmation" ? "Syncing Confirmation..." : "Logging in..."}
                     </>
                   ) : (
                     <>
-                      <Rocket size={18} />
-                      Initialize Uplink
+                      {result?.status === "Checkpoint" ? <CheckCircle size={18} /> : result?.status === "AppConfirmation" ? <Smartphone size={18} /> : <Rocket size={18} />}
+                      {result?.status === "Checkpoint" ? "Confirm Security Code" : result?.status === "AppConfirmation" ? "I've Approved on App" : "Connect Account"}
                     </>
                   )}
                 </button>
                 
                 <div className="p-4 bg-pink-50/50 rounded-2xl border border-pink-50 flex gap-3 text-left">
                    <Info size={16} className="text-[#E1306C] shrink-0" />
-                   <p className="text-[10px] font-medium text-[#E1306C]/80 leading-relaxed italic">
-                      Visual nodes are sandboxed for integrity. Ensure multi-factor authentication is handled if prompted on your primary device.
+                   <p className="text-xs font-medium text-[#E1306C]/80 leading-relaxed italic">
+                      {result?.status === "Checkpoint" 
+                        ? "Ensure you enter the most recent code received." 
+                        : result?.status === "AppConfirmation"
+                        ? "The bot is checking for a valid session. Approval typically takes 5-10 seconds to sync."
+                        : "Verify your login details. If your account has 2FA enabled, you may be prompted to enter a code on your mobile device."}
                    </p>
                 </div>
               </div>

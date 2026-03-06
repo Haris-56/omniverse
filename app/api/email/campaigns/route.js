@@ -13,6 +13,15 @@ export async function GET(req) {
     const db = await getDb();
     const { searchParams } = new URL(req.url);
     const accountId = searchParams.get("accountId");
+    const id = searchParams.get("id");
+
+    if (id) {
+        const campaign = await db.collection("email_campaigns").findOne({ 
+            _id: new ObjectId(id), 
+            userId: session.user.id 
+        });
+        return NextResponse.json(campaign);
+    }
 
     if (!accountId) {
       return NextResponse.json({ error: "AccountId is required" }, { status: 400 });
@@ -33,6 +42,8 @@ export async function GET(req) {
   }
 }
 
+import { checkPlanLimit } from "@/lib/limits";
+
 export async function POST(request) {
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session) {
@@ -41,46 +52,75 @@ export async function POST(request) {
 
   try {
     const db = await getDb();
+    
+    // Check Limits
+    const limitCheck = await checkPlanLimit(session.user.id, 'campaigns');
+    if (!limitCheck.allowed) {
+      return NextResponse.json({ 
+        error: `Plan limit reached. Your plan allows ${limitCheck.limit} active campaigns.`,
+        current: limitCheck.current,
+        limit: limitCheck.limit
+      }, { status: 403 });
+    }
+
     const body = await request.json();
     
+    // Destructure expanded fields
     const { 
-      accountId, 
-      name, 
-      listId, 
-      subject,
-      message, 
-      dailyLimit, 
-      minDelay, 
-      maxDelay, 
-      timezone, 
-      hours, 
-      sequences, 
-      stopOnReply, 
-      blacklist
+      accountId, accountIds, name, listId, 
+      abTesting, variantA, variantB, 
+      settings, rampUp, stopOnReply, autoReply, sequences 
     } = body;
 
-    if (!accountId || !name || !listId || !message || !subject) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    // Basic Validation
+    if (!accountId || !name || !listId || !variantA?.message || !variantA?.subject) {
+      return NextResponse.json({ error: "Missing required fields (Name, List, Variant A)" }, { status: 400 });
     }
 
     const newCampaign = {
       userId: session.user.id,
-      accountId,
+      accountId, // primary owner
+      accountIds: accountIds && accountIds.length > 0 ? accountIds : [accountId], // Array of sender accounts
       name,
       listId,
-      subject,
-      message,
-      dailyLimit: parseInt(dailyLimit) || 50,
-      minDelay: parseInt(minDelay) || 5,
-      maxDelay: parseInt(maxDelay) || 15,
-      timezone: timezone || "UTC",
-      hours: hours || { start: "09:00", end: "17:00" },
-      sequences: sequences || [],
+      // Store variants
+      variants: {
+        active: abTesting, // true/false
+        a: variantA,
+        b: variantB
+      },
+      // Settings
+      dailyLimit: parseInt(settings?.dailyLimit) || 50,
+      timezone: settings?.timezone || "UTC",
+      hours: { 
+        start: settings?.startTime || "09:00", 
+        end: settings?.endTime || "17:00" 
+      },
+      settings: {
+        ...settings,
+        maxPerHour: parseInt(settings?.maxPerHour) || 15,
+        sendJitter: !!settings?.sendJitter,
+        businessHoursOnly: !!settings?.businessHoursOnly,
+        addUnsubscribe: !!settings?.addUnsubscribe,
+        deduplicate: !!settings?.deduplicate,
+        followupHours: settings?.followupHours || null
+      },
+      delays: {
+        min: parseFloat(settings?.minDelay) || 30,
+        max: parseFloat(settings?.maxDelay) || 120
+      },
+      // Advanced
+      rampUp: rampUp || null, // { start, end, period }
+      autoReply: autoReply || null, // { keyword, message }
       stopOnReply: !!stopOnReply,
-      blacklist: blacklist || [],
+      
+      sequences: sequences || [], // Follow-ups
+      
+      // Status
       status: "Active",
       sentCount: 0,
       createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     const result = await db.collection("email_campaigns").insertOne(newCampaign);
@@ -101,19 +141,62 @@ export async function PATCH(request) {
 
   try {
     const db = await getDb();
-    const { id, status } = await request.json();
+    const body = await request.json();
+    const { 
+      id, status, name, accountIds, accountId, 
+      abTesting, variantA, variantB, settings, rampUp, sequences 
+    } = body;
+
+    const updateData = { updatedAt: new Date() };
+    
+    // Live Edit Handling
+    if (status) updateData.status = status;
+    if (name) updateData.name = name;
+    if (accountIds && accountIds.length > 0) updateData.accountIds = accountIds;
+    else if (accountId) updateData.accountIds = [accountId];
+    
+    if (variantA) {
+        updateData.variants = {
+            active: !!abTesting,
+            a: variantA,
+            b: variantB || null
+        };
+    }
+    
+    if (settings) {
+        updateData.dailyLimit = parseInt(settings.dailyLimit) || 50;
+        updateData.timezone = settings.timezone || "UTC";
+        updateData.hours = { start: settings.startTime || "09:00", end: settings.endTime || "17:00" };
+        updateData.settings = {
+            ...settings,
+            maxPerHour: parseInt(settings.maxPerHour) || 15,
+            sendJitter: !!settings.sendJitter,
+            businessHoursOnly: !!settings.businessHoursOnly,
+            addUnsubscribe: !!settings.addUnsubscribe,
+            deduplicate: !!settings.deduplicate,
+            followupHours: settings.followupHours || null
+        };
+        updateData.delays = {
+            min: parseFloat(settings.minDelay) || 30,
+            max: parseFloat(settings.maxDelay) || 120
+        };
+    }
+    
+    if (rampUp !== undefined) updateData.rampUp = rampUp;
+    if (sequences !== undefined) updateData.sequences = sequences;
 
     const result = await db.collection("email_campaigns").updateOne(
       { _id: new ObjectId(id), userId: session.user.id },
-      { $set: { status, updatedAt: new Date() } }
+      { $set: updateData }
     );
 
     if (result.matchedCount === 0) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Campaign updated" });
+    return NextResponse.json({ message: "Campaign dynamically updated" });
   } catch (error) {
+    console.error("Live Update Error:", error);
     return NextResponse.json({ error: "Failed to update campaign" }, { status: 500 });
   }
 }

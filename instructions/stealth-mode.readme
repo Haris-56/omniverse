@@ -1,0 +1,432 @@
+STEALTH RULES CHECKLIST
+
+(If u follow this, bans become extremely rare)
+
+I’ll split this into 7 layers.
+If even one layer is sloppy → risk increases.
+
+LAYER 1 — Account hygiene (before automation even starts)
+
+Rule 1.1 — Account age
+
+Never automate:
+
+fresh accounts (<30 days)
+
+accounts with <10 real interactions
+
+Ideal:
+
+90+ days old
+
+profile filled
+
+posts, likes, comments exist
+
+Rule 1.2 — One account = one purpose
+
+Never reuse:
+
+same IG for multiple niches
+
+same LI for multiple campaigns
+
+Platform memory is long.
+
+Rule 1.3 — Manual warm-up first
+Before automation:
+
+7–14 days manual usage:
+
+scroll
+
+like
+
+view stories
+
+send 1–2 real DMs/day
+
+Automation should look like continuation, not start.
+
+LAYER 2 — Identity binding (this is CRITICAL)
+
+This is where most people screw up.
+
+Rule 2.1 — Hard binding
+Each account must be permanently bound to:
+
+1 proxy IP
+
+1 browser profile
+
+1 Linkedin + 1 Instagram + 1 Facebook ! maximum
+
+Hard rules for multi-platform in one browser
+
+"Same IP for all 3
+
+Same timezone
+
+Same OS fingerprint
+
+Same daily activity window
+
+Never automate all 3 simultaneously
+
+Switch platforms with idle time between"
+
+1 user agent
+
+1 timezone
+
+1 OS fingerprint
+
+Never mix.
+
+Rule 2.2 — Sticky proxies only
+
+Residential or mobile
+
+Sticky session (24h+)
+
+Never rotate mid-session / never rotate! 
+
+Never change country/state
+
+Rule 2.3 — Timezone must match IP
+If:
+
+IP = Texas
+
+Browser timezone = UTC
+
+❌ red flag.
+
+LAYER 3 — Browser behavior (Playwright / Puppeteer rules)
+
+Rule 3.1 — Headful > Headless
+
+Use real browser mode
+
+Headless = higher detection
+
+Rule 3.2 — Human interaction simulation
+Your browser MUST:
+
+scroll pages
+
+pause while loading
+
+move mouse (not perfectly straight)
+
+click with delays
+
+sometimes do nothing
+
+Humans are inefficient. Bots are efficient.
+
+Rule 3.3 — Random but bounded delays
+Never fixed delays.
+
+Example:
+
+view profile → wait 7–22s
+
+scroll → pause → scroll
+
+before DM → wait 15–45s
+
+Rule 3.4 — Never jump
+Do not:
+
+open profile → DM instantly
+
+open DM → paste text instantly
+
+Sequence should feel like:
+
+“looking → thinking → typing”
+
+LAYER 4 — Volume & pacing (MOST IMPORTANT)
+
+Rule 4.1 — Daily hard caps (per account)
+
+Instagram:
+
+profile visits: max 100/day
+
+story views: max 100/day
+
+DMs: max 50/day
+
+LinkedIn:
+
+profile views: 100/day
+
+connection requests: 10–20/day
+
+DMs: 10-15/day
+
+Email:
+
+5-100/day/domain
+
+warm domain only
+
+Rule 4.2 — Soft caps (recommended)
+Always operate below max.
+
+If user sets 30:
+
+system aims for 25-30
+
+only climbs if many dead leads
+
+Rule 4.3 — No streaking
+Never do:
+
+same number every day
+
+same time every day
+
+Randomize:
+
+start time
+
+stop time
+
+daily count
+
+LAYER 5 — Content & messaging stealth
+
+This is where bans are earned.
+
+Rule 5.1 — No trigger words
+Never include:
+
+“automation”
+
+“leads”
+
+“ROI”
+
+“guaranteed”
+
+“rank #1”
+
+ "expert”
+
+Especially in first message.
+
+Rule 5.2 — No links in first touch
+Zero links.
+Zero calendars.
+Zero websites.
+
+Link = trust threshold breach.
+
+Rule 5.3 — Message uniqueness
+Platform looks for:
+
+sentence structure
+
+punctuation
+
+rhythm
+
+Your AI MUST:
+
+vary length
+
+vary opener
+
+vary CTA style
+
+sometimes ask nothing
+
+Rule 5.4 — Imperfect human writing
+Perfect grammar = suspicious.
+
+Allow:
+
+short sentences
+
+casual phrasing
+
+light typos (rare)
+
+lowercase sometimes
+
+But never:
+
+slang overload
+
+repeated gimmicks
+
+LAYER 6 — Engagement patterns (this saves accounts)
+
+Rule 6.1 — Mixed intent behavior
+Automation must include:
+
+scrolling without action
+
+story viewing without DM
+
+profile view without message
+
+Humans don’t always act.
+
+Rule 6.2 — Delayed follow-ups
+Never:
+
+follow up in <24h
+
+follow up same tone twice
+
+Good pattern:
+
+message → wait → soft bump → value add
+
+Rule 6.3 — Stop on reply
+Instant stop when:
+
+user replies
+
+even negative reply
+
+Continuing = spam signal.
+
+LAYER 7 — Failure detection & self-protection
+
+Rule 7.1 — Early warning signs
+If detected:
+captcha
+sudden login
+DM limits
+message failures
+
+→ IMMEDIATE STOP for 48–72h
+
+Rule 7.2 — Cooldown logic
+System must:
+
+pause account
+lower volumes
+resume slowly
+Never “push through”.
+
+Rule 7.3 — Account isolation
+If one account flags:
+
+do NOT touch others
+no shared proxies
+no shared sessions
+
+ABSOLUTE NEVER-DO LIST (tattoo this)
+
+❌ No mass scraping
+❌ No identical messages
+❌ No fresh accounts
+❌ No proxy rotation mid-session
+❌ No quota forcing
+❌ No link in first DM(when u messaging first)
+❌ No sudden behavior change
+
+Break any one → risk multiplies.
+
+
+
+
+Dead Account Scoring Logic (FULL)
+
+This should be rules + score, not binary.
+
+Goal
+
+Decide:
+
+Skip
+
+Minimal touch
+
+Normal outreach
+
+Dead Score (0–100)
+Platform signals
+
++40
+
+Account not found / suspended
+
++30
+
+Last post > 180 days
+
++25
+
+Zero posts + zero bio info
+
++20
+
+Private account + no highlights
+
++15
+
+No profile photo / default avatar
+
++15
+
+Website link dead or missing
+
++10
+
+No bio description
+
++10
+
+Followers < 50 (for businesses)
+
+Email-specific
+
++50
+
+Hard bounce
+
++30
+
+Domain parked / no site
+
++20
+
+Generic inbox (info@) + no site
+
+Website signals
+
++30
+
+Site offline / timeout
+
++20
+
+Last update > 3 years
+
++15
+
+No contact info
+
+Classification
+Score	Status	Action
+0–29	Alive	Full outreach
+30–49	Weak	Minimal / soft
+50–69	Likely dead	Skip DM, maybe email
+70+	Dead	Skip entirely
+
+This logic is gold. It saves accounts.
+
+
+
+Fingerprint tools (Multilogin-style logic)
+Make each automated browser look like a real, unique human device (OS, screen size, fonts, timezone, etc.) so platforms don’t link multiple accounts together.
+
+Canvas / WebGL spoofing
+Hide the graphics fingerprint of the machine. Without this, sites like LinkedIn/Meta can detect that many accounts are coming from the same server, even if IPs change.

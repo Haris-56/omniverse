@@ -192,7 +192,7 @@ export default function NewCampaignPage({ params: paramsPromise }) {
   if (loading) return (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50/50 space-y-6">
        <div className="animate-spin w-10 h-10 border-4 border-[#1877F2] border-t-transparent rounded-full" />
-       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Loading Architect Modules...</p>
+       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Loading Campaign Builder...</p>
     </div>
   );
 
@@ -208,10 +208,10 @@ export default function NewCampaignPage({ params: paramsPromise }) {
           <div className="h-10 w-px bg-gray-200 mx-2 hidden md:block" />
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-               <span className="px-2 py-0.5 bg-blue-50 text-[#1877F2] text-[9px] font-black uppercase tracking-widest rounded-full border border-blue-100">Meta Orchestration</span>
+               <span className="px-2 py-0.5 bg-blue-50 text-[#1877F2] text-[9px] font-black uppercase tracking-widest rounded-full border border-blue-100">Meta Campaign</span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight truncate">Construct Outreach Sequence</h1>
-            <p className="text-gray-500 text-xs md:text-sm font-medium mt-1">Configuring node for <span className="text-[#1877F2] font-bold">{account?.email}</span></p>
+            <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight truncate">Create New Campaign</h1>
+            <p className="text-gray-500 text-xs md:text-sm font-medium mt-1">Creating campaign for <span className="text-[#1877F2] font-bold">{account?.email}</span></p>
           </div>
         </div>
 
@@ -224,31 +224,31 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                 <Target size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-black text-gray-900 tracking-tight">Sequence Integrity</h2>
+                <h2 className="text-lg font-black text-gray-900 tracking-tight">Campaign Details</h2>
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Basic identification & targeting</p>
               </div>
             </div>
             <div className="p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Flow Identifier</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Campaign Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Q1 Growth Matrix v1"
+                  placeholder="e.g. Q1 Growth Campaign"
                   className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/30 focus:bg-white transition-all font-bold text-gray-900 placeholder-gray-300"
                   required
                 />
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Target Contact List</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Contact List</label>
                 <select
                   value={listId}
                   onChange={(e) => setListId(e.target.value)}
                   className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/30 focus:bg-white transition-all font-bold text-gray-900 appearance-none"
                   required
                 >
-                  <option value="">-- Select Master List --</option>
+                  <option value="">-- Select List --</option>
                   {contactLists.map(list => (
                     <option key={list._id} value={list._id}>{list.name} ({list.count} units)</option>
                   ))}
@@ -264,19 +264,19 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                 <Cpu size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-black text-gray-900 tracking-tight">Sequence Payload</h2>
+                <h2 className="text-lg font-black text-gray-900 tracking-tight">Message Settings</h2>
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Message logic & templates</p>
               </div>
             </div>
             <div className="p-8 md:p-10 space-y-8">
               <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                  <div className="flex-1 w-full space-y-3">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Template Preset</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Select Template</label>
                     <select
                       onChange={(e) => handleApplyTemplate(e.target.value)}
                       className="w-full bg-indigo-50/50 border border-indigo-100 rounded-2xl px-6 py-4 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-indigo-900 appearance-none text-sm"
                     >
-                      <option value="">Manual Entry (No Preset)</option>
+                      <option value="">Manual Entry</option>
                       {templates.map(t => (
                         <option key={t._id} value={t._id}>{t.name}</option>
                       ))}
@@ -309,7 +309,7 @@ export default function NewCampaignPage({ params: paramsPromise }) {
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Main Payload Content</label>
+                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Message Content</label>
                    <div className="flex items-center gap-2">
                       {["$$f_name$$", "$$l_name$$", "$$full_name$$"].map(v => (
                         <button
@@ -326,7 +326,7 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Start your automated sequence payload..."
+                  placeholder="Enter your message..."
                   rows={6}
                   className="w-full bg-gray-50 border border-gray-100 rounded-[2rem] px-8 py-8 font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/30 transition-all outline-none resize-none shadow-inner"
                   required
@@ -342,13 +342,13 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                 <Clock size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-black text-gray-900 tracking-tight">Execution Protocol</h2>
+                <h2 className="text-lg font-black text-gray-900 tracking-tight">Schedule & Limits</h2>
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Scheduling & time-delays</p>
               </div>
             </div>
             <div className="p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Daily Cap</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Daily Limit</label>
                 <div className="relative">
                   <input
                     type="number"
@@ -358,11 +358,11 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                     onChange={(e) => setDailyLimit(e.target.value)}
                     className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-black outline-none focus:bg-white transition-all"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-amber-500 uppercase">1-25 Safe Range</span>
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-amber-500 uppercase">1-25 Recommended</span>
                 </div>
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Stagger Latency (Min)</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Delay (Min-Max Secs)</label>
                 <div className="flex items-center gap-3">
                   <input type="number" value={minDelay} onChange={(e) => setMinDelay(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold" />
                   <span className="text-gray-300 font-black">{"->"}</span>
@@ -370,7 +370,7 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                 </div>
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Temporal Zone</label>
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Timezone</label>
                 <select 
                   value={timezone} 
                   onChange={(e) => setTimezone(e.target.value)}
@@ -393,8 +393,8 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                   <Zap size={24} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-gray-900 tracking-tight">Sequence Layers</h2>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Multi-step follow-up logic</p>
+                  <h2 className="text-lg font-black text-gray-900 tracking-tight">Follow-ups</h2>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Multi-step sequences</p>
                 </div>
               </div>
               <button
@@ -402,13 +402,13 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                 onClick={addFollowUp}
                 className="px-6 py-3 bg-indigo-50 text-indigo-600 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2"
               >
-                <Plus size={16} /> Stack Node
+                <Plus size={16} /> Add Follow-up
               </button>
             </div>
             <div className="p-8 md:p-10 space-y-8">
               {followUps.length === 0 ? (
                 <div className="text-center py-10 opacity-30 italic font-medium text-gray-400 text-sm">
-                  Single-layer sequence. No follow-up nodes active.
+                  No follow-ups added.
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -425,7 +425,7 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                         <div className="flex items-center gap-4">
                            <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center font-black text-indigo-600">{idx + 1}</div>
                            <div className="flex items-center gap-2">
-                             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Latency:</span>
+                             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Delay:</span>
                              <input
                                 type="number"
                                 min="1"
@@ -433,14 +433,14 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                                 onChange={(e) => updateFollowUp(idx, "delayDays", e.target.value)}
                                 className="w-16 bg-white border border-gray-200 rounded-lg py-1 text-center font-black text-sm"
                               />
-                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Days Post-Entry</span>
+                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Days After Previous</span>
                            </div>
                         </div>
                       </div>
                       <textarea
                         value={step.message}
                         onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
-                        placeholder="Configure layer payload..."
+                        placeholder="Enter message..."
                         rows={3}
                         className="w-full bg-white border border-gray-100 rounded-2xl p-6 text-sm font-medium outline-none focus:ring-4 focus:ring-indigo-100 transition-all resize-none shadow-sm"
                       />
@@ -456,13 +456,13 @@ export default function NewCampaignPage({ params: paramsPromise }) {
              <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2 text-indigo-400">
                    <ShieldCheck size={20} />
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.25em]">Security Protocol</h3>
+                   <h3 className="text-[10px] font-black uppercase tracking-[0.25em]">Security & Privacy</h3>
                 </div>
-                <h2 className="text-xl font-black text-white mb-4">Autonomous Stop-Logic</h2>
+                <h2 className="text-xl font-black text-white mb-4">Stop Settings</h2>
                 <div className="flex items-center justify-between p-6 bg-gray-800/50 rounded-3xl border border-gray-700">
                    <div className="pr-4">
-                      <p className="text-sm font-bold text-gray-200">Halt Flow on Engagement</p>
-                      <p className="text-[10px] text-gray-400 mt-1 uppercase font-black">Pause sequence if node receives reply</p>
+                      <p className="text-sm font-bold text-gray-200">Stop on Reply</p>
+                      <p className="text-[10px] text-gray-400 mt-1 uppercase font-black">Pause sequence if contact replies</p>
                    </div>
                    <label className="relative inline-flex items-center cursor-pointer">
                     <input 
@@ -482,7 +482,7 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                   disabled={submitting}
                   className="px-12 py-5 bg-indigo-600 text-white font-black text-[10px] md:text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-900/40 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
                 >
-                  {submitting ? "Initializing Sequence..." : "Deploy Orchestration"}
+                  {submitting ? "Creating..." : "Create Campaign"}
                   <Rocket size={18} />
                 </button>
                 <button
@@ -490,7 +490,7 @@ export default function NewCampaignPage({ params: paramsPromise }) {
                   onClick={() => router.back()}
                   className="px-12 py-4 bg-gray-800 text-gray-400 font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-gray-700 transition-all flex items-center justify-center"
                 >
-                  Abort Construction
+                  Cancel
                 </button>
              </div>
           </div>

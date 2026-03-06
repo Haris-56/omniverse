@@ -99,7 +99,7 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
   if (loading && campaigns.length === 0) return (
      <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50/50 space-y-6">
        <div className="animate-spin w-10 h-10 border-4 border-[#0077B5] border-t-transparent rounded-full" />
-       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Syncing B2B Metrics...</p>
+       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Loading Campaigns...</p>
     </div>
   );
 
@@ -113,9 +113,9 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
             <ChevronLeft size={18} />
           </Link>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400">
-             <Link href="/linkedin" className="hover:text-[#0077B5] transition-colors">B2B Nodes</Link>
+             <Link href="/linkedin" className="hover:text-[#0077B5] transition-colors">LinkedIn</Link>
              <span>/</span>
-             <span className="text-gray-900">Prospect Cluster</span>
+             <span className="text-gray-900">Campaigns</span>
           </div>
         </div>
 
@@ -126,12 +126,12 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
                <div className="w-10 h-10 bg-[#0077B5] rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
                   <Briefcase size={20} />
                </div>
-               <span className="px-3 py-1 bg-sky-50 text-[#0077B5] text-[10px] font-black uppercase tracking-widest rounded-full border border-sky-100">Handshake Protocol Active</span>
+               <span className="px-3 py-1 bg-sky-50 text-[#0077B5] text-[10px] font-black uppercase tracking-widest rounded-full border border-sky-100">Active</span>
             </div>
             <h1 className="text-3xl font-black text-gray-900 tracking-tight lowercase">
-               {account?.email || "B2B Control Panel"}
+               {account?.email || "Account"}
             </h1>
-            <p className="text-gray-500 text-sm font-medium mt-1">Managing {campaigns.length} professional sequences for this profile endpoint.</p>
+            <p className="text-gray-500 text-sm font-medium mt-1">Managing {campaigns.length} campaigns for this account.</p>
           </div>
           
           <div className="flex items-center gap-3">
@@ -154,7 +154,7 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
                 className="flex-1 lg:flex-none px-8 py-4 bg-[#0077B5] text-white font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-[#006097] transition-all shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 active:scale-95"
               >
                 <Plus size={18} />
-                Deploy Professional Sequence
+                Create Campaign
               </button>
           </div>
         </div>
@@ -165,14 +165,14 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
               <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#0077B5] transition-colors" />
               <input
                 type="text"
-                placeholder="Find professional identifier..."
+                placeholder="Search campaigns..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-[2rem] text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-sky-500/5 focus:border-sky-500/20 transition-all shadow-sm group-hover:shadow-md"
               />
            </div>
            <button className="w-full md:w-auto px-6 py-4 bg-white border border-gray-100 rounded-[2rem] text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center justify-center gap-2 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
-              <Filter size={16} /> B2B Logic
+              <Filter size={16} /> Filters
            </button>
         </div>
 
@@ -181,15 +181,15 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
             <div className="w-24 h-24 bg-sky-50 text-[#0077B5] rounded-[2.5rem] flex items-center justify-center mb-8 animate-pulse shadow-inner">
               <UserPlus size={40} />
             </div>
-            <h3 className="text-2xl font-black text-gray-900 tracking-tight lowercase mb-3">No clusters found</h3>
+            <h3 className="text-2xl font-black text-gray-900 tracking-tight lowercase mb-3">No campaigns found</h3>
             <p className="text-gray-500 text-sm font-medium max-w-sm mb-10 lowercase tracking-tight">
-              initialize your first professional sequence to begin impacting this linkedin node.
+              Create your first campaign to get started.
             </p>
             <button
               onClick={() => router.push(`/linkedin/${accountId}/campaigns/new`)}
               className="px-10 py-5 bg-[#0077B5] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#006097] transition-all shadow-xl shadow-sky-500/20 active:scale-95"
             >
-              Start First Handshake
+              Create Campaign
             </button>
           </div>
         ) : viewMode === "list" ? (
@@ -199,11 +199,11 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="text-left bg-gray-50/50 border-b border-gray-100">
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Professional Identity</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Protocol Status</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Network Impact</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Temporal Node</th>
-                    <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Control</th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Campaign Name</th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Status</th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Sent Count</th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Timezone</th>
+                    <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -216,7 +216,7 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
                            </div>
                            <div>
                               <p className="text-sm font-black text-gray-900 lowercase tracking-tight">{camp.name}</p>
-                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5 group-hover:text-sky-500/50 transition-colors tracking-tighter italic">B2B_SYS_{camp._id.toString().slice(-4)}</p>
+                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5 group-hover:text-sky-500/50 transition-colors tracking-tighter italic">ID: {camp._id.toString().slice(-4)}</p>
                            </div>
                         </div>
                       </td>
@@ -231,13 +231,13 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
                       <td className="px-8 py-6">
                          <div className="flex items-center gap-2">
                             <span className="text-base font-black text-gray-900">{camp.sentCount || 0}</span>
-                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Prospects Reached</span>
+                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">DMs Sent</span>
                          </div>
                       </td>
                       <td className="px-8 py-6">
                          <div className="flex items-center gap-2 text-gray-400 group-hover:text-gray-900 transition-colors lowercase">
                             <Clock size={12} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">{camp.timezone || 'UTC'} Offset</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest">{camp.timezone || 'UTC'}</span>
                          </div>
                       </td>
                       <td className="px-8 py-6 text-right">
@@ -283,11 +283,11 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
 
                 <div className="flex items-center justify-between p-6 bg-gray-50/50 rounded-3xl border border-gray-50 mb-8 shadow-inner">
                    <div>
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Network impact</p>
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Sent Count</p>
                       <p className="text-xl font-black text-gray-900">{camp.sentCount || 0}</p>
                    </div>
                    <div className="text-right">
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">handshake node</p>
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Status</p>
                       <span className="text-xs font-black text-[#0077B5]">Verified</span>
                    </div>
                 </div>
@@ -298,7 +298,7 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
                     className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${camp.status === 'Active' ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 shadow-sm' : 'bg-green-50 text-green-600 hover:bg-green-100 shadow-sm'}`}
                   >
                     {camp.status === 'Active' ? <Pause size={14} /> : <Play size={14} />}
-                    {camp.status === 'Active' ? 'Hold Sequence' : 'Resume Handshake'}
+                    {camp.status === 'Active' ? 'Pause' : 'Start'}
                   </button>
                   <button 
                      onClick={() => handleDeleteCampaign(camp._id)}

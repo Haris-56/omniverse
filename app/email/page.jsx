@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Mail, Trash2, AlertCircle, CheckCircle, Zap, ShieldCheck, ExternalLink, Send } from "lucide-react";
+import { Plus, Mail, Trash2, AlertCircle, CheckCircle, Zap, ShieldCheck, ExternalLink, Send, FileText } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ConnectAccountModal from "./components/ConnectAccountModal";
 import AccountDetailsModal from "./components/AccountDetailsModal";
@@ -67,13 +67,29 @@ export default function EmailPage() {
             </h1>
             <p className="text-gray-500 mt-2 max-w-lg font-medium">Manage your SMTP/IMAP configurations and monitor automated cold email sequences.</p>
           </div>
-          <button
-            onClick={() => setIsConnectModalOpen(true)}
-            className="group px-6 py-3.5 bg-orange-600 text-white text-sm font-bold rounded-2xl hover:bg-orange-700 transition-all shadow-xl shadow-orange-100 flex items-center justify-center gap-2"
-          >
-            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-            Integrate Mailbox
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push("/system")}
+              className="p-3.5 bg-white border border-gray-200 text-gray-700 rounded-2xl hover:bg-gray-50 transition-all shadow-sm"
+              title="System Admin / IP Pool"
+            >
+              <Zap size={18} />
+            </button>
+            <button
+              onClick={() => router.push("/email/templates")}
+              className="px-6 py-3.5 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-sm flex items-center justify-center gap-2"
+            >
+              <FileText size={18} />
+              Templates
+            </button>
+            <button
+              onClick={() => setIsConnectModalOpen(true)}
+              className="group px-6 py-3.5 bg-orange-600 text-white text-sm font-bold rounded-2xl hover:bg-orange-700 transition-all shadow-xl shadow-orange-100 flex items-center justify-center gap-2"
+            >
+              <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+              Integrate Mailbox
+            </button>
+          </div>
         </div>
 
         {loading ? (

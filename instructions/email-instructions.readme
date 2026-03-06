@@ -1,0 +1,188 @@
+SAFE COLD EMAIL OUTREACH EXECUTION ENGINE
+you’d be operating in the same category and with the same underlying execution model as tools like Snov.io, SendGrid/Mailgun-style SMTP senders, Sendgreen, and Brevo: users bring or buy mailboxes/domains, authenticate them via SMTP/IMAP, and your SaaS centrally schedules, throttles, warms, and monitors outbound emails on shared infrastructure while replies land directly in the user’s real inbox (webmail/Gmail/etc.); the difference between “safe SaaS” and “spam tool” isn’t the tech stack but how conservative your limits, warm-up, authentication enforcement, queueing, and kill-switches are, which is exactly how those platforms stay deliverable and compliant.
+Role & Objective
+You are designing a Cold outbound email execution system for a SaaS platform.
+The system must:
+Maximize deliverability
+Remain within industry-accepted safety zones
+Avoid spam classification
+Protect shared IP reputation
+Be deterministic, auditable, and boring (no “growth hacks”)
+This system does not attempt to bypass provider safeguards.
+It operates within accepted SMTP norms and compliance frameworks.
+
+Core Principles (Non-Negotiable)
+Reputation > Volume
+Predictability > Speed
+Provider rules are constraints, not obstacles
+Shared IP = shared responsibility
+Automation must behave like disciplined humans
+
+Architectural Overview
+Execution Model
+Centralized Outbound Mail Dispatcher
+Stateless send workers
+Single or small pool of shared static IPs
+Users authenticate their mailbox via SMTP credentials
+System sends on behalf of users, never impersonates domains
+
+IP SHARING STRATEGY (SAFE ZONE)
+IP Pool Rules
+IPs are shared across users
+Each IP has:
+Global hourly cap
+Global daily cap
+Reputation score
+Cooldown state
+Example Safe Envelope (Conservative)
+Metric
+Value
+Emails per IP / day
+500–1,000
+Emails per IP / hour
+≤50 (will try to minimize if possible)
+Concurrent SMTP sessions
+≤3-5 (will manage in a way tht no multiple email should not be send same minutes! Will try to send max 1 per 1 minute! If possible)
+Burst sending
+❌ Never
+Nighttime idle
+Required
+
+If the IP approaches limits → change the IP! E.g. If user campaign is set to 200 email per day but the ip capacity left is under 200 then shift tht campaign to new IP! Dont split it between different ips! 
+
+SMTP Execution Rules
+Mandatory SMTP Capabilities
+STARTTLS
+AUTH LOGIN / PLAIN
+RFC-compliant headers
+Proper HELO hostname
+Reverse DNS aligned with IP
+SMTP Behavior
+One message per transaction
+New SMTP connection every N messages
+Randomized delay between sends (human-like pacing)
+No retries on hard failures
+Soft failures go to delayed retry queue
+
+Authentication & Trust Chain
+Required (Hard Gate)
+SPF aligned
+DKIM signed
+DMARC present (p=none minimum)
+If any fail:
+Account enters restricted mode
+Sending throttled to near-zero
+User notified with diagnostics
+
+Warm-Up Logic (Provider-Agnostic)
+Warm-up is automatic, invisible, and enforced.
+Warm-Up States
+Cold
+Warming
+Stable
+Throttled
+Suspended
+Progression is time-based + behavior-based, not volume-based.
+
+Message Quality Guardrails
+The system must enforce:
+Plain-text first (HTML optional, light)
+No URL shorteners
+No tracking pixels by default
+Max 1–2 links
+No deceptive subject lines
+No aggressive CTA patterns
+AI-generated content must pass:
+Spam-phrase linting
+Over-personalization checks
+Repetition detection
+
+Reply & Bounce Handling
+Replies
+All replies go directly to user mailbox
+SaaS only listens via IMAP (read-only)
+Replies update campaign state (manual or automated)
+Bounces
+Hard bounce → permanent suppression
+Soft bounce → retry with delay
+Repeated soft → suppression
+Bounce rate thresholds:
+3% → throttle
+5% → pause account
+8% → suspend sending
+
+Compliance & Safety Layer
+Required Controls
+Global unsubscribe list
+Per-user suppression list
+Per-campaign suppression
+Automatic unsubscribe header
+Footer compliance (jurisdiction-agnostic)
+No sending allowed if:
+User has no unsubscribe mechanism
+Campaign targets scraped emails without justification metadata
+
+Queue & Scheduling System
+Scheduler Rules
+FIFO with priority weights
+Campaigns spread across hours
+No simultaneous large campaigns
+Per-domain pacing enforced
+No “send now” button that bypasses limits. Ever.
+
+Observability & Kill Switches
+Real-Time Metrics
+IP reputation score
+Bounce rate (rolling)
+Reply ratio
+Spam complaint signals (if available)
+SMTP error frequency
+Automatic Kill Switch
+Triggers:
+Sudden bounce spike
+Repeated SMTP rejections
+Provider temp blocks
+Action:
+Immediate pause
+Gradual recovery only
+
+What This System Explicitly Does NOT Do
+❌ No inbox spoofing
+❌ No provider rule bypassing
+❌ No fingerprint manipulation
+❌ No shadow IP rotation
+❌ No sending without auth
+❌ No scraping emails
+
+Scaling Philosophy
+Scaling happens by:
+Adding more IPs slowly
+Increasing time, not rate
+Improving reply quality, not volume
+100k/month is achieved by:
+Many days
+Many hours
+Many small, safe sends
+
+### ⚙️ Production Background Worker (24/7 Execution)
+
+To run the email engine continuously without keeping the browser tab open:
+
+1. **Start the Worker:**
+   Open a terminal in the project folder and run:
+   ```bash
+   node background-worker.js
+   ```
+   *Tip: Use tools like `pm2` or `forever` to keep it running after restarts.*
+
+2. **What it does:**
+   - Connects directly to MongoDB (bypassing the web server).
+   - Checks for "Active" campaigns every 60 seconds.
+   - Respects all safety limits, proxy bindings, and time windows.
+   - Logs activity to the console.
+
+3. **Troubleshooting:**
+   - If a campaign isn't sending, check the console output. It will tell you exactly why (e.g., "Outside hours", "Daily Limit", "No Proxy").
+
+Final Design 
+The /email dashboard is a mission-control view... (rest of text)

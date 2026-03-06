@@ -56,7 +56,13 @@ export async function POST(request) {
       sequences, 
       stopOnReply, 
       blacklist,
-      isMessageRequest // Instagram specific
+      isMessageRequest, // Instagram specific
+      watchStory,
+      watchHighlights,
+      enableAiAgent,
+      aiAgentId,
+      executionPriority,
+      hourlyLimit
     } = body;
 
     if (!accountId || !name || !listId || !message) {
@@ -78,6 +84,12 @@ export async function POST(request) {
       stopOnReply: !!stopOnReply,
       blacklist: blacklist || [],
       isMessageRequest: !!isMessageRequest,
+      watchStory: !!watchStory,
+      watchHighlights: !!watchHighlights,
+      enableAiAgent: !!enableAiAgent,
+      aiAgentId: aiAgentId || null,
+      executionPriority: executionPriority || ['story', 'highlight', 'message'],
+      hourlyLimit: parseInt(hourlyLimit) || 5,
       status: "Active",
       sentCount: 0,
       createdAt: new Date(),

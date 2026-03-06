@@ -20,6 +20,8 @@ export default function ClientLayout({ children }) {
     pathname === "/login" || 
     pathname === "/register" || 
     pathname.includes("/edit") ||
+    pathname.startsWith("/system") ||
+    pathname === "/system-login" ||
     pathname.includes("/campaign-builder/"); // Hide for both list and editor as they are complex UIs
 
   return (

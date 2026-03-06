@@ -32,33 +32,33 @@ export default function Sidebar({ onClose }) {
 
   const menu = [
     {
-      group: "Core Fleet",
+      group: "Main",
       items: [
-        { label: "Command Center", icon: <LayoutDashboard size={20} />, route: "/" },
-        { label: "Segment Workspace", icon: <Users size={20} />, route: "/contact-list" },
-        { label: "Campaign Architect", icon: <Wrench size={20} />, route: "/campaign-builder" },
+        { label: "Dashboard", icon: <LayoutDashboard size={20} />, route: "/" },
+        { label: "Contacts", icon: <Users size={20} />, route: "/contact-list" },
+        { label: "Campaigns", icon: <Wrench size={20} />, route: "/campaign-builder" },
       ]
     },
     {
-      group: "Outreach Nodes",
+      group: "Channels",
       items: [
-        { label: "Facebook Matrix", icon: <Facebook size={20} />, route: "/facebook" },
-        { label: "Instagram Pulse", icon: <Instagram size={20} />, route: "/instagram" },
-        { label: "LinkedIn Nexus", icon: <Linkedin size={20} />, route: "/linkedin" },
-        { label: "Email Horizon", icon: <Mail size={20} />, route: "/email" },
+        { label: "Facebook", icon: <Facebook size={20} />, route: "/facebook" },
+        { label: "Instagram", icon: <Instagram size={20} />, route: "/instagram" },
+        { label: "LinkedIn", icon: <Linkedin size={20} />, route: "/linkedin" },
+        { label: "Email", icon: <Mail size={20} />, route: "/email" },
       ]
     },
     {
-      group: "Intelligence",
+      group: "AI Tools",
       items: [
-        { label: "AI Fleet Agent", icon: <Bot size={20} />, route: "/ai-agent" },
-        { label: "Persona Creator", icon: <PenTool size={20} />, route: "/ai-creator" },
+        { label: "AI Agent", icon: <Bot size={20} />, route: "/ai-agent" },
+        { label: "Persona", icon: <PenTool size={20} />, route: "/ai-creator" },
       ]
     },
     {
        group: "System",
        items: [
-         { label: "Node Support", icon: <HelpCircle size={20} />, route: "/support" },
+         { label: "Support", icon: <HelpCircle size={20} />, route: "/support" },
        ]
     }
   ];
@@ -73,9 +73,9 @@ export default function Sidebar({ onClose }) {
              <Globe size={26} />
            </div>
            <div>
-             <h2 className="text-xl font-black text-gray-900 tracking-tighter">Omniverse</h2>
-             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500 opacity-70">Control Deck</p>
-           </div>
+             <h2 className="text-xl font-bold text-gray-900 tracking-tight">Omniverse</h2>
+             <p className="text-xs font-semibold text-indigo-500 opacity-70">Admin Panel</p>
+        </div>
         </div>
         <button 
           onClick={onClose}
@@ -89,7 +89,7 @@ export default function Sidebar({ onClose }) {
       <nav className="flex-1 overflow-y-auto px-6 py-4 space-y-10 custom-scrollbar">
         {menu.map((section, sIdx) => (
           <div key={sIdx} className="space-y-3">
-             <h3 className="px-5 text-[10px] font-black text-gray-300 uppercase tracking-[0.25em]">
+             <h3 className="px-5 text-xs font-semibold text-gray-400 uppercase tracking-wide">
                {section.group}
              </h3>
              <div className="space-y-1.5">
@@ -102,7 +102,7 @@ export default function Sidebar({ onClose }) {
                      onClick={() => {
                        if (onClose) onClose();
                      }}
-                     className={`group w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
+                     className={`group w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-sm font-medium transition-all duration-300 ${
                        isActive
                          ? "bg-[#6F3FF5] text-white shadow-xl shadow-purple-200"
                          : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
@@ -131,10 +131,10 @@ export default function Sidebar({ onClose }) {
                <div className="w-8 h-8 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm">
                   <ShieldCheck size={16} />
                </div>
-               <span className="text-[10px] font-black uppercase tracking-widest text-gray-700">Level 4 Node</span>
+               <span className="text-xs font-bold text-gray-700">Level 4 Node</span>
             </div>
-            <p className="text-[11px] font-bold text-gray-400 leading-relaxed mb-4 relative z-10">All systems operational in your sector.</p>
-            <button className="w-full py-2.5 bg-white border border-gray-100 text-gray-700 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-gray-900 hover:text-white transition-all shadow-sm relative z-10">
+            <p className="text-xs text-gray-500 leading-relaxed mb-4 relative z-10">All systems operational in your sector.</p>
+            <button className="w-full py-2.5 bg-white border border-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-900 hover:text-white transition-all shadow-sm relative z-10">
                View Logs
             </button>
          </div>

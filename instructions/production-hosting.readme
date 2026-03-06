@@ -1,0 +1,182 @@
+# Production Hosting Guide - Digital Ocean
+
+This guide outlines the recommended hosting setup for your "Omniverse" full-stack application. Given that your application uses **Playwright/Puppeteer** (browser automation), **Background Workers**, and **Next.js**, a standard serverless hosting plan is **NOT** recommended due to memory and time limits.
+
+**Recommendation:** Digital Ocean Droplet (Virtual Private Server).
+
+---
+
+## 1. Recommended Droplet Plan
+
+Because you are running headless browsers (Playwright), you need sufficient RAM. Browsers are memory-hungry.
+
+- **Product:** Droplet
+- **Image:** Ubuntu 24.04 (LTS) x64
+- **Size:** **Basic (Premium AMD or Intel)**
+- **Specs:** **2 vCPUs / 4 GB RAM** (Minimum recommended for smooth browser automation)
+  - _Note: You might squeak by on 2GB RAM, but it will likely crash if multiple automation tasks run at once._
+- **Region:** Choose the one closest to your users.
+
+**Estimated Cost:** ~$24-28/month (Prices vary).
+
+---
+
+## 2. Initial Server Setup
+
+1.  **Create the Droplet** on Digital Ocean.
+2.  **SSH into your server**:
+    ```bash
+    ssh root@your_droplet_ip
+    ```
+3.  **Update the System**:
+    ```bash
+    apt update && apt upgrade -y
+    ```
+4.  **Install Essential Tools**:
+    ```bash
+    apt install -y curl git build-essential nginx
+    ```
+
+---
+
+## 3. Install Node.js (Version 20+)
+
+Your project uses modern libraries. Install the latest TLS Node.js version.
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt install -y nodejs
+# Verify
+node -v
+npm -v
+```
+
+---
+
+## 4. Deploying Your Code
+
+1.  **Clone your repository** (or copy files via SFTP/SCP) to `/var/www/omniverse`.
+    ```bash
+    mkdir -p /var/www/omniverse
+    cd /var/www/omniverse
+    # git clone <your_repo_url> .
+    ```
+
+2.  **Install Dependencies**:
+    ```bash
+    npm ci
+    ```
+
+3.  **Install Playwright Browsers & System Dependencies**:
+    *This is the most critical step for your automation to work.*
+    ```bash
+    npx playwright install --with-deps
+    ```
+
+4.  **Environment Variables**:
+    Create your `.env` file with production secrets.
+    ```bash
+    nano .env
+    ```
+    Paste your variables:
+    ```env
+    DATABASE_URL=mongodb+srv://...
+    NEXTAUTH_SECRET=...
+    NEXT_PUBLIC_APP_URL=https://yourdomain.com
+    # ... other keys
+    ```
+
+5.  **Build the Next.js Application**:
+    ```bash
+    npm run build
+    ```
+
+---
+
+## 5. Process Management with PM2
+
+Use PM2 to keep your server and background workers running forever.
+
+1.  **Install PM2**:
+    ```bash
+    npm install -g pm2
+    ```
+
+2.  **Start the Next.js Server**:
+    ```bash
+    pm2 start npm --name "nextdb-app" -- start
+    ```
+
+3.  **Start Background Workers**:
+    Start your custom workers as separate processes.
+    ```bash
+    pm2 start background-worker.js --name "bg-worker"
+    pm2 start social-worker.js --name "social-worker"
+    # Add other workers if needed
+    ```
+
+4.  **Save the Process List**:
+    Ensures they restart if the server reboots.
+    ```bash
+    pm2 save
+    pm2 startup
+    # Run the command output by the previous line
+    ```
+
+---
+
+## 6. Nginx Reverse Proxy Setup
+
+Configure Nginx to send public traffic (Port 80) to your Next.js app (Port 3000).
+
+1.  **Create Nginx Config**:
+    ```bash
+    nano /etc/nginx/sites-available/omniverse
+    ```
+
+2.  **Paste Configuration**:
+    Replace `yourdomain.com` with your actual domain.
+
+    ```nginx
+    server {
+        listen 80;
+        server_name yourdomain.com www.yourdomain.com;
+
+        location / {
+            proxy_pass http://localhost:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+    }
+    ```
+
+3.  **Enable Site**:
+    ```bash
+    ln -s /etc/nginx/sites-available/omniverse /etc/nginx/sites-enabled/
+    rm /etc/nginx/sites-enabled/default
+    nginx -t
+    systemctl restart nginx
+    ```
+
+---
+
+## 7. SSL Certificate (HTTPS)
+
+Secure your site with a free Let's Encrypt certificate.
+
+```bash
+apt install -y certbot python3-certbot-nginx
+certbot --nginx -d yourdomain.com -d www.yourdomain.com
+```
+
+---
+
+## 8. Summary Checklist
+
+- [ ] **Droplet**: 4GB RAM minimum (for Playwright stability).
+- [ ] **Status**: `pm2 status` shows all apps online.
+- [ ] **Automation**: `npx playwright install-deps` was run.
+- [ ] **Access**: Website loads at `https://yourdomain.com`.

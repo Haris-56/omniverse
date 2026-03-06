@@ -1,0 +1,197 @@
+Facebook Module — End-to-End System Design (Stealth & Safe Outreach)
+1. Objective & Scope
+
+The Facebook module allows users to connect multiple business or personal accounts to run safe, low-risk messaging campaigns, including posts, Messenger outreach, and engagement-based signals.
+The system is designed to minimize platform risk, avoid bans, and prioritize account health over speed or volume.
+
+Key principles:
+
+Only user-authorized accounts
+
+Isolation of accounts and sessions
+
+Probabilistic pacing, not rigid scheduling
+
+Automated campaigns mimic natural human behavior
+
+2. Core Principles
+
+Continuity: Automation extends existing activity patterns, never “resets” behavior.
+
+Isolation: Every Facebook account operates inside its own capsule with independent sessions, proxies, fingerprints, and activity logs.
+
+Risk-weighted execution: Accounts with higher risk (new accounts, low activity, previous warnings) have restricted campaigns.
+
+Fail-safe design: Any friction or warning immediately pauses the account instead of forcing execution.
+
+AI advisory only: AI never controls timing, volume, or platform navigation; only content variation, tone, and language.
+
+3. System Components
+3.1 Account Capsule
+
+Each connected FB account is a self-contained execution unit:
+
+Dedicated persistent session
+
+Fixed residential proxy (sticky IP)
+
+Unique browser fingerprint (OS, screen size, fonts, timezone, WebGL spoofing)
+
+Historical behavior profile (activity patterns, campaigns, responses)
+
+Risk score (rolling, decaying with activity)
+
+No state or sessions are shared between accounts.
+
+3.2 Campaign Engine
+
+Campaigns operate as intent pipelines:
+
+Entry methods: Messenger, post comment, story response
+
+Message phases: initial + follow-ups
+
+Eligibility rules: account activity, friend/follower connections, prior engagement
+
+Exit conditions: reply received, rejection, anomaly detected
+
+Execution is event-driven, not volume-driven.
+
+3.3 Message Strategy
+
+First outreach is context-light and non-transactional
+
+Links or heavy sales content are avoided in initial messages
+
+Follow-ups decrease in assertiveness and introduce new value
+
+Templates act as semantic frameworks, never rigid text
+
+AI may generate variations, tone adjustments, or minor phrasing edits
+
+4. Execution Model
+4.1 Temporal & Pacing Control
+
+Activity windows are probabilistic (start/stop time drifts daily)
+
+Randomized delays between actions simulate human behavior
+
+Days of inactivity are enforced naturally
+
+4.2 Action Selection
+
+At each opportunity, the system chooses one of three:
+
+Act — send Messenger, comment, or react
+
+Observe — scroll news feed or view stories without interaction
+
+Idle — do nothing
+
+Non-action is treated as legitimate activity.
+
+4.3 Entry Methods
+
+Messenger DM: Only to friends or previously interacted users; avoids unsolicited mass messaging
+
+Story interactions / reactions: Used to warm targets before messaging
+
+Post engagement: Optional, low-volume likes/comments to maintain normal footprint
+
+The system avoids chaining multiple entry methods on a single target in short succession.
+
+5. Volume & Cap Management
+
+Hard caps are dynamic, based on account age, prior activity, and recent friction:
+
+Messenger messages: 20–50/day
+
+Story interactions: 30–60/day
+
+Post reactions/comments: 20–50/day
+
+Soft caps: system aims below hard limits, adjusts upward only with safe history
+
+Randomization prevents pattern recognition (time, count, interval)
+
+6. Content & Messaging Safety
+
+Avoid spammy or trigger words (“ROI,” “automation,” “leads”)
+
+First messages are link-free
+
+Template variation: tone, sentence length, punctuation, casual human-like style
+
+Imperfect grammar or occasional lowercase accepted
+
+Follow-ups must be delayed and varied in tone
+
+7. Follow-up Logic
+
+Delay between follow-ups: ≥24 hours
+
+Content variation required for every follow-up
+
+Thread stops immediately on reply (positive or negative)
+
+No repeated messaging after response
+
+8. Detection & Self-Protection
+
+Early warning signals: captcha, login prompts, send failures, message restrictions
+
+Immediate pause: 48–72h cooldown if triggered
+
+Cooldown adjustment: subsequent campaign volume reduced, execution slowed
+
+Account isolation: no other accounts use same proxy/session until cooldown complete
+
+9. AI Agent Usage
+
+AI may assist with:
+
+Message variation
+
+Tone matching
+
+Rewriting templates
+
+AI may NOT:
+
+Control execution timing
+
+Decide campaign volume
+
+Override safety caps
+
+10. Failure Containment
+
+Capsule-level failure prevents any cross-account contamination
+
+No shared proxies or fingerprints across accounts
+
+Campaigns continue only if all safety checks pass
+
+11. Explicitly Avoided Behaviors
+
+Mass scraping or friend collection
+
+Fixed, repetitive numeric limits
+
+Forced aggressive outreach
+
+Multi-account chaining under same proxy
+
+Ignoring platform friction signals
+
+Hard-coded sequences of messages or reactions
+
+12. Outcome
+
+Campaigns advance slowly and safely
+
+Accounts remain long-lived
+
+User experience mimics human-like platform use, avoiding bans
+
+System prioritizes health and stealth over aggressive growth

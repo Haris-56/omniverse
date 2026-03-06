@@ -1,0 +1,1018 @@
+================================================================================
+  OMNIVERSE — FULL PROJECT DOCUMENTATION
+  End-to-End Technical & Non-Technical Reference
+  Author: Developer Reference Doc
+  Last Updated: February 2026
+================================================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  TABLE OF CONTENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1.  What Is Omniverse? (Non-Technical Overview)
+  2.  Core Features At a Glance
+  3.  Technology Stack
+  4.  Project Folder Structure
+  5.  Authentication & User System
+  6.  Platform Modules
+        6a. Email Module
+        6b. LinkedIn Module
+        6c. Facebook Module
+        6d. Instagram Module
+  7.  Contact & List Management
+  8.  Campaign Builder (Visual Editor)
+  9.  AI Agents & AI Creator
+  10. Background Workers (The Engine Room)
+        10a. Background Worker Manager
+        10b. Email Scheduler
+        10c. Email Queue Worker (BullMQ)
+        10d. Social Automation Worker
+        10e. System Recon Worker
+  11. Proxy System
+  12. Safety & Stealth Layer
+  13. Encryption
+  14. System Admin Panel
+  15. Plan & Limit System
+  16. Database Collections Reference
+  17. API Routes Reference
+  18. Environment Variables
+  19. How to Run the Project (Dev & Production)
+  20. Known Gotchas & Developer Notes
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. WHAT IS OMNIVERSE? (NON-TECHNICAL OVERVIEW)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Omniverse is a multi-channel outreach automation platform — think of it as a
+  smart assistant that sends messages on your behalf across multiple social
+  media platforms and email, automatically, safely, and at scale.
+
+  In plain English:
+  - You upload a list of people (leads/contacts).
+  - You write a message (or a sequence of follow-up messages).
+  - You pick a platform: Email, LinkedIn, Facebook, or Instagram.
+  - Omniverse does the rest — it logs into the accounts you connect, sends
+    messages at human-like speeds, respects daily limits, and tracks replies.
+
+  It is designed to feel like a real human is doing the outreach, not a bot.
+  This is achieved through randomized delays, behavioral simulation, proxy
+  IP assignment, and stealth browser sessions.
+
+  Target Users:
+  - Sales teams doing cold outreach
+  - Recruiters reaching out to candidates
+  - Marketers running multi-channel campaigns
+  - Agencies managing outreach for multiple clients
+
+  The platform is a SaaS (Software as a Service) — users sign up, pick a plan,
+  and get access to features based on their subscription tier.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  2. CORE FEATURES AT A GLANCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  [USER-FACING]
+  - Multi-channel campaigns: Email, LinkedIn, Facebook, Instagram
+  - Contact list management with CSV/XLSX import
+  - Visual drag-and-drop campaign sequence builder
+  - AI Agent: Conversational AI that handles replies automatically
+  - AI Creator: Generates personalized outreach messages using AI
+  - Per-account proxy assignment (each social account gets its own IP)
+  - Campaign analytics: sent count, reply tracking, status
+  - Timezone-aware sending windows (e.g., only send 9am–5pm in user's timezone)
+  - Daily send limits with optional ramp-up (gradually increase volume)
+  - A/B testing for email subject lines and message bodies
+  - Blacklist support (never contact specific people)
+  - Stop-on-reply (pause campaign for a lead once they respond)
+
+  [SYSTEM / ADMIN]
+  - System Admin Panel (separate login, 2FA protected)
+  - User management (view all users, assign plans)
+  - Plan management (create/edit subscription tiers with limits)
+  - Proxy pool management (add/remove/monitor IPs)
+  - System logs viewer
+  - System Recon (monitors account health, detects bans/restrictions)
+  - Kill Switch (emergency stop for all automation)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  3. TECHNOLOGY STACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  FRONTEND / FULL-STACK FRAMEWORK
+  - Next.js 16 (App Router, React 19)
+  - React 19.2
+  - TailwindCSS v4 (utility-first CSS)
+  - Lucide React (icon library)
+  - @dnd-kit (drag-and-drop for campaign builder)
+
+  BACKEND / API
+  - Next.js API Routes (serverless functions under /app/api/)
+  - Node.js (for background workers, run separately)
+
+  DATABASE
+  - MongoDB (cloud-hosted via MongoDB Atlas)
+  - Native MongoDB driver (not Mongoose — raw driver for performance)
+
+  AUTHENTICATION
+  - better-auth v1 (email + password, session-based)
+  - Sessions stored in MongoDB, 30-day active period
+  - AES-256-GCM encryption for sensitive credential storage
+
+  QUEUE / JOB SYSTEM (Email)
+  - BullMQ (Redis-backed job queue for email sending)
+  - ioredis (Redis client)
+
+  BROWSER AUTOMATION (Social Platforms)
+  - Playwright (headless browser control)
+  - playwright-extra + puppeteer-extra-plugin-stealth
+    (makes the browser undetectable as a bot)
+
+  PROXY MANAGEMENT
+  - https-proxy-agent / socks-proxy-agent / socks
+  - Residential proxy pool stored in MongoDB
+
+  EMAIL SENDING
+  - Nodemailer (SMTP-based email delivery)
+
+  UTILITIES
+  - Luxon (timezone-aware date/time handling)
+  - xlsx (Excel/CSV file parsing for contact imports)
+  - bcryptjs (password hashing)
+  - dotenv (environment variable management)
+
+  DEPLOYMENT
+  - Vercel (Next.js frontend + API routes)
+  - Separate Node.js server for background workers
+  - See: instructions/production-hosting.md for full hosting plan
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  4. PROJECT FOLDER STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  omniverse/
+  │
+  ├── app/                          ← Next.js App Router (pages + API)
+  │   ├── layout.js                 ← Root HTML layout (fonts, metadata)
+  │   ├── page.js                   ← Home page (redirects to /email)
+  │   ├── ClientLayout.jsx          ← Sidebar + header shell (client component)
+  │   ├── globals.css               ← Global CSS resets
+  │   │
+  │   ├── login/                    ← User login page
+  │   ├── register/                 ← User registration page
+  │   ├── support/                  ← Support/help page
+  │   │
+  │   ├── email/                    ← Email module (accounts + campaigns)
+  │   ├── linkedin/                 ← LinkedIn module
+  │   ├── facebook/                 ← Facebook module
+  │   ├── instagram/                ← Instagram module
+  │   │
+  │   ├── campaign-builder/         ← Visual drag-and-drop campaign editor
+  │   ├── contact-list/             ← Contact list management
+  │   ├── ai-agent/                 ← AI agent configuration
+  │   ├── ai-creator/               ← AI content creator
+  │   │
+  │   ├── system/                   ← System Admin Panel (protected)
+  │   │   ├── page.jsx              ← Admin dashboard
+  │   │   ├── users/                ← User management
+  │   │   ├── plans/                ← Subscription plan management
+  │   │   ├── ips/                  ← Proxy IP management
+  │   │   ├── logs/                 ← System logs viewer
+  │   │   └── settings/             ← System settings
+  │   ├── system-login/             ← Separate admin login page
+  │   │
+  │   ├── components/               ← Shared UI components
+  │   │   ├── Sidebar.jsx           ← Main navigation sidebar
+  │   │   └── UserMenu.jsx          ← Top-right user avatar/menu
+  │   │
+  │   └── api/                      ← All REST API endpoints
+  │       ├── auth/                 ← better-auth handler
+  │       ├── campaigns/            ← Generic campaign CRUD
+  │       ├── contacts/             ← Contact management
+  │       ├── lists/                ← Contact list management
+  │       ├── segments/             ← Contact segmentation
+  │       ├── templates/            ← Email templates
+  │       ├── email/                ← Email accounts + campaigns
+  │       ├── linkedin/             ← LinkedIn accounts + campaigns
+  │       ├── facebook/             ← Facebook accounts + campaigns
+  │       ├── instagram/            ← Instagram accounts + campaigns
+  │       ├── ai-agents/            ← AI agent CRUD
+  │       ├── ai-creators/          ← AI creator CRUD
+  │       └── system/               ← Admin-only system APIs
+  │
+  ├── lib/                          ← Core backend logic (shared utilities)
+  │   ├── mongodb.js                ← MongoDB connection singleton
+  │   ├── auth.js                   ← better-auth configuration
+  │   ├── auth-client.js            ← Client-side auth helper
+  │   ├── encryption.js             ← AES-256-GCM encrypt/decrypt
+  │   ├── limits.js                 ← Plan limit enforcement
+  │   ├── proxy-allocator.js        ← Proxy assignment logic
+  │   ├── logger.js                 ← System event logger
+  │   ├── timezones.js              ← Timezone list helper
+  │   │
+  │   ├── queue/                    ← Email job queue (BullMQ)
+  │   │   ├── redis.js              ← Redis connection
+  │   │   ├── email-queue.js        ← BullMQ queue definition
+  │   │   ├── scheduler.js          ← Email campaign scheduler (runs every 60s)
+  │   │   └── worker-process.js     ← BullMQ worker (processes email jobs)
+  │   │
+  │   ├── automation/               ← Platform-specific automation logic
+  │   │   ├── facebook.js           ← Facebook browser automation
+  │   │   ├── instagram.js          ← Instagram browser automation
+  │   │   ├── linkedin.js           ← LinkedIn browser automation
+  │   │   ├── email-utils.js        ← Email sending helpers
+  │   │   ├── core/                 ← Core automation primitives
+  │   │   └── security/             ← Security checks for automation
+  │   │
+  │   ├── social-automation/        ← Social worker engines
+  │   │   ├── browser-manager.js    ← Persistent browser context manager
+  │   │   ├── linkedin-engine.js    ← LinkedIn campaign execution engine
+  │   │   ├── facebook-engine.js    ← Facebook campaign execution engine
+  │   │   └── instagram-engine.js   ← Instagram campaign execution engine
+  │   │
+  │   ├── safety/                   ← Safety guardrails
+  │   │   ├── governor.js           ← Rate limiting / action governor
+  │   │   └── kill-switch.js        ← Emergency stop mechanism
+  │   │
+  │   └── system-recon/             ← Account health monitoring
+  │       └── recon-engine.js       ← Detects bans, restrictions, anomalies
+  │
+  ├── background-worker.js          ← MASTER PROCESS: spawns all workers
+  ├── social-worker.js              ← Social platform automation loop
+  ├── system-recon-worker.js        ← Account health monitoring loop
+  ├── proxy.js                      ← Proxy utility/test script
+  │
+  ├── instructions/                 ← Operational instruction files
+  │   ├── email-instructions.readme
+  │   ├── Linkedin-instructions.readme
+  │   ├── facebook.instructions.readme
+  │   ├── instagram-instructions.readme
+  │   ├── stealth-mode.readme
+  │   ├── System-Analyzer.readme
+  │   └── production-hosting.md
+  │
+  ├── .env.local                    ← Environment variables (NEVER commit this)
+  ├── package.json                  ← Dependencies and scripts
+  ├── next.config.mjs               ← Next.js configuration
+  └── jsconfig.json                 ← Path aliases (@/ = project root)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  5. AUTHENTICATION & USER SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Library: better-auth v1
+  File: lib/auth.js
+
+  HOW IT WORKS:
+  - Users register with email + password.
+  - Passwords are hashed by better-auth (bcrypt internally).
+  - On login, a session token is created and stored in MongoDB.
+  - Session is valid for 30 days; refreshes every 24 hours of activity.
+  - The session is checked on every protected API route via:
+      const session = await auth.api.getSession({ headers: req.headers });
+
+  USER ROLES:
+  - "user"  → Regular user (default). Subject to plan limits.
+  - "admin" → System administrator. No limits, access to /system panel.
+
+  The `role` field is stored on the user document in MongoDB.
+
+  ADMIN LOGIN:
+  - Admins use a SEPARATE login page at /system-login.
+  - After credential verification, a 2FA code is emailed to the admin.
+  - Only after verifying the 2FA code is the admin session granted.
+  - The /system/* routes check for admin role and redirect if not authorized.
+
+  CLIENT-SIDE AUTH:
+  - lib/auth-client.js exports the client-side auth helper.
+  - Used in React components to get current session, sign out, etc.
+
+  SIDEBAR VISIBILITY:
+  - The sidebar and global header are hidden on:
+    /login, /register, /system/*, /system-login, /campaign-builder/*
+  - This logic lives in app/ClientLayout.jsx.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  6. PLATFORM MODULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Each platform module follows the same pattern:
+    1. Account Management Page  → Connect/disconnect social accounts
+    2. Campaigns List Page      → View all campaigns for an account
+    3. New Campaign Page        → Create a new campaign with settings
+    4. Campaign Detail Page     → View stats, pause/resume, delete
+
+  ─────────────────────────────────────────────────────────────────────────────
+  6a. EMAIL MODULE
+  ─────────────────────────────────────────────────────────────────────────────
+  Path: app/email/
+  API:  app/api/email/
+
+  What it does:
+  - Connects SMTP email accounts (Gmail, Outlook, custom SMTP).
+  - Sends cold email sequences to contact lists.
+  - Supports A/B testing (Variant A vs Variant B subject/body).
+  - Supports follow-up sequences with configurable delay days.
+  - Tracks sent count, open/reply status.
+  - Ramp-up mode: gradually increases daily send volume over N days.
+  - Send jitter: adds ±10% randomness to daily volume to avoid patterns.
+
+  How sending works (technical):
+  1. Email Scheduler (lib/queue/scheduler.js) runs every 60 seconds.
+  2. It finds all Active email campaigns.
+  3. For each campaign, it checks: time window, daily limit, contacts remaining.
+  4. It pushes jobs to BullMQ (Redis queue).
+  5. The BullMQ Worker (lib/queue/worker-process.js) picks up jobs and sends
+     emails via Nodemailer using the account's SMTP credentials.
+  6. Progress is tracked in the `campaign_progress` collection.
+
+  DB Collections used:
+  - email_accounts      → SMTP credentials (password encrypted)
+  - email_campaigns     → Campaign settings
+  - email_logs          → Per-email send log
+  - campaign_progress   → Per-contact progress tracking
+
+  ─────────────────────────────────────────────────────────────────────────────
+  6b. LINKEDIN MODULE
+  ─────────────────────────────────────────────────────────────────────────────
+  Path: app/linkedin/
+  API:  app/api/linkedin/
+  Engine: lib/social-automation/linkedin-engine.js
+  Instructions: instructions/Linkedin-instructions.readme
+
+  What it does:
+  - Connects LinkedIn accounts (email + password stored encrypted).
+  - Sends connection requests with optional personalized notes.
+  - Sends follow-up messages to accepted connections.
+  - Respects daily limits (default: 20 actions/day).
+  - Uses persistent browser sessions (cookies saved per account).
+
+  How it works (technical):
+  1. Social Worker (social-worker.js) ticks every 5 minutes.
+  2. It calls processLinkedInCampaigns(db).
+  3. For each active campaign, it:
+     a. Loads the linked account from DB.
+     b. Checks daily usage against the limit.
+     c. Opens a persistent Playwright browser context (with saved cookies).
+     d. Navigates to the lead's LinkedIn profile URL.
+     e. Clicks "Connect", optionally adds a personalized note.
+     f. Logs the action and marks progress.
+     g. Closes the browser context.
+  4. Between each action, random human-like delays are applied (Humanoid.sleep).
+
+  Safety rules (see instructions/Linkedin-instructions.readme):
+  - Max 20 connection requests/day.
+  - Activity windows drift daily (no fixed schedule).
+  - No streaks — randomize which days are active.
+  - Connection note max 300 chars.
+  - If session expires, account is marked "Disconnected" automatically.
+
+  DB Collections used:
+  - linkedin_accounts   → Account credentials + status
+  - linkedin_campaigns  → Campaign settings
+  - linkedin_logs       → Per-action log
+  - linkedin_progress   → Per-lead progress
+
+  ─────────────────────────────────────────────────────────────────────────────
+  6c. FACEBOOK MODULE
+  ─────────────────────────────────────────────────────────────────────────────
+  Path: app/facebook/
+  API:  app/api/facebook/
+  Engine: lib/social-automation/facebook-engine.js
+  Instructions: instructions/facebook.instructions.readme
+
+  What it does:
+  - Connects Facebook accounts.
+  - Sends friend requests and/or DMs to leads.
+  - Supports message sequences.
+  - Operates within Facebook's behavioral norms to avoid detection.
+
+  Architecture is identical to LinkedIn module — same worker loop,
+  same browser-manager, same progress tracking pattern.
+
+  DB Collections used:
+  - facebook_accounts
+  - facebook_campaigns
+  - facebook_logs
+  - facebook_progress (or similar)
+
+  ─────────────────────────────────────────────────────────────────────────────
+  6d. INSTAGRAM MODULE
+  ─────────────────────────────────────────────────────────────────────────────
+  Path: app/instagram/
+  API:  app/api/instagram/
+  Engine: lib/social-automation/instagram-engine.js
+  Instructions: instructions/instagram-instructions.readme
+
+  What it does:
+  - Connects Instagram accounts.
+  - Sends DMs to leads (including message request mode for non-followers).
+  - Optionally watches stories/highlights before messaging (warms up).
+  - Supports AI Agent integration (AI handles replies conversationally).
+  - Supports follow-up message sequences.
+
+  Campaign fields specific to Instagram:
+  - isMessageRequest  → Send as a message request (to non-followers)
+  - watchStory        → Watch the lead's story before messaging
+  - watchHighlights   → Watch highlights before messaging
+  - enableAiAgent     → Use an AI agent to handle replies
+  - aiAgentId         → Which AI agent persona to use
+
+  DB Collections used:
+  - instagram_accounts
+  - instagram_campaigns
+  - instagram_logs
+  - instagram_progress
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  7. CONTACT & LIST MANAGEMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Path: app/contact-list/
+  API:  app/api/contacts/, app/api/lists/, app/api/segments/
+
+  What it does:
+  - Users create named "Lists" (e.g., "Q1 Leads", "Tech CEOs").
+  - Contacts are imported via CSV/XLSX file upload (using xlsx library).
+  - Each contact can have: firstName, lastName, email, linkedinUrl,
+    phone, company, title, and custom fields.
+  - Contacts belong to a list (listId).
+  - Segments allow filtering contacts by criteria (e.g., "title contains CEO").
+  - When creating a campaign, user picks a list → the engine iterates contacts.
+
+  DB Collections:
+  - contacts    → Individual contact records
+  - lists       → Named contact lists
+  - segments    → Saved filter/segment definitions
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  8. CAMPAIGN BUILDER (VISUAL EDITOR)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Path: app/campaign-builder/
+  Library: @dnd-kit (drag-and-drop)
+
+  What it does:
+  - A visual, node-based editor for building multi-step campaign sequences.
+  - Users drag blocks (Send Message, Wait N Days, If Replied, etc.) onto a
+    canvas and connect them to define the campaign flow.
+  - The resulting "sequence" array is saved to the campaign document in MongoDB.
+  - The scheduler and workers read this sequence array to know what to send
+    and when.
+
+  Note: The campaign builder is a complex UI — the sidebar and header are
+  hidden on this route (handled in ClientLayout.jsx) to give full canvas space.
+
+  DB: Saves to the `campaigns` collection (generic) or platform-specific
+  collections depending on which platform the builder is used for.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  9. AI AGENTS & AI CREATOR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  AI AGENT (app/ai-agent/)
+  - Users create AI "personas" — a named agent with a defined personality,
+    tone, and goal (e.g., "Sales Closer", "Friendly Recruiter").
+  - When a campaign has enableAiAgent = true, the automation engine uses the
+    selected agent to generate contextual replies to incoming messages.
+  - The agent reads the conversation history and generates a human-like
+    response based on its configured persona.
+  - DB Collection: ai_agents
+
+  AI CREATOR (app/ai-creator/)
+  - Helps users generate personalized outreach messages at scale.
+  - User provides a template with variables (e.g., "Hi $$f_name$$, I saw you
+    work at $$company$$...") and the AI fills in the gaps with context.
+  - Useful for generating unique first-touch messages to avoid spam filters.
+  - DB Collection: ai_creators
+
+  Variable Substitution (used across all modules):
+  - $$f_name$$    → Contact's first name
+  - $$full_name$$ → Contact's full name
+  - $$company$$   → Contact's company
+  - These are replaced at send time by the worker/engine.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  10. BACKGROUND WORKERS (THE ENGINE ROOM)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  IMPORTANT: The background workers are NOT part of Next.js. They are
+  separate Node.js processes that must be started independently.
+  They run 24/7 on the server alongside the Next.js app.
+
+  ─────────────────────────────────────────────────────────────────────────────
+  10a. BACKGROUND WORKER MANAGER (background-worker.js)
+  ─────────────────────────────────────────────────────────────────────────────
+  The master process. Run this ONE file to start everything:
+    node background-worker.js
+
+  It spawns 4 child processes:
+    1. lib/queue/scheduler.js       → Email scheduler
+    2. lib/queue/worker-process.js  → Email queue worker (BullMQ)
+    3. social-worker.js             → Social platform automation
+    4. system-recon-worker.js       → Account health monitoring
+
+  If any child process crashes, the master exits (fail-fast design).
+  Handles SIGINT (Ctrl+C) to gracefully kill all children.
+
+  ─────────────────────────────────────────────────────────────────────────────
+  10b. EMAIL SCHEDULER (lib/queue/scheduler.js)
+  ─────────────────────────────────────────────────────────────────────────────
+  Tick rate: Every 60 seconds.
+
+  What it does each tick:
+  1. Connects to MongoDB.
+  2. Fetches all email_campaigns with status = "Active".
+  3. For each campaign:
+     a. Applies ramp-up logic (if configured).
+     b. Applies send jitter (±10% randomness).
+     c. Checks if current time is within the campaign's sending window.
+     d. Counts emails sent today (from email_logs).
+     e. Calculates remaining budget for today.
+     f. Fetches next batch of contacts not yet contacted.
+     g. Pushes jobs to BullMQ email queue.
+     h. Checks for follow-ups due (based on delayDays in sequences).
+     i. Marks campaign as "Completed" if all contacts are done.
+
+  ─────────────────────────────────────────────────────────────────────────────
+  10c. EMAIL QUEUE WORKER (lib/queue/worker-process.js)
+  ─────────────────────────────────────────────────────────────────────────────
+  Powered by BullMQ + Redis.
+
+  What it does:
+  - Listens for jobs on the "send-email" BullMQ queue.
+  - For each job, it:
+    a. Fetches the campaign, contact, and email account from MongoDB.
+    b. Decrypts the SMTP password using lib/encryption.js.
+    c. Personalizes the message (replaces $$f_name$$, etc.).
+    d. Sends the email via Nodemailer.
+    e. Logs the send event to email_logs.
+    f. Updates campaign_progress (marks contact as "sent").
+    g. Increments the campaign's sentCount.
+
+  ─────────────────────────────────────────────────────────────────────────────
+  10d. SOCIAL AUTOMATION WORKER (social-worker.js)
+  ─────────────────────────────────────────────────────────────────────────────
+  Tick rate: Every 5 minutes.
+
+  What it does each tick:
+  - Connects to MongoDB.
+  - Runs LinkedIn, Facebook, and Instagram engines sequentially.
+  - Each engine processes ONE action per campaign per tick
+    (intentionally slow to mimic human behavior).
+  - Errors in one engine don't stop the others (try/catch per engine).
+
+  ─────────────────────────────────────────────────────────────────────────────
+  10e. SYSTEM RECON WORKER (system-recon-worker.js)
+  ─────────────────────────────────────────────────────────────────────────────
+  Tick rate: Every 10 minutes (slow and stealthy).
+
+  What it does:
+  - Runs lib/system-recon/recon-engine.js.
+  - Checks the health of all connected social accounts.
+  - Detects: bans, login challenges, rate limits, session expiry.
+  - Updates account status in DB (e.g., marks as "Restricted").
+  - Logs anomalies to system_logs collection.
+  - Alerts admin if critical issues are found.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  11. PROXY SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  File: lib/proxy-allocator.js
+
+  Why proxies?
+  - Social platforms detect automation by IP address patterns.
+  - Each user's social account must appear to come from a consistent,
+    unique IP address (ideally residential, not datacenter).
+
+  How it works:
+  - The system_proxies collection holds a pool of proxy IPs.
+  - Each proxy has a `usage` object tracking how many accounts use it
+    per platform (instagram, facebook, linkedin, email).
+  - Rule: 1 IP supports max 1 account per platform.
+  - When a user connects a new social account, getAssignedProxy() is called:
+    1. First, check if the user already has a proxy with capacity for this platform.
+    2. If yes, increment usage and return it.
+    3. If no, find a fresh unassigned residential proxy.
+    4. If none available, try shared/datacenter proxies.
+    5. If still none, throw an error (admin must add more proxies).
+
+  Proxy types:
+  - "residential" → Preferred. Real home IP addresses. Harder to detect.
+  - "shared"      → Fallback. Datacenter IPs. Easier to detect.
+
+  releaseProxyUsage() is called when an account is disconnected/deleted,
+  freeing up the slot on the proxy.
+
+  Admin manages the proxy pool via the System Admin Panel (/system/ips).
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  12. SAFETY & STEALTH LAYER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Files: lib/safety/governor.js, lib/safety/kill-switch.js
+  Reference: instructions/stealth-mode.readme
+
+  GOVERNOR (governor.js):
+  - Enforces per-account rate limits at the action level.
+  - Prevents any single account from exceeding safe thresholds.
+  - Acts as a last line of defense before an action is executed.
+
+  KILL SWITCH (kill-switch.js):
+  - Emergency stop mechanism.
+  - When activated (by admin via /system panel), all automation halts.
+  - Workers check the kill switch state before each action.
+  - Stored as a flag in MongoDB (system_settings collection).
+
+  STEALTH BROWSER (lib/social-automation/browser-manager.js):
+  - Uses playwright-extra + puppeteer-extra-plugin-stealth.
+  - Patches the browser to hide automation fingerprints:
+    * Removes navigator.webdriver flag
+    * Spoofs user agent, screen resolution, timezone
+    * Disables WebRTC leak
+    * Randomizes canvas fingerprint
+  - Each account gets its own persistent browser context (separate cookies,
+    separate storage — like a different browser profile per account).
+  - Browser profiles are stored in .browser-profiles/ directory.
+
+  HUMANOID CLASS (browser-manager.js):
+  - Humanoid.sleep(min, max) → Random delay between min and max milliseconds.
+  - Humanoid.type(page, selector, text) → Types text character by character
+    with random delays between keystrokes (mimics human typing speed).
+  - Humanoid.scroll(page) → Performs random scroll actions on the page.
+
+  These behaviors make the automation appear human to platform detection systems.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  13. ENCRYPTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  File: lib/encryption.js
+  Algorithm: AES-256-GCM (authenticated encryption)
+
+  What gets encrypted:
+  - Social account passwords (LinkedIn, Facebook, Instagram, Email SMTP)
+  - Any other sensitive credential stored in MongoDB
+
+  How it works:
+  - encrypt(text) → Returns a string in format: "iv:authTag:encryptedData"
+  - decrypt(text) → Reverses the above, returns original plaintext
+  - The encryption key is derived from AUTH_SECRET env variable via SHA-256.
+  - AES-256-GCM provides both confidentiality AND integrity (tamper detection).
+
+  IMPORTANT: If AUTH_SECRET changes, all previously encrypted credentials
+  become unreadable. Never rotate this key without re-encrypting all data.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  14. SYSTEM ADMIN PANEL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Path: app/system/
+  Login: /system-login (separate from user login)
+
+  Access: Only users with role = "admin" in MongoDB.
+  Security: 2FA via email code after credential verification.
+
+  Admin Panel Sections:
+  - Dashboard (/system)       → Overview stats (users, campaigns, system health)
+  - Users (/system/users)     → View all users, change plans, manage accounts
+  - Plans (/system/plans)     → Create/edit subscription plans with limits
+  - IPs (/system/ips)         → Manage proxy IP pool (add/remove/monitor)
+  - Logs (/system/logs)       → View system event logs
+  - Settings (/system/settings) → Global system settings, kill switch
+
+  The admin panel has its own layout (app/system/layout.js) with a separate
+  sidebar — it does NOT use the regular user sidebar.
+
+  DB Collections used by admin:
+  - system_plans    → Subscription plan definitions
+  - system_proxies  → Proxy IP pool
+  - system_logs     → System event log
+  - system_settings → Global config (kill switch, etc.)
+  - user            → User records (better-auth managed)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  15. PLAN & LIMIT SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  File: lib/limits.js
+
+  How it works:
+  - Each user has a planId field pointing to a document in system_plans.
+  - If no planId, the user gets the "Free" plan defaults.
+  - Admin users bypass all limits.
+
+  checkPlanLimit(userId, type) checks:
+  - "campaigns" → Total active campaigns across all platforms vs. campaignLimit
+  - "accounts"  → Total connected accounts across all platforms vs. accountLimit
+  - "ai"        → Whether the plan includes AI features (aiCloser, aiCreator)
+
+  Free Plan defaults (hardcoded fallback):
+  - campaignLimit: 1
+  - accountLimit:  1
+  - emailLimit:    50
+  - aiCloser:      false
+  - aiCreator:     false
+
+  This function is called in API routes before allowing campaign/account creation.
+  Returns: { allowed: boolean, current: number, limit: number, error?: string }
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  16. DATABASE COLLECTIONS REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Database name: "omniverse" (set via MONGODB_DB env var)
+
+  USER & AUTH (managed by better-auth):
+  - user              → User accounts (id, email, name, role, planId, ...)
+  - session           → Active sessions
+  - account           → OAuth accounts (if used)
+  - verification      → Email verification tokens
+
+  EMAIL MODULE:
+  - email_accounts    → SMTP account credentials (password encrypted)
+  - email_campaigns   → Campaign settings and config
+  - email_logs        → Per-email send records
+  - campaign_progress → Per-contact progress per campaign
+
+  LINKEDIN MODULE:
+  - linkedin_accounts  → LinkedIn credentials + status + proxyId
+  - linkedin_campaigns → Campaign settings
+  - linkedin_logs      → Per-action log (connection_request, message)
+  - linkedin_progress  → Per-lead progress
+
+  FACEBOOK MODULE:
+  - facebook_accounts
+  - facebook_campaigns
+  - facebook_logs
+  - facebook_progress
+
+  INSTAGRAM MODULE:
+  - instagram_accounts
+  - instagram_campaigns
+  - instagram_logs
+  - instagram_progress
+
+  CONTACTS:
+  - contacts  → Individual contact records (firstName, lastName, email,
+                linkedinUrl, company, title, listId, userId, ...)
+  - lists     → Named contact lists (name, userId, contactCount, ...)
+  - segments  → Saved filter definitions
+
+  AI:
+  - ai_agents   → AI agent personas
+  - ai_creators → AI creator configurations
+
+  CAMPAIGNS (generic, used by campaign builder):
+  - campaigns → Multi-channel campaign definitions from visual builder
+
+  TEMPLATES:
+  - email_templates → Saved email templates
+
+  SYSTEM (admin-only):
+  - system_plans    → Subscription plan definitions
+  - system_proxies  → Proxy IP pool
+  - system_logs     → System event log
+  - system_settings → Global config (kill switch flag, etc.)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  17. API ROUTES REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  All routes are under /app/api/ and follow Next.js App Router conventions.
+  All protected routes verify session via auth.api.getSession().
+
+  AUTH:
+  - POST /api/auth/[...all]     → better-auth handler (login, register, etc.)
+
+  CAMPAIGNS (generic):
+  - GET    /api/campaigns/[id]  → Fetch a campaign by ID
+  - PUT    /api/campaigns/[id]  → Update a campaign
+  - DELETE /api/campaigns/[id]  → Delete a campaign
+
+  EMAIL:
+  - GET/POST        /api/email/accounts          → List / create email accounts
+  - DELETE          /api/email/accounts/[id]     → Delete email account
+  - GET/POST        /api/email/campaigns         → List / create campaigns
+  - PATCH/DELETE    /api/email/campaigns         → Update status / delete
+  - GET             /api/email/logs              → Fetch email send logs
+
+  LINKEDIN:
+  - GET/POST        /api/linkedin/accounts       → List / connect accounts
+  - DELETE          /api/linkedin/accounts/[id]  → Remove account
+  - GET/POST        /api/linkedin/campaigns      → List / create campaigns
+  - PATCH/DELETE    /api/linkedin/campaigns      → Update / delete
+
+  FACEBOOK:
+  - (Same pattern as LinkedIn)
+  - /api/facebook/accounts, /api/facebook/campaigns
+
+  INSTAGRAM:
+  - (Same pattern)
+  - /api/instagram/accounts, /api/instagram/campaigns
+
+  CONTACTS & LISTS:
+  - GET/POST        /api/contacts                → List / create contacts
+  - POST            /api/contacts/import         → Bulk import from CSV/XLSX
+  - GET/POST        /api/lists                   → List / create contact lists
+  - GET/POST        /api/segments                → List / create segments
+
+  AI:
+  - GET/POST        /api/ai-agents               → List / create AI agents
+  - GET/POST        /api/ai-creators             → List / create AI creators
+
+  TEMPLATES:
+  - GET/POST        /api/templates               → Email templates
+
+  SYSTEM (admin only):
+  - GET/POST        /api/system/users            → User management
+  - GET/POST        /api/system/plans            → Plan management
+  - GET/POST/DELETE /api/system/ips              → Proxy management
+  - GET             /api/system/logs             → System logs
+  - GET/POST        /api/system/settings         → System settings
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  18. ENVIRONMENT VARIABLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  File: .env.local (NEVER commit to Git — it's in .gitignore)
+
+  Required variables:
+
+  MONGODB_URI         → Full MongoDB Atlas connection string
+                        e.g., mongodb+srv://user:pass@cluster.mongodb.net/
+
+  MONGODB_DB          → Database name (default: "omniverse")
+
+  AUTH_SECRET         → Secret key for better-auth sessions AND encryption.
+                        Must be a long random string (32+ chars).
+                        CRITICAL: Changing this breaks all encrypted passwords.
+
+  REDIS_URL           → Redis connection URL for BullMQ
+                        e.g., redis://localhost:6379
+                        or    rediss://user:pass@redis-host:6380 (TLS)
+
+  BETTER_AUTH_URL     → Full URL of the app (for better-auth callbacks)
+                        e.g., http://localhost:3000 (dev)
+                              https://yourdomain.com (prod)
+
+  Optional / Feature-specific:
+  ADMIN_EMAIL         → Email address for admin 2FA codes
+  SMTP_HOST           → SMTP server for sending admin 2FA emails
+  SMTP_PORT           → SMTP port
+  SMTP_USER           → SMTP username
+  SMTP_PASS           → SMTP password
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  19. HOW TO RUN THE PROJECT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  PREREQUISITES:
+  - Node.js 18+ installed
+  - MongoDB Atlas account (or local MongoDB)
+  - Redis instance (local or cloud like Upstash)
+  - Playwright browsers installed: npx playwright install chromium
+
+  DEVELOPMENT (local):
+
+  Step 1: Install dependencies
+    npm install
+
+  Step 2: Create .env.local with all required variables (see section 18)
+
+  Step 3: Start the Next.js dev server (frontend + API routes)
+    npm run dev
+    → Runs on http://localhost:3000
+
+  Step 4: Start the background workers (in a SEPARATE terminal)
+    node background-worker.js
+    → This starts: scheduler, email worker, social worker, recon worker
+
+  Step 5: (First time) Create an admin user in MongoDB manually:
+    In the `user` collection, set role: "admin" for your account.
+
+  PRODUCTION:
+  - See instructions/production-hosting.md for full Digital Ocean setup.
+  - Next.js app → Deploy to Vercel (or Node server with `npm run build && npm start`)
+  - Background workers → Run on a separate VPS/server (always-on Node process)
+  - Use PM2 to keep workers alive: pm2 start background-worker.js
+  - Redis → Use a managed Redis service (Upstash, Redis Cloud, etc.)
+  - MongoDB → MongoDB Atlas (M10+ cluster recommended for production)
+
+  SCRIPTS:
+  - npm run dev    → Development server (hot reload)
+  - npm run build  → Production build
+  - npm run start  → Start production server
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  20. KNOWN GOTCHAS & DEVELOPER NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1. ESM ONLY
+     The project uses "type": "module" in package.json.
+     All files use ES Module syntax (import/export), NOT CommonJS (require).
+     Background workers must be run with Node 18+ which supports ESM natively.
+
+  2. MONGODB CONNECTION IN WORKERS
+     Background workers create their OWN MongoClient connections (not the
+     Next.js singleton from lib/mongodb.js). This is intentional — they are
+     separate processes. Each worker opens and closes its connection per tick.
+
+  3. AUTH_SECRET IS DUAL PURPOSE
+     It is used by better-auth for session signing AND by lib/encryption.js
+     for AES-256-GCM encryption of social account passwords.
+     If you rotate AUTH_SECRET, you MUST re-encrypt all stored passwords.
+
+  4. BROWSER PROFILES DIRECTORY
+     .browser-profiles/ stores persistent Playwright browser contexts.
+     Each social account gets its own subdirectory (named by account ID).
+     This directory should NOT be committed to Git.
+     In production, this directory must persist between deployments.
+     On Vercel, this won't work — social workers MUST run on a separate server.
+
+  5. VERCEL LIMITATIONS
+     Vercel's serverless functions have a 10-second timeout (hobby) or
+     60-second timeout (pro). Background workers CANNOT run on Vercel.
+     Only the Next.js app (pages + API routes) should be on Vercel.
+     Workers must be on a persistent server (VPS, Digital Ocean Droplet, etc.).
+
+  6. MONGODB DRIVER VERSION
+     The project uses the native MongoDB driver v7 (NOT Mongoose).
+     All queries use raw MongoDB syntax (find, findOne, insertOne, etc.).
+     ObjectId must be imported from "mongodb" and used for ID comparisons.
+
+  7. BETTER-AUTH USER ID FORMAT
+     better-auth stores users with a string `id` field (UUID format), NOT
+     MongoDB's default `_id` (ObjectId). The limits.js file handles both
+     formats when looking up users. Always use `user.id` (string) for
+     userId references in campaign/account documents.
+
+  8. TAILWIND v4
+     The project uses TailwindCSS v4 (via @tailwindcss/postcss).
+     v4 has different configuration than v3 — no tailwind.config.js needed.
+     Config is done via CSS @theme directives in globals.css.
+
+  9. PROXY.JS FILE
+     The root proxy.js is a utility/test script, NOT the proxy allocator.
+     The actual proxy allocation logic is in lib/proxy-allocator.js.
+
+  10. SOCIAL ACCOUNT STATUS VALUES
+      - "Connected"     → Active, automation can run
+      - "Disconnected"  → Session expired or manually disconnected
+      - "Restricted"    → Platform has flagged/limited the account
+      - "Pending"       → Account being set up / login in progress
+
+  11. CAMPAIGN STATUS VALUES
+      - "Active"    → Running, scheduler/worker will process it
+      - "Paused"    → Temporarily stopped by user
+      - "Completed" → All contacts processed, no more actions needed
+      - "Draft"     → Not yet launched
+
+  12. SEQUENCE / FOLLOW-UP INDEXING
+      In email campaigns, sequences are 0-indexed arrays.
+      Step 0 = initial email, step 1 = sequences[0] (first follow-up), etc.
+      The scheduler and worker must agree on this convention.
+
+  13. CONTACT LIST ID HANDLING
+      Due to how MongoDB ObjectIds work, listId is sometimes stored as an
+      ObjectId and sometimes as a string. The scheduler handles both:
+        listId: { $in: [new ObjectId(campaign.listId), campaign.listId.toString()] }
+      Be consistent when creating new queries involving listId.
+
+  14. ENCRYPTION FALLBACK
+      lib/encryption.js has a hardcoded fallback key if AUTH_SECRET is not set.
+      This is ONLY for development convenience. In production, AUTH_SECRET
+      MUST be set in environment variables.
+
+  15. ADMIN USER CREATION
+      There is no UI to create the first admin. You must manually set
+      role: "admin" in the MongoDB `user` collection for the first admin account.
+      After that, the admin can manage other users via the /system panel.
+
+
+================================================================================
+  END OF DOCUMENTATION
+  For platform-specific operational rules, see the /instructions/ folder.
+  For hosting setup, see instructions/production-hosting.md
+================================================================================

@@ -136,12 +136,12 @@ export default function ContactsPage() {
             )}
             <div>
               <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-                {viewMode === "lists" ? "Contact Segments" : selectedList?.name}
+                {viewMode === "lists" ? "Contact Lists" : selectedList?.name}
               </h1>
               <p className="text-gray-500 mt-1 text-sm font-medium">
                 {viewMode === "lists" 
-                  ? `${lists.length} lists managed across all platforms` 
-                  : `${contacts.length} entries found in this sequence`}
+                  ? `${lists.length} lists total` 
+                  : `${contacts.length} contacts found`}
               </p>
             </div>
           </div>
@@ -160,7 +160,7 @@ export default function ContactsPage() {
                 className="flex-1 md:flex-none px-6 py-3 bg-indigo-600 text-white text-sm font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-2"
               >
                 <Plus size={20} />
-                <span>Add Record</span>
+                <span>Add Contact</span>
               </button>
             ) : (
                <div className="hidden md:flex items-center bg-white border border-gray-200 p-1 rounded-2xl shadow-sm">
@@ -185,7 +185,7 @@ export default function ContactsPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
            <div className="relative flex-1 max-w-md group">
               <input
-                placeholder={viewMode === "lists" ? "Search segments..." : "Search contacts in list..."}
+                placeholder={viewMode === "lists" ? "Search lists..." : "Search contacts in list..."}
                 value={searchQuery}
                 onInput={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-white border border-gray-200 rounded-[1.25rem] py-3.5 px-12 text-sm font-medium outline-none shadow-sm group-focus-within:ring-4 group-focus-within:ring-indigo-500/10 group-focus-within:border-indigo-500/30 transition-all"
@@ -211,7 +211,7 @@ export default function ContactsPage() {
                    </div>
                 </div>
              </div>
-             <p className="mt-6 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Processing Data Nodes...</p>
+             <p className="mt-6 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Loading...</p>
           </div>
         ) : (
           <>
@@ -223,16 +223,16 @@ export default function ContactsPage() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="text-left text-gray-400 border-b border-gray-50 bg-gray-50/20 uppercase text-[10px] font-black tracking-[0.1em]">
-                          <th className="p-6">Segment Workspace</th>
-                          <th className="p-6">Platform / Tag</th>
+                          <th className="p-6">List Name</th>
+                          <th className="p-6">Type / Tag</th>
                           <th className="p-6">Creation Date</th>
-                          <th className="p-6 text-center">Data Points</th>
+                          <th className="p-6 text-center">Contacts</th>
                           <th className="p-6 text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-50">
                         {lists.length === 0 ? (
-                          <tr><td colSpan="5" className="p-20 text-center text-gray-400 font-medium italic">Empty segment workspace. Initialize with a CSV import.</td></tr>
+                          <tr><td colSpan="5" className="p-20 text-center text-gray-400 font-medium italic">No contact lists found. Import CSV to get started.</td></tr>
                         ) : (
                           lists.map((list) => (
                             <tr 
@@ -363,7 +363,7 @@ export default function ContactsPage() {
 
                         <tbody className="divide-y divide-gray-50">
                           {contacts.length === 0 ? (
-                             <tr><td colSpan="100%" className="p-20 text-center text-gray-400 font-medium italic">Scanning pipeline complete. 0 records established.</td></tr>
+                             <tr><td colSpan="100%" className="p-20 text-center text-gray-400 font-medium italic">No contacts found in this list.</td></tr>
                           ) : (
                             contacts.map((contact) => (
                               <tr
@@ -423,7 +423,7 @@ export default function ContactsPage() {
                                    <UserCircle2 size={24} className="text-indigo-400" />
                                 </div>
                                 <div>
-                                   <p className="font-bold text-gray-900">{contact.full_name || contact.name || "Anonymous Record"}</p>
+                                   <p className="font-bold text-gray-900">{contact.full_name || contact.name || "Unknown Contact"}</p>
                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{new Date(contact.createdAt).toLocaleDateString()}</p>
                                 </div>
                              </div>

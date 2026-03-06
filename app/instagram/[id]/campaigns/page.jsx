@@ -99,7 +99,7 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
   if (loading && campaigns.length === 0) return (
      <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50/50 space-y-6">
        <div className="animate-spin w-10 h-10 border-4 border-[#E1306C] border-t-transparent rounded-full" />
-       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Syncing Visual Metrics...</p>
+       <p className="text-gray-400 font-medium text-xs uppercase tracking-wide">Loading Campaigns...</p>
     </div>
   );
 
@@ -113,9 +113,9 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
             <ChevronLeft size={18} />
           </Link>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400">
-             <Link href="/instagram" className="hover:text-[#E1306C] transition-colors">Visual Nodes</Link>
+             <Link href="/instagram" className="hover:text-[#E1306C] transition-colors">Instagram</Link>
              <span>/</span>
-             <span className="text-gray-900">Engagement Cluster</span>
+             <span className="text-gray-900">Campaigns</span>
           </div>
         </div>
 
@@ -126,12 +126,12 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
                <div className="w-10 h-10 bg-gradient-to-tr from-[#FFB75E] to-[#ED8F03] rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
                   <Camera size={20} />
                </div>
-               <span className="px-3 py-1 bg-pink-50 text-[#E1306C] text-[10px] font-black uppercase tracking-widest rounded-full border border-pink-100">Visual Outreach Active</span>
+               <span className="px-3 py-1 bg-pink-50 text-[#E1306C] text-xs font-semibold rounded-full border border-pink-100 mb-2 inline-block">Active</span>
             </div>
-            <h1 className="text-3xl font-black text-gray-900 tracking-tight lowercase">
-               {account?.email || "Impact Monitor"}
+            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+               {account?.email || "Campaigns"}
             </h1>
-            <p className="text-gray-500 text-sm font-medium mt-1">Monitoring {campaigns.length} engagement sequences for this visual endpoint.</p>
+            <p className="text-gray-500 text-sm font-medium mt-1">Managing {campaigns.length} campaigns for this account.</p>
           </div>
           
           <div className="flex items-center gap-3">
@@ -151,10 +151,10 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
              </div>
              <button
                 onClick={() => router.push(`/instagram/${accountId}/campaigns/new`)}
-                className="flex-1 lg:flex-none px-8 py-4 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white font-black text-[10px] uppercase tracking-widest rounded-2xl transition-all shadow-xl shadow-pink-500/20 flex items-center justify-center gap-3 hover:opacity-90 active:scale-95"
+                className="flex-1 lg:flex-none px-8 py-4 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-xl shadow-pink-500/20 flex items-center justify-center gap-3 hover:opacity-90 active:scale-95"
               >
                 <Plus size={18} />
-                Initialize engagement Node
+                Create Campaign
               </button>
           </div>
         </div>
@@ -165,14 +165,14 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
               <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#E1306C] transition-colors" />
               <input
                 type="text"
-                placeholder="Find visual identity..."
+                placeholder="Search campaigns..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-[2rem] text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 transition-all shadow-sm group-hover:shadow-md"
               />
            </div>
-           <button className="w-full md:w-auto px-6 py-4 bg-white border border-gray-100 rounded-[2rem] text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center justify-center gap-2 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
-              <Filter size={16} /> Strategy
+           <button className="w-full md:w-auto px-6 py-4 bg-white border border-gray-100 rounded-[2rem] text-xs font-bold uppercase tracking-wide text-gray-500 flex items-center justify-center gap-2 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
+              <Filter size={16} /> Filter
            </button>
         </div>
 
@@ -181,15 +181,15 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
             <div className="w-24 h-24 bg-pink-50 text-[#E1306C] rounded-[2.5rem] flex items-center justify-center mb-8 animate-pulse shadow-inner">
               <Heart size={40} fill="currentColor" />
             </div>
-            <h3 className="text-2xl font-black text-gray-900 tracking-tight lowercase mb-3">No sequences found</h3>
+            <h3 className="text-2xl font-black text-gray-900 tracking-tight lowercase mb-3">No campaigns found</h3>
             <p className="text-gray-500 text-sm font-medium max-w-sm mb-10 lowercase tracking-tight">
-              initialize your first visual orchestration to begin impacting this instagram node.
+              Create your first campaign to get started.
             </p>
             <button
               onClick={() => router.push(`/instagram/${accountId}/campaigns/new`)}
               className="px-10 py-5 bg-gradient-to-r from-[#833AB4] to-[#FD1D1D] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-xl shadow-pink-500/20 active:scale-95"
             >
-              Start First engagement
+              Create Campaign
             </button>
           </div>
         ) : viewMode === "list" ? (
@@ -199,11 +199,11 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="text-left bg-gray-50/50 border-b border-gray-100">
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Sequence node</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Flow Status</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Direct Impact</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Latency node</th>
-                    <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Control</th>
+                    <th className="px-8 py-6 text-xs font-bold uppercase tracking-wide text-gray-400">Campaign Name</th>
+                    <th className="px-8 py-6 text-xs font-bold uppercase tracking-wide text-gray-400">Status</th>
+                    <th className="px-8 py-6 text-xs font-bold uppercase tracking-wide text-gray-400">Sent Count</th>
+                    <th className="px-8 py-6 text-xs font-bold uppercase tracking-wide text-gray-400">Timezone</th>
+                    <th className="px-8 py-6 text-right text-xs font-bold uppercase tracking-wide text-gray-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -211,19 +211,19 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
                     <tr key={camp._id} className="group hover:bg-gray-50/30 transition-all duration-300">
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-4">
-                           <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-[#E1306C]/40 font-black text-xs group-hover:bg-pink-50 group-hover:text-[#E1306C] transition-all">
+                           <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-[#E1306C]/60 font-bold text-xs group-hover:bg-pink-50 group-hover:text-[#E1306C] transition-all">
                               {idx + 1}
                            </div>
                            <div>
-                              <p className="text-sm font-black text-gray-900 lowercase tracking-tight">{camp.name}</p>
-                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5 group-hover:text-[#E1306C]/50 transition-colors tracking-tighter italic">SEQ_{camp._id.toString().slice(-4)}</p>
+                              <p className="text-sm font-bold text-gray-900 tracking-tight">{camp.name}</p>
+                              <p className="text-xs font-semibold text-gray-400 mt-0.5 group-hover:text-[#E1306C]/50 transition-colors italic">ID: {camp._id.toString().slice(-4)}</p>
                            </div>
                         </div>
                       </td>
                       <td className="px-8 py-6">
                          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${camp.status === 'Active' ? 'bg-pink-50/50 border-pink-100' : 'bg-gray-50 border-gray-100'}`}>
                             <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${camp.status === 'Active' ? 'bg-[#E1306C]' : 'bg-gray-300'}`} />
-                            <span className={`text-[10px] font-black uppercase tracking-widest ${camp.status === 'Active' ? 'text-[#E1306C]' : 'text-gray-400'}`}>
+                            <span className={`text-xs font-bold uppercase tracking-wide ${camp.status === 'Active' ? 'text-[#E1306C]' : 'text-gray-400'}`}>
                                {camp.status}
                             </span>
                          </div>
@@ -237,7 +237,7 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
                       <td className="px-8 py-6">
                          <div className="flex items-center gap-2 text-gray-400 group-hover:text-gray-900 transition-colors lowercase">
                             <Clock size={12} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">{camp.timezone || 'UTC'} Offset</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest">{camp.timezone || 'UTC'}</span>
                          </div>
                       </td>
                       <td className="px-8 py-6 text-right">
@@ -271,34 +271,34 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
                    <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-[#E1306C]/30 group-hover:bg-pink-50 group-hover:text-[#E1306C] transition-all">
                       <Zap size={24} />
                    </div>
-                   <div className={`px-4 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-widest ${camp.status === 'Active' ? 'bg-pink-50/50 border-pink-100 text-[#E1306C]' : 'bg-gray-50 border-gray-100 text-gray-400'}`}>
+                   <div className={`px-4 py-1.5 rounded-full border text-xs font-bold uppercase tracking-wide ${camp.status === 'Active' ? 'bg-pink-50/50 border-pink-100 text-[#E1306C]' : 'bg-gray-50 border-gray-100 text-gray-400'}`}>
                       {camp.status}
                    </div>
                 </div>
 
                 <div className="mb-8">
-                   <h3 className="text-xl font-black text-gray-900 tracking-tight lowercase truncate mb-2">{camp.name}</h3>
+                   <h3 className="text-xl font-bold text-gray-900 tracking-tight truncate mb-2">{camp.name}</h3>
                    <p className="text-xs text-gray-500 font-medium line-clamp-2 leading-relaxed h-8">{camp.message}</p>
                 </div>
 
                 <div className="flex items-center justify-between p-6 bg-gray-50/50 rounded-3xl border border-gray-50 mb-8 shadow-inner">
                    <div>
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Direct units</p>
-                      <p className="text-xl font-black text-gray-900">{camp.sentCount || 0}</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Sent Count</p>
+                      <p className="text-xl font-bold text-gray-900">{camp.sentCount || 0}</p>
                    </div>
                    <div className="text-right">
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Visual node</p>
-                      <span className="text-xs font-black text-[#E1306C]">Verified Path</span>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Connection</p>
+                      <span className="text-xs font-bold text-[#E1306C]">Verified</span>
                    </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                   <button 
-                    onClick={() => handleToggleStatus(camp._id, camp.status)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${camp.status === 'Active' ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 shadow-sm' : 'bg-green-50 text-green-600 hover:bg-green-100 shadow-sm'}`}
+                    <button 
+                      onClick={() => handleToggleStatus(camp._id, camp.status)}
+                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-xs uppercase tracking-wide transition-all ${camp.status === 'Active' ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 shadow-sm' : 'bg-green-50 text-green-600 hover:bg-green-100 shadow-sm'}`}
                   >
                     {camp.status === 'Active' ? <Pause size={14} /> : <Play size={14} />}
-                    {camp.status === 'Active' ? 'Hold sequence' : 'Resume Flow'}
+                    {camp.status === 'Active' ? 'Pause' : 'Resume'}
                   </button>
                   <button 
                      onClick={() => handleDeleteCampaign(camp._id)}

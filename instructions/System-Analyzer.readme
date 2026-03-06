@@ -1,0 +1,261 @@
+# Stealth Recon & Dead‑Account Intelligence System
+
+## 1. Purpose & Scope
+
+This document defines the **Recon (Analysis‑Only) System** used to pre‑analyze leads *independently* from user outreach accounts. The system exists to:
+
+* Detect dead / weak / high‑value accounts
+* Reduce risk to user‑owned platform accounts
+* Provide only **high‑signal data** required for AI‑assisted outreach
+* Operate asynchronously (1–2 days ahead of campaigns)
+
+This system **never performs outreach**, messaging, follows, or engagement.
+
+---
+
+## 2. High‑Level Concept
+
+### What It Is
+
+A **read‑only reconnaissance service** that uses dedicated system accounts (LinkedIn, Instagram, Facebook) to:
+
+* Visit public profiles
+* Extract minimal public signals
+* Score account viability (dead score)
+* Store structured metadata for later decision‑making
+
+### What It Is NOT
+
+* Not a scraper at scale
+* Not connected to user sessions
+* Not an outreach engine
+* Not real‑time
+
+---
+
+## 3. Architectural Separation (Critical)
+
+The Recon System is **physically and logically isolated** from all user automation.
+
+### Separation Rules
+
+* Separate browser profiles
+* Separate Playwright persistent contexts
+* Separate proxies / IPs
+* Separate cookie stores
+* No shared sessions or fingerprints
+
+Recon data is passed **only as structured JSON** into the core system database.
+
+---
+
+## 4. System Accounts
+
+### Account Characteristics
+
+Each recon account:
+
+* Belongs to one platform (IG / LI / FB)
+* Uses one residential static IP
+* Uses one persistent browser profile
+* Never messages, follows, or reacts
+
+### Behavioral Model
+
+Recon accounts behave like a passive human:
+
+* View profiles
+* Scroll briefly
+* Pause
+* Sometimes exit early
+* Sometimes idle for hours
+
+Daily limits are intentionally low and inconsistent.
+
+---
+
+## 5. Recon Execution Flow (Per Lead)
+
+1. Load profile URL via Playwright
+2. Confirm account existence
+3. Extract minimal public signals
+4. Perform dead‑score calculation
+5. (Optional) shallow website check
+6. Store structured result
+7. Exit without interaction
+
+Timeouts are enforced aggressively to reduce footprint.
+
+---
+
+## 6. Minimal Data Collection Philosophy
+
+The Recon System follows **Signal‑Only Extraction**.
+
+### Explicitly Excluded
+
+* Full post history
+* Story content
+* Reels
+* Comments
+* Engagement metrics
+* Follower lists
+
+These are high‑risk, low‑value.
+
+---
+
+## 7. Extracted Data Fields
+
+### Universal Profile Signals
+
+* platform
+* profile_url
+* account_exists (bool)
+* has_profile_photo (bool)
+* has_bio_text (bool)
+* website_link_present (bool)
+* last_activity_days (approx)
+
+### Activity Strength
+
+* has_recent_post (≤30/60/90 days)
+* activity_level: high / medium / low
+* has_story_indicator (presence only, no viewing)
+
+### Business Context (Light)
+
+* niche_hint (contractor / remodeler / architect)
+* location_hint (city or state if visible)
+* tone_hint (professional / casual / mixed)
+
+---
+
+## 8. Website Shallow Scan (Optional)
+
+If a website URL exists:
+
+* Check homepage load (≤8s timeout)
+* Detect CMS (WordPress / Webflow / custom)
+* Detect service keywords
+* Detect city/state mention
+* Detect contact method
+
+No crawling. No subpages.
+
+---
+
+## 9. Dead Account Scoring Logic
+
+Each signal contributes to a cumulative **Dead Score (0–100)**.
+
+### Key Signals
+
+* Account missing or suspended
+* No activity for extended period
+* No bio or profile image
+* No website or broken website
+* Generic or non‑business signals
+
+### Classification
+
+* 0–29: Alive (Full outreach eligible)
+* 30–49: Weak (Minimal / soft approach)
+* 50–69: Likely dead (Avoid DM)
+* 70+: Dead (Skip entirely)
+
+---
+
+## 10. Output Format
+
+Recon results are stored 
+
+## 11. Campaign Buffer Strategy
+
+Recon runs **1–2 days ahead** of outreach:
+
+* Ensures campaigns never stall
+* Absorbs recon failures silently
+* Allows human review or overrides
+
+User campaigns only consume **pre‑validated leads**.
+
+---
+
+## 12. Security & Risk Posture
+
+### Platform Risk
+
+* Extremely low (read‑only behavior)
+* No outbound actions
+
+### User Account Safety
+
+* Zero shared fingerprints
+* Zero recon noise
+
+### Scalability
+
+* Linear
+* Predictable
+* Safe under low volume
+
+---13. AI & LLM STRATEGY (SIMPLIFIED — GPT-5 nano ONLY)
+13.1 Guiding Principles
+
+Use one model only to reduce system complexity
+
+Optimize for minimum tokens, maximum signal
+
+Keep AI stateless, controlled, and non-authoritative
+
+AI assists thinking and language — never execution
+
+Deterministic rules always override AI output
+
+The system standardizes on ChatGPT — GPT-5 nano for all AI tasks.
+
+13.2 Model Policy (Single-Model Architecture)
+
+GPT-5 nano is used for everything AI-related, including:
+
+Profile interpretation (bio, headline, about text)
+
+Niche classification (contractor / remodeler / architect)
+
+Tone detection (professional / casual / mixed)
+
+Website homepage understanding (shallow)
+
+Keyword & service inference
+
+Dead-account reasoning support (non-authoritative)
+
+Message generation (DMs, emails, follow-ups)
+
+Language variation & human-style phrasing
+
+There are:
+
+❌ No secondary LLMs
+❌ No open-source models
+❌ No self-hosted inference
+❌ No model switching
+
+This avoids infra overhead, deployment friction, and model drift.
+
+13.3 GPT Usage Boundaries (CRITICAL)
+
+GPT-5 nano does NOT:
+
+Control Playwright / Puppeteer
+
+Click, scroll, type, or send messages
+
+Decide pacing, volume, or timing
+
+Access cookies, sessions, proxies, or browser state
+
+Trigger any platform action
+
+GPT output is advisory + generative only.

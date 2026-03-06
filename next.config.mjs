@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  serverExternalPackages: [
+    'playwright',
+    'playwright-extra',
+    'puppeteer-extra-plugin-stealth',
+    'puppeteer-extra-plugin'
+  ]
 };
 
 export default nextConfig;

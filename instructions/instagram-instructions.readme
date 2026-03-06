@@ -1,0 +1,197 @@
+Instagram Module — End‑to‑End System Design (Safety‑First)
+1. Objective & Boundary
+
+The Instagram module enables user‑authorized account management for messaging‑based outreach while prioritizing account longevity over throughput. The system is designed to reduce abnormal patterns, avoid correlated failures, and fail safely under uncertainty. All actions occur only on accounts explicitly connected by the user.
+
+2. Core Principles (Non‑Negotiable)
+
+Continuity over simulation: Automation must look like a continuation of existing behavior, never a behavioral reset.
+
+Isolation by default: Every IG account operates inside its own execution capsule (identity, schedule, state).
+
+Risk‑weighted execution: Accounts with weaker signals automatically receive reduced capability.
+
+Stop > Recover: Any ambiguity or friction results in pause, not compensation.
+
+Determinism beats cleverness: Rules override AI; AI never drives execution.
+
+3. System Components
+3.1 Account Capsule
+
+Each connected Instagram account is represented as a sealed unit:
+
+Persistent session state
+
+Stable device context
+
+Historical behavior profile
+
+Risk score (rolling, decaying)
+
+No shared state exists between capsules.
+
+3.2 Campaign Engine (IG‑Specific)
+
+Campaigns are intent pipelines, not action queues.
+
+Each campaign defines:
+
+Entry method (DM only / Story‑based / Highlight‑based)
+
+Message phases (initial + follow‑ups)
+
+Eligibility rules (based on recon & prior interaction)
+
+Exit conditions (reply, friction, silence threshold)
+
+Execution is event‑driven, not volume‑driven.
+
+3.3 Message Strategy Layer
+
+First contact is context‑light and non‑transactional
+
+No outbound escalation without inbound signals
+
+Follow‑ups degrade in assertiveness, never escalate
+
+Templates are treated as semantic blueprints, not text blocks
+
+AI is used only for variation + tone matching, never for deciding when or how much.
+
+4. Execution Model (How Actions Happen)
+4.1 Temporal Control
+
+Activity windows are probabilistic, not scheduled
+
+Start/stop times drift over long horizons
+
+Inactive days are expected and enforced
+
+4.2 Action Selection
+
+At any execution opportunity, the system chooses:
+
+Act (message / view)
+
+Observe (scroll / view only)
+
+Exit (do nothing)
+
+Non‑action is a first‑class outcome.
+
+4.3 Entry Method Logic
+
+Direct DM: Used only when profile signals indicate prior openness
+
+Story / Highlight path: Treated as context gathering, not engagement farming
+
+System never chains multiple entry methods tightly
+
+5. Volume & Pace Governance
+
+No fixed quotas exposed internally
+
+All limits are relative to account age, stability, and recent friction
+
+System reduces output automatically under:
+
+Message failures
+
+UI inconsistencies
+
+Latency anomalies
+
+Users request intent, system decides capacity.
+
+6. Content Safety & Pattern Control
+
+Language avoids transactional framing in early stages
+
+Structural diversity enforced across messages
+
+No deterministic phrasing, punctuation, or CTA patterns
+
+No forced “human errors” or stylized quirks
+
+Natural variance emerges from context, not randomness.
+
+7. Follow‑Up Governance
+
+Follow‑ups require:
+
+Time separation
+
+Tone shift
+
+Justification (new context or value)
+
+Silence is treated as a signal, not a failure
+
+Replies immediately lock the thread and halt automation
+
+8. Detection & Self‑Protection Layer
+8.1 Early Friction Signals
+
+UI challenges
+
+Message send inconsistencies
+
+Session interruptions
+
+Unexpected reauthentication
+
+Any single signal triggers immediate suspension.
+
+8.2 Cooldown & Recovery
+
+Cooldowns are longer than the triggering anomaly
+
+Resume state is degraded, not restored
+
+Repeated friction permanently lowers capability
+
+There is no “push through” mode.
+
+9. AI Agent Role (Strictly Bounded)
+
+AI may:
+
+Rephrase text
+
+Infer tone
+
+Generate semantic variants
+
+AI may NOT:
+
+Control timing
+
+Decide volume
+
+Trigger actions
+
+Override safety states
+
+10. Failure Containment
+
+One account failure never affects others
+
+No shared execution threads
+
+No shared timing patterns
+
+No synchronized campaigns
+
+Blast radius is intentionally one account wide.
+
+11. What This System Explicitly Avoids
+
+Behavioral imitation scripts
+
+Fixed numeric thresholds
+
+Forced engagement
+
+Multi‑platform coupling
+
+Aggressive recovery logic

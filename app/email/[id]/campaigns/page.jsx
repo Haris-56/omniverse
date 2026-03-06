@@ -17,7 +17,8 @@ import {
   Clock,
   Target,
   Send,
-  Shield
+  Shield,
+  Settings
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -99,7 +100,7 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
   if (loading && campaigns.length === 0) return (
      <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50/50 space-y-6">
        <div className="animate-spin w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full" />
-       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Syncing SMTP Cluster...</p>
+       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Loading Campaigns...</p>
     </div>
   );
 
@@ -113,9 +114,9 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
             <ChevronLeft size={18} />
           </Link>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400">
-             <Link href="/email" className="hover:text-indigo-600 transition-colors">SMTP Nodes</Link>
+             <Link href="/email" className="hover:text-indigo-600 transition-colors">Email</Link>
              <span>/</span>
-             <span className="text-gray-900">Email Cluster</span>
+             <span className="text-gray-900">Campaigns</span>
           </div>
         </div>
 
@@ -126,12 +127,12 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
                <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
                   <Mail size={20} />
                </div>
-               <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-indigo-100">Routing active</span>
+               <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-indigo-100">Active</span>
             </div>
             <h1 className="text-3xl font-black text-gray-900 tracking-tight lowercase">
-               {account?.email || "Email Monitor"}
+               {account?.email || "Account"}
             </h1>
-            <p className="text-gray-500 text-sm font-medium mt-1">Monitoring {campaigns.length} sequence streams for this SMTP endpoint.</p>
+            <p className="text-gray-500 text-sm font-medium mt-1">Managing {campaigns.length} campaigns for this account.</p>
           </div>
           
           <div className="flex items-center gap-3">
@@ -154,7 +155,7 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
                 className="flex-1 lg:flex-none px-8 py-4 bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20 flex items-center justify-center gap-3 active:scale-95"
               >
                 <Plus size={18} />
-                Initialize Sequence Stream
+                Create Campaign
               </button>
           </div>
         </div>
@@ -165,14 +166,14 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
               <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
               <input
                 type="text"
-                placeholder="Find sequence stream..."
+                placeholder="Search campaigns..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-[2rem] text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500/20 transition-all shadow-sm group-hover:shadow-md"
               />
            </div>
            <button className="w-full md:w-auto px-6 py-4 bg-white border border-gray-100 rounded-[2rem] text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center justify-center gap-2 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
-              <Filter size={16} /> SMTP Logistics
+              <Filter size={16} /> Filters
            </button>
         </div>
 
@@ -181,15 +182,15 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
             <div className="w-24 h-24 bg-indigo-50 text-indigo-600 rounded-[2.5rem] flex items-center justify-center mb-8 animate-pulse shadow-inner">
               <Send size={40} />
             </div>
-            <h3 className="text-2xl font-black text-gray-900 tracking-tight lowercase mb-3">No sequences found</h3>
+            <h3 className="text-2xl font-black text-gray-900 tracking-tight lowercase mb-3">No campaigns found</h3>
             <p className="text-gray-500 text-sm font-medium max-w-sm mb-10 lowercase tracking-tight">
-              initialize your first cold email sequence to begin impacting this smtp node.
+              Create your first campaign to get started.
             </p>
             <button
               onClick={() => router.push(`/email/${accountId}/campaigns/new`)}
               className="px-10 py-5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20 active:scale-95"
             >
-              Start First Stream
+              Create Campaign
             </button>
           </div>
         ) : viewMode === "list" ? (
@@ -199,11 +200,11 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="text-left bg-gray-50/50 border-b border-gray-100">
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Sequence Stream</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Stream Status</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Impact Units</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Temporal Node</th>
-                    <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Control</th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Campaign Name</th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Status</th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Sent Count</th>
+                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Timezone</th>
+                    <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -216,7 +217,7 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
                            </div>
                            <div>
                               <p className="text-sm font-black text-gray-900 lowercase tracking-tight">{camp.name}</p>
-                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5 group-hover:text-indigo-500/50 transition-colors tracking-tighter italic">SMTP_FLW_{camp._id.toString().slice(-4)}</p>
+                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5 group-hover:text-indigo-500/50 transition-colors tracking-tighter italic">ID: {camp._id.toString().slice(-4)}</p>
                            </div>
                         </div>
                       </td>
@@ -231,26 +232,35 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
                       <td className="px-8 py-6">
                          <div className="flex items-center gap-2">
                             <span className="text-base font-black text-gray-900">{camp.sentCount || 0}</span>
-                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Emails routed</span>
+                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Emails Sent</span>
                          </div>
                       </td>
                       <td className="px-8 py-6">
                          <div className="flex items-center gap-2 text-gray-400 group-hover:text-gray-900 transition-colors lowercase">
                             <Clock size={12} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">{camp.timezone || 'UTC'} Offset</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest">{camp.timezone || 'UTC'}</span>
                          </div>
                       </td>
                       <td className="px-8 py-6 text-right">
-                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                         <div className="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-all duration-300">
                             <button 
                               onClick={() => handleToggleStatus(camp._id, camp.status)}
                               className={`p-2.5 rounded-xl border transition-all ${camp.status === 'Active' ? 'bg-amber-50 border-amber-100 text-amber-500' : 'bg-green-50 border-green-100 text-green-500'}`}
+                              title={camp.status === 'Active' ? "Pause Campaign" : "Start Campaign"}
                             >
                               {camp.status === 'Active' ? <Pause size={16} /> : <Play size={16} />}
                             </button>
                             <button 
+                              onClick={() => router.push(`/email/${accountId}/campaigns/new?edit=${camp._id}`)}
+                              className="p-2.5 bg-indigo-50 border border-indigo-100 text-indigo-500 rounded-xl hover:bg-indigo-500 hover:text-white transition-all shadow-sm"
+                              title="Campaign Settings / Live Edit"
+                            >
+                               <Settings size={16} />
+                            </button>
+                            <button 
                               onClick={() => handleDeleteCampaign(camp._id)}
                               className="p-2.5 bg-red-50 border border-red-100 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                              title="Delete Campaign"
                             >
                                <Trash2 size={16} />
                             </button>
@@ -283,22 +293,28 @@ export default function EmailCampaignsPage({ params: paramsPromise }) {
 
                 <div className="flex items-center justify-between p-6 bg-gray-50/50 rounded-3xl border border-gray-50 mb-8 shadow-inner">
                    <div>
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Impact Units</p>
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Sent Count</p>
                       <p className="text-xl font-black text-gray-900">{camp.sentCount || 0}</p>
                    </div>
                    <div className="text-right">
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">SMTP node</p>
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Status</p>
                       <span className="text-xs font-black text-indigo-600 flex items-center gap-1 justify-end"><Shield size={10} /> Verified</span>
                    </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                 <div className="flex items-center gap-3">
                    <button 
                     onClick={() => handleToggleStatus(camp._id, camp.status)}
                     className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${camp.status === 'Active' ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 shadow-sm' : 'bg-green-50 text-green-600 hover:bg-green-100 shadow-sm'}`}
                   >
                     {camp.status === 'Active' ? <Pause size={14} /> : <Play size={14} />}
-                    {camp.status === 'Active' ? 'Hold Stream' : 'Resume Flow'}
+                    {camp.status === 'Active' ? 'Pause' : 'Start'}
+                  </button>
+                  <button 
+                     onClick={() => router.push(`/email/${accountId}/campaigns/new?edit=${camp._id}`)}
+                     className="p-4 bg-indigo-50 text-indigo-500 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
+                  >
+                     <Settings size={16} />
                   </button>
                   <button 
                      onClick={() => handleDeleteCampaign(camp._id)}

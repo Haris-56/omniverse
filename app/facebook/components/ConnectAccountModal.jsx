@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   X, 
   Facebook, 
@@ -9,24 +9,41 @@ import {
   CheckCircle, 
   ShieldCheck, 
   Key, 
-  Mail, 
+  User, 
   Terminal,
   Info,
-  Rocket
+  Rocket,
+  Lock,
+  Smartphone
 } from "lucide-react";
 
-export default function ConnectAccountModal({ isOpen, onClose, onAccountConnected }) {
+export default function ConnectAccountModal({ isOpen, onClose, onAccountConnected, initialEmail = "" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cookies, setCookies] = useState("");
+  const [twoFactorCode, setTwoFactorCode] = useState("");
+  
+  // Proxy State
+  const [useProxy, setUseProxy] = useState(false);
+  const [proxyHost, setProxyHost] = useState("");
+  const [proxyPort, setProxyPort] = useState("");
+  const [proxyUsername, setProxyUsername] = useState("");
+  const [proxyPassword, setProxyPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [result, setResult] = useState(null); // { status: 'Connected' | 'Failed', reason: string }
+  const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    if (isOpen) {
+        setEmail(initialEmail || "");
+    }
+  }, [isOpen, initialEmail]);
 
   if (!isOpen) return null;
 
   const handleConnect = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!email || !password) {
       setError("Email and Password are required");
       return;
@@ -34,18 +51,36 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
 
     setLoading(true);
     setError("");
-    setResult(null);
+    
+    if (result?.status !== "Checkpoint" && result?.status !== "AppConfirmation") {
+        setResult(null);
+    }
 
     try {
       const res = await fetch("/api/facebook/accounts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, cookies }),
+        body: JSON.stringify({ 
+          email, 
+          password, 
+          cookies,
+          twoFactorCode,
+          proxy: useProxy ? {
+            host: proxyHost,
+            port: proxyPort,
+            username: proxyUsername,
+            password: proxyPassword
+          } : null
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
+        if (data.status === "Checkpoint" || data.status === "AppConfirmation") {
+           setResult({ status: data.status, reason: data.failureReason });
+           return;
+        }
         throw new Error(data.error || "Failed to connect");
       }
 
@@ -68,6 +103,7 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
     setEmail("");
     setPassword("");
     setCookies("");
+    setTwoFactorCode("");
     setError("");
     setResult(null);
     onClose();
@@ -84,8 +120,8 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
                 <Facebook size={24} fill="currentColor" />
              </div>
              <div>
-                <h2 className="text-xl font-black text-gray-900 tracking-tight lowercase">Connect Facebook</h2>
-                <p className="text-[10px] font-black text-[#1877F2] uppercase tracking-[0.2em] mt-0.5">Secure Handshake Protocol</p>
+                <h2 className="text-xl font-bold text-gray-900 tracking-tight">Connect Facebook</h2>
+                <p className="text-xs font-medium text-[#1877F2] mt-0.5">Secure Login Assistant</p>
              </div>
           </div>
           <button onClick={handleClose} className="p-2 hover:bg-white rounded-xl transition-all border border-transparent hover:border-gray-100 text-gray-400 hover:text-gray-900">
@@ -94,28 +130,28 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
         </div>
 
         <div className="p-8 md:p-10">
-          {result ? (
+          {result && result.status !== "Checkpoint" && result.status !== "AppConfirmation" ? (
             <div className="text-center py-10 animate-in slide-in-from-bottom duration-500">
               {result.status === "Connected" ? (
                 <>
-                  <div className="w-20 h-20 bg-green-50 text-green-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner animate-bounce">
+                  <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner animate-bounce">
                     <CheckCircle size={32} />
                   </div>
-                  <h3 className="text-2xl font-black text-gray-900 lowercase tracking-tight mb-2">Node Connected</h3>
-                  <p className="text-gray-500 text-sm font-medium tracking-tight">Handshake successful. Initializing automation streams...</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Connected successfully!</h3>
+                  <p className="text-gray-500 text-sm font-medium">Your Facebook account is now linked and ready for use.</p>
                 </>
               ) : (
                 <>
                   <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
                     <AlertCircle size={32} />
                   </div>
-                  <h3 className="text-2xl font-black text-gray-900 lowercase tracking-tight mb-2">Protocol Failed</h3>
-                  <p className="text-red-500 font-bold mb-8 text-sm">{result.reason}</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Login Failed</h3>
+                  <p className="text-red-500 font-medium mb-8 text-sm">{result.reason}</p>
                   <button 
                     onClick={() => setResult(null)}
-                    className="px-8 py-4 bg-gray-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-gray-800 transition-all shadow-xl"
+                    className="px-8 py-4 bg-gray-900 text-white font-bold text-xs uppercase tracking-wider rounded-2xl hover:bg-gray-800 transition-all shadow-xl"
                   >
-                    Retransmit Handshake
+                    Try Again
                   </button>
                 </>
               )}
@@ -123,78 +159,119 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
           ) : (
             <form onSubmit={handleConnect} className="space-y-6">
               {error && (
-                <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-[11px] font-bold rounded-2xl flex items-center gap-3 animate-in slide-in-from-top">
+                <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-xs font-semibold rounded-2xl flex items-center gap-3 animate-in slide-in-from-top">
                   <AlertCircle size={16} />
                   {error}
                 </div>
               )}
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 ml-1">
-                   <Mail size={12} className="text-[#1877F2]" />
-                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Login Endpoint</label>
-                </div>
-                <input
-                  type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm"
-                  placeholder="user@facebook.com"
-                />
-              </div>
+              {result?.status === "Checkpoint" ? (
+                <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
+                   <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl flex gap-4 items-start">
+                      <div className="p-2 bg-white rounded-xl text-[#1877F2] shadow-sm">
+                         <Lock size={18} />
+                      </div>
+                      <div>
+                         <p className="text-sm font-bold text-gray-900">Security Code Required</p>
+                         <p className="text-xs font-medium text-gray-500 mt-0.5">Please enter the security code sent to your device.</p>
+                      </div>
+                   </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 ml-1">
-                   <Key size={12} className="text-[#1877F2]" />
-                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Secure Key</label>
+                   <div className="space-y-2">
+                    <div className="flex items-center gap-2 ml-1">
+                       <ShieldCheck size={14} className="text-[#1877F2]" />
+                       <label className="text-xs font-semibold text-gray-500">Security Code</label>
+                    </div>
+                    <input
+                      type="text"
+                      value={twoFactorCode}
+                      onChange={(e) => setTwoFactorCode(e.target.value)}
+                      className="w-full bg-blue-50/30 border border-blue-100 rounded-2xl px-6 py-4 text-center text-2xl font-bold tracking-[0.5em] text-gray-900 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm"
+                      placeholder="000000"
+                    />
+                  </div>
                 </div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm"
-                  placeholder="••••••••"
-                />
-              </div>
+              ) : result?.status === "AppConfirmation" ? (
+                <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
+                   <div className="p-4 bg-[#F0F7FF] border border-blue-100 rounded-2xl flex gap-4 items-start">
+                      <div className="p-2 bg-white rounded-xl text-blue-600 shadow-sm">
+                         <Smartphone size={18} />
+                      </div>
+                      <div>
+                         <p className="text-sm font-bold text-gray-900">App Confirmation</p>
+                         <p className="text-xs font-medium text-gray-500 mt-0.5">Please open your Facebook app and approve this login request.</p>
+                      </div>
+                   </div>
+                   
+                   <div className="py-2 text-center">
+                      <div className="inline-block px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-full animate-pulse">
+                         Waiting for your confirmation...
+                      </div>
+                   </div>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 ml-1">
+                       <User size={14} className="text-[#1877F2]" />
+                       <label className="text-xs font-semibold text-gray-500">Email Address</label>
+                    </div>
+                    <input
+                      type="text"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-medium text-gray-900 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm"
+                      placeholder="user@example.com"
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 ml-1">
-                   <Terminal size={12} className="text-[#1877F2]" />
-                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Session Tokens (JSON)</label>
-                </div>
-                <textarea
-                  value={cookies}
-                  onChange={(e) => setCookies(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] px-6 py-4 text-xs font-mono text-gray-600 outline-none h-24 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm resize-none"
-                  placeholder='[{"domain": ".facebook.com", ...}]'
-                />
-              </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 ml-1">
+                       <Key size={14} className="text-[#1877F2]" />
+                       <label className="text-xs font-semibold text-gray-500">Password</label>
+                    </div>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-medium text-gray-900 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm"
+                      placeholder="••••••••"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 ml-1">
+                       <Terminal size={14} className="text-[#1877F2]" />
+                       <label className="text-xs font-semibold text-gray-500">Optional: Cookies (JSON)</label>
+                    </div>
+                    <textarea
+                      value={cookies}
+                      onChange={(e) => setCookies(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] px-6 py-4 text-xs font-mono text-gray-600 outline-none h-24 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm resize-none"
+                      placeholder='[{"domain": ".facebook.com", ...}]'
+                    />
+                  </div>
+                </>
+              )}
 
               <div className="pt-4 flex flex-col gap-4">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#1877F2] text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-blue-500/20 hover:bg-[#166fe5] transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
+                  className="w-full bg-[#1877F2] text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-blue-500/20 hover:bg-[#166fe5] transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
                 >
                   {loading ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
-                      Establishing Uplink...
+                      {result?.status === "Checkpoint" ? "Verifying Code..." : result?.status === "AppConfirmation" ? "Syncing..." : "Logging in..."}
                     </>
                   ) : (
                     <>
                       <Rocket size={18} />
-                      Initialize Handshake
+                      {result?.status === "Checkpoint" ? "Confirm Security Code" : result?.status === "AppConfirmation" ? "I've Approved on App" : "Connect Account"}
                     </>
                   )}
                 </button>
-                
-                <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-50 flex gap-3 text-left">
-                   <Info size={16} className="text-[#1877F2] shrink-0" />
-                   <p className="text-[10px] font-medium text-[#1877F2]/80 leading-relaxed italic">
-                      Automation nodes are strictly sandboxed. Ensure your credentials are correct to prevent cluster rejection.
-                   </p>
-                </div>
               </div>
             </form>
           )}

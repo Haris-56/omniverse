@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Instagram, Trash2, AlertCircle, CheckCircle, Zap, ShieldCheck, ExternalLink, Camera } from "lucide-react";
+import { Plus, Instagram, Trash2, AlertCircle, CheckCircle, Zap, ShieldCheck, ExternalLink, Camera, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ConnectAccountModal from "./components/ConnectAccountModal";
 import AccountDetailsModal from "./components/AccountDetailsModal";
@@ -51,51 +51,63 @@ export default function InstagramPage() {
     }
   };
 
+  const handleReconnect = (e, account) => {
+    e.stopPropagation();
+    setSelectedAccount(account);
+    setIsConnectModalOpen(true);
+  };
+
   return (
     <div className="w-full min-h-screen bg-gray-50/50 p-4 md:p-8 animate-in fade-in duration-500">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
-               <span className="px-3 py-1 bg-pink-50 text-[#E1306C] text-[10px] font-bold uppercase tracking-wider rounded-full border border-pink-100 flex items-center gap-1">
+                <span className="px-3 py-1 bg-pink-50 text-[#E1306C] text-xs font-semibold rounded-full border border-pink-100 flex items-center gap-1">
                  <ShieldCheck size={12} fill="currentColor" className="opacity-80" />
-                 Engagement Guard Active
+                 Safe Mode Active
                </span>
             </div>
-            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-              Instagram Hub
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              Instagram Management
             </h1>
-            <p className="text-gray-500 mt-2 max-w-lg font-medium">Coordinate your Instagram outreach nodes and manage autonomous direct message sequences.</p>
+            <p className="text-gray-500 mt-2 max-w-lg font-medium">Manage your Instagram accounts and automated direct message campaigns.</p>
           </div>
           <button
-            onClick={() => setIsConnectModalOpen(true)}
+            onClick={() => {
+                setSelectedAccount(null);
+                setIsConnectModalOpen(true);
+            }}
             className="group px-6 py-3.5 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white text-sm font-bold rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-pink-100 flex items-center justify-center gap-2"
           >
             <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-            Connect Direct Account
+            Connect Account
           </button>
         </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 space-y-4 text-center">
              <div className="animate-spin w-10 h-10 border-4 border-[#E1306C] border-t-transparent rounded-full" />
-             <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">Syncing Visual Assets...</p>
+             <p className="text-gray-400 font-medium text-xs uppercase tracking-wide">Loading Accounts...</p>
           </div>
         ) : accounts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2.5rem] border border-dashed border-gray-200 text-center shadow-sm p-10 max-w-2xl mx-auto">
             <div className="w-24 h-24 bg-gradient-to-tr from-[#FCAF45] to-[#833AB4] text-white rounded-3xl flex items-center justify-center mb-6 rotate-3 shadow-lg">
               <Instagram size={48} />
             </div>
-            <h3 className="text-2xl font-black text-gray-900 mb-2">No Visual Nodes Linked</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">No Accounts Connected</h3>
             <p className="text-gray-500 font-medium mb-8">
-              Link your Instagram profile to initiate automated DM sequences and scale your visual outreach with AI precision.
+              Connect an Instagram account to start creating automated campaigns.
             </p>
             <button
-              onClick={() => setIsConnectModalOpen(true)}
+              onClick={() => {
+                setSelectedAccount(null);
+                setIsConnectModalOpen(true);
+              }}
               className="px-8 py-4 bg-white border border-gray-200 text-gray-900 font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-sm flex items-center gap-2"
             >
               <Plus size={20} />
-              Setup Meta Bridge
+              Connect Account
             </button>
           </div>
         ) : (
@@ -121,45 +133,58 @@ export default function InstagramPage() {
                     </button>
                   </div>
 
-                  <h3 className="font-black text-xl text-gray-900 mb-1 truncate tracking-tight">{account.email}</h3>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Direct Messaging Node</p>
+                  <h3 className="font-bold text-xl text-gray-900 mb-1 truncate">{account.email}</h3>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Instagram Account</p>
                   
-                  <div className="flex items-center gap-3 mb-6">
-                    {account.status === "Connected" ? (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-wider border border-green-100">
-                        <CheckCircle size={12} />
-                        Connected
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-700 text-[10px] font-black uppercase tracking-wider border border-red-100">
-                        <AlertCircle size={12} />
-                        Sync Error
-                      </span>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      {account.status === "Connected" ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-bold border border-green-100">
+                          <CheckCircle size={12} />
+                          Connected
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-700 text-xs font-bold border border-red-100">
+                          <AlertCircle size={12} />
+                          Disconnected
+                        </span>
+                      )}
+                    </div>
+                    
+                    {account.status !== "Connected" && (
+                        <button 
+                            onClick={(e) => handleReconnect(e, account)}
+                            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all"
+                        >
+                            <RefreshCw size={12} />
+                            Reconnect
+                        </button>
                     )}
-                    <span className="text-[10px] font-bold text-gray-400">
-                      Added {new Date(account.createdAt).toLocaleDateString()}
-                    </span>
+                  </div>
+                  
+                  <div className="mb-4 text-xs font-medium text-gray-400">
+                    Added {new Date(account.createdAt).toLocaleDateString()}
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 p-4 bg-gray-50 rounded-[1.5rem] border border-gray-100 group-hover:bg-white group-hover:border-pink-100 transition-all">
                     <div className="text-center">
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Directs</p>
-                      <p className="font-black text-gray-900 text-lg">--</p>
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Sent</p>
+                      <p className="font-bold text-gray-900 text-lg">--</p>
                     </div>
                     <div className="text-center border-l border-gray-200">
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Impact</p>
-                      <p className="font-black text-gray-900 text-lg">--</p>
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Replies</p>
+                      <p className="font-bold text-gray-900 text-lg">--</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="px-8 py-5 bg-gray-50/50 border-t border-gray-50 flex justify-between items-center group-hover:bg-white transition-colors">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2">
                     <Camera size={12} className="text-[#E1306C]" />
-                    Visual Flow Ready
+                    Ready
                   </span>
-                  <span className="text-xs font-black text-[#E1306C] flex items-center gap-2 group-hover:gap-3 transition-all">
-                    Orchestrate <ExternalLink size={14} />
+                  <span className="text-xs font-bold text-[#E1306C] flex items-center gap-2 group-hover:gap-3 transition-all">
+                    View Campaigns <ExternalLink size={14} />
                   </span>
                 </div>
               </div>
@@ -172,12 +197,7 @@ export default function InstagramPage() {
         isOpen={isConnectModalOpen}
         onClose={() => setIsConnectModalOpen(false)}
         onAccountConnected={fetchAccounts}
-      />
-
-      <AccountDetailsModal
-        account={selectedAccount}
-        isOpen={!!selectedAccount}
-        onClose={() => setSelectedAccount(null)}
+        initialEmail={selectedAccount?.email}
       />
     </div>
   );
