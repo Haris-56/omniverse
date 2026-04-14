@@ -232,6 +232,67 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
                       placeholder='[{"domain": ".linkedin.com", ...}]'
                     />
                   </div>
+                  
+                   {/* Proxy Configuration */}
+                   <div className="space-y-4 pt-2 border-t border-dashed border-gray-100 mt-2">
+                    <div className="flex items-center gap-2">
+                       <input
+                          type="checkbox"
+                          id="useProxy"
+                          checked={useProxy}
+                          onChange={(e) => setUseProxy(e.target.checked)}
+                          className="w-4 h-4 rounded text-blue-500 focus:ring-blue-500/20 border-gray-300"
+                       />
+                       <label htmlFor="useProxy" className="text-xs font-semibold text-gray-700 cursor-pointer select-none">
+                          Use Custom Proxy
+                       </label>
+                    </div>
+
+                    {useProxy && (
+                       <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-top-2 fade-in duration-300">
+                          <div className="space-y-1">
+                             <label className="text-xs font-semibold text-gray-500 pl-1">Host / IP</label>
+                             <input
+                                type="text"
+                                value={proxyHost}
+                                onChange={(e) => setProxyHost(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                placeholder="192.168.1.1"
+                             />
+                          </div>
+                          <div className="space-y-1">
+                             <label className="text-xs font-semibold text-gray-500 pl-1">Port</label>
+                             <input
+                                type="text"
+                                value={proxyPort}
+                                onChange={(e) => setProxyPort(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                placeholder="8080"
+                             />
+                          </div>
+                          <div className="space-y-1">
+                             <label className="text-xs font-semibold text-gray-500 pl-1">Proxy User</label>
+                             <input
+                                type="text"
+                                value={proxyUsername}
+                                onChange={(e) => setProxyUsername(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                placeholder="Optional"
+                             />
+                          </div>
+                          <div className="space-y-1">
+                             <label className="text-xs font-semibold text-gray-500 pl-1">Proxy Pass</label>
+                             <input
+                                type="password"
+                                value={proxyPassword}
+                                onChange={(e) => setProxyPassword(e.target.value)}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                placeholder="Optional"
+                             />
+                          </div>
+                       </div>
+                    )}
+                   </div>
                 </>
               )}
 

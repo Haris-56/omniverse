@@ -48,6 +48,7 @@ export async function POST(request) {
       name, 
       listId, 
       message, 
+      mediaUrl,
       dailyLimit, 
       minDelay, 
       maxDelay, 
@@ -62,10 +63,17 @@ export async function POST(request) {
       enableAiAgent,
       aiAgentId,
       executionPriority,
-      hourlyLimit
+      hourlyLimit,
+      startDate,
+      endDate,
+      endOnCompletion,
+      smartDelay,
+      followBehavior,
+      likeBehavior,
+      commentBehavior
     } = body;
 
-    if (!accountId || !name || !listId || !message) {
+    if (!accountId || !name || !listId || (!message && !mediaUrl)) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -75,6 +83,7 @@ export async function POST(request) {
       name,
       listId,
       message,
+      mediaUrl: mediaUrl || null,
       dailyLimit: parseInt(dailyLimit) || 1,
       minDelay: parseInt(minDelay) || 10,
       maxDelay: parseInt(maxDelay) || 40,
@@ -90,6 +99,13 @@ export async function POST(request) {
       aiAgentId: aiAgentId || null,
       executionPriority: executionPriority || ['story', 'highlight', 'message'],
       hourlyLimit: parseInt(hourlyLimit) || 5,
+      startDate: startDate || null,
+      endDate: endDate || null,
+      endOnCompletion: endOnCompletion ?? true,
+      smartDelay: smartDelay ?? true,
+      followBehavior: followBehavior || "none",
+      likeBehavior: likeBehavior || "none",
+      commentBehavior: commentBehavior || "none",
       status: "Active",
       sentCount: 0,
       createdAt: new Date(),

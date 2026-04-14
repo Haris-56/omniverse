@@ -33,3 +33,69 @@ html, body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #d1d5db;
 }
+
+/* Print Optimization */
+@media print {
+  @page {
+    margin: 20mm;
+  }
+  
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Force background colors for status pills and charts in PDF */
+  .bg-emerald-500\/10, .bg-rose-500\/10, .bg-blue-500\/10, .bg-indigo-500\/10, .bg-amber-500\/10, .bg-white\/5, .bg-indigo-500\/5, .bg-emerald-500\/5 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  .bg-[#121214], .bg-[#0e0e10], .bg-[#050505], .bg-[#141006] { 
+    background-color: #f3f4f6 !important; /* Soft gray for dark containers in PDF */
+    border: 1px solid #e5e7eb !important;
+    color: black !important;
+  }
+  
+  .text-emerald-400 { color: #065f46 !important; }
+  .text-rose-400 { color: #9f1239 !important; }
+  .text-blue-400 { color: #1e40af !important; }
+  .text-indigo-300, .text-indigo-400 { color: #3730a3 !important; }
+  .text-amber-400 { color: #92400e !important; }
+  .text-white, .text-slate-200, .text-slate-300, .text-slate-400 { color: #1f2937 !important; }
+
+  /* Ensure tables look good */
+  table { 
+    border-collapse: collapse !important;
+    width: 100% !important;
+    border: 1px solid #e5e7eb !important;
+  }
+  th {
+    background-color: #f9fafb !important;
+    color: #4b5563 !important;
+    font-weight: bold !important;
+  }
+  td, th {
+    border: 1px solid #e5e7eb !important;
+    padding: 12px !important;
+  }
+
+  /* Elements that must remain black on white */
+  .border-white\/5, .border-white\/10, .border-indigo-500\/20, .border-emerald-500\/20 {
+    border-color: #d1d5db !important;
+  }
+
+  /* Layout tweaks */
+  .transition-all {
+    transition: none !important;
+  }
+  .shadow-2xl, .shadow-xl, .shadow-lg {
+    box-shadow: none !important;
+  }
+}

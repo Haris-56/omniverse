@@ -52,6 +52,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
   // LinkedIn Specific
   const [connectionNote, setConnectionNote] = useState("");
   const [sendAfterAccepted, setSendAfterAccepted] = useState(true);
+  const [runWithoutProxy, setRunWithoutProxy] = useState(false);
 
   // Templates State
   const [templates, setTemplates] = useState([]);
@@ -91,7 +92,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
   };
 
   const addFollowUp = () => {
-    setFollowUps([...followUps, { delayDays: 1, message: "" }]);
+    setFollowUps([...followUps, { delayDays: 1, type: "message", message: "" }]);
   };
 
   const removeFollowUp = (index) => {
@@ -176,7 +177,8 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
         stopOnReply,
         blacklist: blacklist.split(",").map(s => s.trim()).filter(Boolean),
         connectionNote,
-        sendAfterAccepted
+        sendAfterAccepted,
+        runWithoutProxy
       };
 
       const res = await fetch("/api/linkedin/campaigns", {
@@ -290,6 +292,22 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                     className="sr-only peer" 
                     checked={sendAfterAccepted}
                     onChange={(e) => setSendAfterAccepted(e.target.checked)}
+                  />
+                  <div className="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#0077B5] shadow-inner transition-all border border-transparent peer-checked:border-blue-200"></div>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-between p-6 bg-blue-50/30 rounded-[2rem] border border-blue-50 group hover:bg-blue-50 transition-all duration-300">
+                <div className="pr-4 text-left">
+                  <h4 className="text-sm md:text-base font-black text-gray-900">Run Without Proxy</h4>
+                  <p className="text-[10px] md:text-xs text-gray-500 mt-1 font-medium italic">Use for local testing. Run operations from your local IP.</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer" 
+                    checked={runWithoutProxy}
+                    onChange={(e) => setRunWithoutProxy(e.target.checked)}
                   />
                   <div className="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#0077B5] shadow-inner transition-all border border-transparent peer-checked:border-blue-200"></div>
                 </label>
@@ -481,6 +499,17 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                         <div className="flex items-center gap-4">
                            <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center font-black text-[#0077B5]">{idx + 1}</div>
                            <div className="flex items-center gap-2">
+                             <select
+                               value={step.type || "message"}
+                               onChange={(e) => updateFollowUp(idx, "type", e.target.value)}
+                               className="bg-white border border-gray-200 rounded-lg py-1 px-2 font-black text-xs outline-none focus:border-sky-300 text-gray-700"
+                             >
+                               <option value="message">Send Message</option>
+                               <option value="visit_profile">Visit Profile</option>
+                               <option value="withdraw">Withdraw Request</option>
+                             </select>
+                           </div>
+                           <div className="flex items-center gap-2">
                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Delay:</span>
                              <input
                                 type="number"
@@ -489,17 +518,19 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                                 onChange={(e) => updateFollowUp(idx, "delayDays", e.target.value)}
                                 className="w-16 bg-white border border-gray-200 rounded-lg py-1 text-center font-black text-sm outline-none focus:border-sky-300 transition-all"
                               />
-                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Days Post-Entry</span>
+                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{step.type === 'withdraw' ? 'Days After Connect' : 'Days Post-Accept'}</span>
                            </div>
                         </div>
                       </div>
-                      <textarea
-                        value={step.message}
-                        onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
-                        placeholder="Enter message..."
-                        rows={3}
-                        className="w-full bg-white border border-gray-100 rounded-2xl p-6 text-sm font-medium outline-none focus:ring-4 focus:ring-sky-100 transition-all resize-none shadow-sm"
-                      />
+                      {(!step.type || step.type === "message") && (
+                        <textarea
+                          value={step.message}
+                          onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
+                          placeholder="Enter message..."
+                          rows={3}
+                          className="w-full bg-white border border-gray-100 rounded-2xl p-6 text-sm font-medium outline-none focus:ring-4 focus:ring-sky-100 transition-all resize-none shadow-sm"
+                        />
+                      )}
                     </div>
                   ))}
                 </div>

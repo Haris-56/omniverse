@@ -57,7 +57,8 @@ export async function POST(request) {
       stopOnReply, 
       blacklist,
       connectionNote, // LinkedIn specific
-      sendAfterAccepted // LinkedIn specific
+      sendAfterAccepted, // LinkedIn specific
+      runWithoutProxy // LinkedIn specific
     } = body;
 
     if (!accountId || !name || !listId || !message) {
@@ -80,8 +81,10 @@ export async function POST(request) {
       blacklist: blacklist || [],
       connectionNote: connectionNote || "",
       sendAfterAccepted: !!sendAfterAccepted,
+      runWithoutProxy: !!runWithoutProxy,
       status: "Active",
       sentCount: 0,
+      nextRunAt: new Date(),
       createdAt: new Date(),
     };
 
@@ -103,11 +106,32 @@ export async function PATCH(request) {
 
   try {
     const db = await getDb();
-    const { id, status } = await request.json();
+    const { id, status, name, listId, message, dailyLimit, minDelay, maxDelay, timezone, hours, sequences, stopOnReply, blacklist, connectionNote, sendAfterAccepted, runWithoutProxy } = await request.json();
+
+    const updateData = { updatedAt: new Date() };
+    if (status !== undefined) updateData.status = status;
+    if (name !== undefined) updateData.name = name;
+    if (listId !== undefined) updateData.listId = listId;
+    if (message !== undefined) updateData.message = message;
+    if (dailyLimit !== undefined) updateData.dailyLimit = parseInt(dailyLimit);
+    if (minDelay !== undefined) updateData.minDelay = parseInt(minDelay);
+    if (maxDelay !== undefined) updateData.maxDelay = parseInt(maxDelay);
+    if (timezone !== undefined) updateData.timezone = timezone;
+    if (hours !== undefined) updateData.hours = hours;
+    if (sequences !== undefined) updateData.sequences = sequences;
+    if (stopOnReply !== undefined) updateData.stopOnReply = !!stopOnReply;
+    if (blacklist !== undefined) updateData.blacklist = blacklist;
+    if (connectionNote !== undefined) updateData.connectionNote = connectionNote;
+    if (sendAfterAccepted !== undefined) updateData.sendAfterAccepted = !!sendAfterAccepted;
+    if (runWithoutProxy !== undefined) updateData.runWithoutProxy = !!runWithoutProxy;
+    
+    // Smart scheduling: Recalculate on edit/activate
+    // Always trigger a new run immediately on edit or status change to Active
+    updateData.nextRunAt = new Date();
 
     const result = await db.collection("linkedin_campaigns").updateOne(
       { _id: new ObjectId(id), userId: session.user.id },
-      { $set: { status, updatedAt: new Date() } }
+      { $set: updateData }
     );
 
     if (result.matchedCount === 0) {

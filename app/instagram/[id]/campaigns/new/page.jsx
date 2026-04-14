@@ -46,11 +46,16 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");
   const [stopOnReply, setStopOnReply] = useState(true);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [endOnCompletion, setEndOnCompletion] = useState(true);
   const [blacklist, setBlacklist] = useState("");
   const [followUps, setFollowUps] = useState([]); 
   const [isMessageRequest, setIsMessageRequest] = useState(true);
   const [executionPriority, setExecutionPriority] = useState(['story', 'highlight', 'message']);
   const [availableVariables, setAvailableVariables] = useState(["{{firstName}}", "{{lastName}}", "{{company}}", "{{username}}", "{{location}}"]);
+  const [media, setMedia] = useState(null);
+  const [mediaScanning, setMediaScanning] = useState(false);
 
   // Templates State
   const [templates, setTemplates] = useState([]);
@@ -59,6 +64,10 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
   const [savingTemplate, setSavingTemplate] = useState(false);
 
   // AI & Automation Triggers
+  const [smartDelay, setSmartDelay] = useState(true);
+  const [followBehavior, setFollowBehavior] = useState("none");
+  const [likeBehavior, setLikeBehavior] = useState("none");
+  const [commentBehavior, setCommentBehavior] = useState("none");
   const [aiAgents, setAiAgents] = useState([]);
   const [enableAiAgent, setEnableAiAgent] = useState(false);
   const [selectedAgentId, setSelectedAgentId] = useState("");
@@ -134,7 +143,18 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
   };
 
   const addFollowUp = () => {
-    setFollowUps([...followUps, { delayDays: 1, message: "" }]);
+    setFollowUps([...followUps, { 
+      delayValue: 24, 
+      delayUnit: "hours", 
+      message: "",
+      executionPriority: ['story', 'highlight', 'message'],
+      media: null,
+      showAdvanced: false,
+      likeBehavior: "none",
+      followBehavior: "none",
+      commentBehavior: "none",
+      mediaScanning: false
+    }]);
   };
 
   const removeFollowUp = (index) => {
@@ -146,6 +166,35 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
     newFollowUps[index][field] = value;
     setFollowUps(newFollowUps);
   };
+
+  const handleMediaUpload = async (e, targetIndex = -1) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Limits: Max 100MB for video, 15MB for audio/image
+    if (file.type.startsWith('video/') && file.size > 100 * 1024 * 1024) return alert("Video exceeds Instagram 100MB limit.");
+    if (!file.type.startsWith('video/') && file.size > 15 * 1024 * 1024) return alert("File exceeds 15MB limit.");
+
+    if (targetIndex === -1) setMediaScanning(true);
+    else updateFollowUp(targetIndex, "mediaScanning", true);
+
+    // Simulated Content Moderation Network Delay (18+ NSFW check)
+    await new Promise(r => setTimeout(r, 1500)); 
+    
+    const url = URL.createObjectURL(file);
+    const mediaObj = { type: file.type, url, name: file.name };
+
+    // You would map file uploads to a real backend in production.
+    if (targetIndex === -1) {
+      setMedia(mediaObj);
+      setMediaScanning(false);
+    } else {
+      updateFollowUp(targetIndex, "media", mediaObj);
+      updateFollowUp(targetIndex, "mediaScanning", false);
+    }
+  };
+
+  const hasLink = (text) => /https?:\/\/[^\s]+/.test(text || "");
 
   const insertVariable = (target, variable) => {
     if (target === "main") {
@@ -196,8 +245,8 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !listId || !message) {
-      alert("Please fill in all required fields");
+    if (!name || !listId || (!message && !media)) {
+      alert("Please fill in all required fields (a message or media attachment is required in the first step).");
       return;
     }
 
@@ -208,13 +257,26 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
         name,
         listId,
         message,
+        mediaUrl: media?.url || null,
         dailyLimit,
         minDelay,
         maxDelay,
         timezone,
         hours: { start: startTime, end: endTime },
-        sequences: followUps,
+        sequences: followUps.map(f => ({
+            delayValue: parseInt(f.delayValue),
+            delayUnit: f.delayUnit,
+            message: f.message,
+            executionPriority: f.executionPriority || ['story', 'highlight', 'message'],
+            mediaUrl: f.media?.url || null, // placeholder
+            likeBehavior: f.likeBehavior,
+            followBehavior: f.followBehavior,
+            commentBehavior: f.commentBehavior
+        })),
         stopOnReply,
+        startDate: startDate ? new Date(startDate) : null,
+        endDate: endDate ? new Date(endDate) : null,
+        endOnCompletion,
         blacklist: blacklist.split(",").map(s => s.trim()).filter(Boolean),
         isMessageRequest,
         watchStory,
@@ -222,7 +284,11 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
         enableAiAgent,
         aiAgentId: enableAiAgent ? selectedAgentId : null,
         executionPriority,
-        hourlyLimit
+        hourlyLimit,
+        smartDelay,
+        followBehavior,
+        likeBehavior,
+        commentBehavior
       };
 
       const res = await fetch("/api/instagram/campaigns", {
@@ -404,6 +470,37 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                  </div>
               </div>
 
+              {/* Interaction Behaviors */}
+              <div className="space-y-4 pt-6 mt-6 border-t border-gray-50">
+                 <h4 className="text-sm md:text-base font-bold text-gray-900">Pre/Post Engagement Actions</h4>
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-2">
+                       <label className="text-xs font-bold text-gray-500 flex items-center justify-between">Follow Target <span>👤</span></label>
+                       <select value={followBehavior} onChange={e => setFollowBehavior(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm font-bold outline-none">
+                         <option value="none">Disabled</option>
+                         <option value="before">Before DM</option>
+                         <option value="after">After DM</option>
+                       </select>
+                    </div>
+                    <div className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-2">
+                       <label className="text-xs font-bold text-gray-500 flex items-center justify-between">Like Recent Post <span>❤️</span></label>
+                       <select value={likeBehavior} onChange={e => setLikeBehavior(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm font-bold outline-none">
+                         <option value="none">Disabled</option>
+                         <option value="before">Before DM</option>
+                         <option value="after">After DM</option>
+                       </select>
+                    </div>
+                    <div className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-2">
+                       <label className="text-xs font-bold text-gray-500 flex items-center justify-between">Comment on Post <span>💬</span></label>
+                       <select value={commentBehavior} onChange={e => setCommentBehavior(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm font-bold outline-none">
+                         <option value="none">Disabled</option>
+                         <option value="before">Before DM</option>
+                         <option value="after">After DM</option>
+                       </select>
+                    </div>
+                 </div>
+              </div>
+
             </div>
           </div>
 
@@ -474,13 +571,55 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                    </div>
                 </div>
                 <textarea
-                  value={message}
+                  value={media ? "" : message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Enter your message..."
+                  disabled={!!media}
+                  placeholder={media ? "Media attached. Remove media to type text." : "Enter your initial outreach message..."}
                   rows={6}
-                  className="w-full bg-gray-50 border border-gray-100 rounded-[2rem] px-8 py-8 font-medium text-gray-900 focus:bg-white focus:ring-4 focus:ring-pink-500/10 focus:border-pink-500/30 transition-all outline-none resize-none shadow-inner"
-                  required
+                  className={`w-full ${media ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200' : 'bg-gray-50 border-gray-100 focus:bg-white'} border ${hasLink(message) ? 'border-red-300 ring-4 ring-red-500/10' : 'focus:ring-4 focus:ring-pink-500/10 focus:border-pink-500/30'} rounded-[2rem] px-8 py-8 font-medium text-gray-900 transition-all outline-none resize-none shadow-inner`}
+                  required={!media}
                 />
+                
+                {hasLink(message) && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3 mt-4 animate-in slide-in-from-top-2">
+                    <AlertTriangle size={20} className="text-red-500 mt-0.5 shrink-0" />
+                    <div>
+                      <h5 className="text-sm font-bold text-red-800">High Risk of Ban Identified!</h5>
+                      <p className="text-xs font-medium text-red-600 mt-1">Sending URLs in the initial cold outreach message is heavily flagged by Instagram's spam filters. It is highly recommended to wait for a reply before sending links.</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-4 mt-4">
+                   <div className="flex items-center gap-4">
+                      <label className={`flex items-center gap-2 cursor-pointer px-5 py-3 rounded-xl border font-bold text-xs uppercase transition-all ${message.length > 0 ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50' : 'bg-pink-50 text-[#E1306C] border-pink-100 hover:bg-pink-100'}`}>
+                         <span className="text-lg">🎙️</span> Add Voice Note
+                         <input type="file" disabled={message.length > 0} accept="audio/*" className="hidden" onChange={(e) => handleMediaUpload(e, -1)} />
+                      </label>
+                   </div>
+                   
+                   {mediaScanning && (
+                      <div className="flex items-center gap-3 text-sm font-bold text-amber-600 animate-pulse bg-amber-50 p-4 border border-amber-200 rounded-xl w-max">
+                         <div className="w-4 h-4 rounded-full border-2 border-amber-500 border-t-transparent animate-spin" />
+                         Scanning Media for 18+ / Suspicious Content...
+                      </div>
+                   )}
+
+                   {media && !mediaScanning && (
+                      <div className="flex flex-col gap-2 bg-gray-50 border border-gray-200 p-4 rounded-2xl w-max relative group">
+                         <button type="button" onClick={() => setMedia(null)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all shadow-md">
+                            <Trash2 size={14} />
+                         </button>
+                         <div className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-2">
+                            <ShieldCheck size={14} className="text-green-500" />
+                            Verified Safe • {media.name}
+                         </div>
+                         {media.type.startsWith('audio/') && <audio controls src={media.url} className="h-10 outline-none" />}
+                         {media.type.startsWith('video/') && <video controls src={media.url} className="h-32 rounded-lg bg-black" />}
+                         {media.type.startsWith('image/') && <img src={media.url} className="h-32 object-contain rounded-lg border border-gray-200 bg-white" alt="Meme/Gif" />}
+                      </div>
+                   )}
+                </div>
               </div>
             </div>
           </div>
@@ -496,58 +635,112 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                 <p className="text-xs font-semibold text-gray-500">Daily limits and timezone</p>
               </div>
             </div>
-            <div className="p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-              <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-700 ml-1">Daily Limit (DMs)</label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    min="1"
-                    max="50"
-                    value={dailyLimit}
-                    onChange={(e) => setDailyLimit(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-black outline-none focus:bg-white transition-all"
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-amber-500 uppercase">Recommended: 20-30</span>
+            <div className="p-8 md:p-10 space-y-8">
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-gray-700 ml-1">Daily Limit (DMs)</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min="1"
+                      max="50"
+                      value={dailyLimit}
+                      onChange={(e) => setDailyLimit(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-black outline-none focus:bg-white transition-all"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-amber-500 uppercase">Rec: 20-30</span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-gray-700 ml-1">Hourly Limit</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={hourlyLimit}
+                      onChange={(e) => setHourlyLimit(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-black outline-none focus:bg-white transition-all"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-3 col-span-1 md:col-span-2 lg:col-span-3">
+                  <div className="flex items-center justify-between mb-2">
+                     <label className="text-sm font-bold text-gray-700 ml-1">Random Delay (Seconds)</label>
+                     <label className="flex items-center gap-2 cursor-pointer group">
+                        <input 
+                           type="checkbox" 
+                           checked={smartDelay}
+                           onChange={(e) => setSmartDelay(e.target.checked)}
+                           className="w-4 h-4 rounded text-[#E1306C] focus:ring-pink-500/20"
+                        />
+                        <span className="text-[10px] font-bold text-[#E1306C] group-hover:text-pink-600 uppercase tracking-widest transition-colors">Smart Auto Delay</span>
+                     </label>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input type="number" min="75" value={smartDelay ? 75 : Math.max(75, minDelay)} onChange={(e) => setMinDelay(Math.max(75, e.target.value))} disabled={smartDelay} className={`w-full border rounded-2xl p-4 text-center font-bold outline-none transition-all ${smartDelay ? 'bg-pink-50/50 text-pink-400 border-pink-100 cursor-not-allowed' : 'bg-gray-50 border-gray-100 text-gray-900 focus:bg-white'}`} />
+                    <span className="text-gray-300 font-black">{"->"}</span>
+                    <input type="number" max="2000" value={smartDelay ? 1000 : Math.min(2000, maxDelay)} onChange={(e) => setMaxDelay(Math.min(2000, e.target.value))} disabled={smartDelay} className={`w-full border rounded-2xl p-4 text-center font-bold outline-none transition-all ${smartDelay ? 'bg-pink-50/50 text-pink-400 border-pink-100 cursor-not-allowed' : 'bg-gray-50 border-gray-100 text-gray-900 focus:bg-white'}`} />
+                  </div>
+                  {smartDelay && <p className="text-[10px] text-pink-500 font-bold ml-1 mt-2">Dynamically averages 75s-1000s based on volume limits to strictly evade patterns.</p>}
                 </div>
               </div>
-              <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-700 ml-1">Hourly Limit (DMs)</label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    min="1"
-                    max="10"
-                    value={hourlyLimit}
-                    onChange={(e) => setHourlyLimit(e.target.value)}
-                    className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-black outline-none focus:bg-white transition-all"
-                  />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-gray-50">
+                 <div className="space-y-3">
+                  <label className="text-sm font-bold text-gray-700 ml-1">Timezone</label>
+                  <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 font-bold text-sm appearance-none outline-none">
+                     {Intl.supportedValuesOf('timeZone').map(tz => (
+                        <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>
+                     ))}
+                  </select>
+                </div>
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-gray-700 ml-1">Sending Hours</label>
+                  <div className="flex items-center gap-2">
+                    <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold outline-none" />
+                    <span className="text-gray-300 font-black">-</span>
+                    <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold outline-none" />
+                  </div>
                 </div>
               </div>
-              <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-700 ml-1">Random Delay (Seconds)</label>
-                <div className="flex items-center gap-3">
-                  <input type="number" min="5" value={minDelay} onChange={(e) => setMinDelay(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold" />
-                  <span className="text-gray-300 font-black">{"->"}</span>
-                  <input type="number" max="120" value={maxDelay} onChange={(e) => setMaxDelay(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-gray-50">
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-gray-700 ml-1">Start Date</label>
+                  <div className="flex items-center">
+                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 font-bold outline-none" />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between mb-1">
+                     <label className={`text-sm font-bold ml-1 ${endOnCompletion ? 'text-gray-400' : 'text-gray-700'}`}>End Date</label>
+                     <label className="flex items-center gap-2 cursor-pointer group">
+                        <input 
+                           type="checkbox" 
+                           checked={endOnCompletion}
+                           onChange={(e) => {
+                             setEndOnCompletion(e.target.checked);
+                             if (e.target.checked) setEndDate("");
+                           }}
+                           className="w-4 h-4 rounded text-pink-500 focus:ring-pink-500/20"
+                        />
+                        <span className="text-xs font-bold text-gray-500 group-hover:text-gray-900 transition-colors">End when list completed</span>
+                     </label>
+                  </div>
+                  <div className="flex items-center">
+                    <input 
+                       type="date" 
+                       value={endDate} 
+                       onChange={(e) => setEndDate(e.target.value)} 
+                       disabled={endOnCompletion}
+                       className={`w-full border rounded-2xl p-4 font-bold outline-none transition-all ${endOnCompletion ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 border-gray-100 text-gray-900 focus:bg-white'}`} 
+                    />
+                  </div>
                 </div>
               </div>
-               <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-700 ml-1">Timezone</label>
-                <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 font-bold text-xs appearance-none">
-                  <option value="UTC">Universal (UTC)</option>
-                  <option value="America/New_York">Eastern (EST)</option>
-                  <option value="Asia/Karachi">Karachi (PKT)</option>
-                </select>
-              </div>
-              <div className="space-y-3 col-span-1 md:col-span-2 lg:col-span-1">
-                <label className="text-sm font-bold text-gray-700 ml-1">Sending Hours</label>
-                <div className="flex items-center gap-3">
-                  <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold" />
-                  <span className="text-gray-300 font-black">{"->"}</span>
-                  <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold" />
-                </div>
-              </div>
+
             </div>
           </div>
 
@@ -587,41 +780,148 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                       >
                         <Trash2 size={18} />
                       </button>
-                      <div className="flex flex-col md:flex-row gap-6 mb-6 justify-between items-start md:items-center">
-                        <div className="flex items-center gap-4">
-                           <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center font-black text-[#E1306C]">{idx + 1}</div>
-                           <div className="flex items-center gap-2">
-                              <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Delay:</span>
+                      <div className="flex flex-col md:flex-row gap-6 mb-6 justify-between items-start md:items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                        <div className="flex items-center gap-4 flex-wrap w-full md:w-auto">
+                           <div className="w-10 h-10 bg-gray-50 shadow-inner border border-gray-200 rounded-xl flex items-center justify-center font-black text-gray-400">{idx + 1}</div>
+                           <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-xl border border-gray-200">
+                              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Wait</span>
                               <input
                                 type="number"
                                 min="1"
-                                value={step.delayDays}
-                                onChange={(e) => updateFollowUp(idx, "delayDays", e.target.value)}
-                                className="w-16 bg-white border border-gray-200 rounded-lg py-1 text-center font-bold text-sm outline-none focus:border-pink-300 transition-all"
+                                value={step.delayValue}
+                                onChange={(e) => updateFollowUp(idx, "delayValue", e.target.value)}
+                                className="w-16 bg-white border border-gray-200 rounded-lg py-1 text-center font-black text-sm outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all shadow-sm block"
                               />
-                              <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Days after previous</span>
+                              <select 
+                                value={step.delayUnit}
+                                onChange={(e) => updateFollowUp(idx, "delayUnit", e.target.value)}
+                                className="bg-white border border-gray-200 text-xs font-bold text-gray-700 rounded-lg py-1 px-2 outline-none appearance-none block"
+                              >
+                                <option value="minutes">Minutes</option>
+                                <option value="hours">Hours</option>
+                                <option value="days">Days</option>
+                              </select>
                            </div>
                         </div>
+
+                        <div className="flex flex-col md:w-auto w-full">
+                           <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Priority</div>
+                           <div className="flex gap-1.5 flex-wrap">
+                              {['story', 'highlight', 'message'].map((method) => {
+                                let stepPriority = step.executionPriority || ['story', 'highlight', 'message'];
+                                const isActive = stepPriority.includes(method);
+                                const priorityIndex = stepPriority.indexOf(method);
+                                return (
+                                  <div 
+                                    key={method}
+                                    onClick={() => {
+                                      if (isActive) {
+                                          if (stepPriority.length > 1) {
+                                              updateFollowUp(idx, "executionPriority", stepPriority.filter(m => m !== method));
+                                          }
+                                      } else {
+                                          updateFollowUp(idx, "executionPriority", [...stepPriority, method]);
+                                      }
+                                    }}
+                                    className={`px-3 py-1.5 rounded-lg border text-[10px] font-black cursor-pointer flex items-center gap-1 transition-all ${isActive ? 'bg-pink-50 border-pink-200 text-[#E1306C]' : 'bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100'}`}
+                                  >
+                                     <span className={`w-3 h-3 flex items-center justify-center rounded-sm ${isActive ? 'bg-[#E1306C] text-white' : 'bg-gray-300 text-gray-500'} text-[8px]`}>{isActive ? priorityIndex + 1 : '-'}</span>
+                                     <span className="capitalize">{method === 'message' ? 'DM' : method}</span>
+                                  </div>
+                                )
+                              })}
+                           </div>
+                        </div>
+
                         <div className="flex items-center gap-1 flex-wrap">
                           {availableVariables.map(v => (
                             <button
                               key={v}
                               type="button"
                               onClick={() => insertVariable(idx, v)}
-                              className="px-2 py-1 bg-white border border-gray-100 rounded-lg text-[10px] font-bold text-[#E1306C] hover:border-pink-200 hover:bg-pink-50 transition-all"
+                              className="px-2 py-1 bg-white border border-gray-200 shadow-sm rounded-lg text-[10px] font-bold text-[#E1306C] hover:border-pink-300 hover:bg-pink-50 transition-all"
                             >
                               {v}
                             </button>
                           ))}
                         </div>
                       </div>
-                      <textarea
-                        value={step.message}
-                        onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
-                        placeholder="Enter message..."
-                        rows={3}
-                        className="w-full bg-white border border-gray-100 rounded-2xl p-6 text-sm font-medium outline-none focus:ring-4 focus:ring-pink-100 transition-all resize-none shadow-sm"
-                      />
+
+                      <div className="mb-4">
+                        <textarea
+                          value={step.media || step.mediaUrl ? "" : step.message}
+                          onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
+                          disabled={!!(step.media || step.mediaUrl)}
+                          placeholder={step.media || step.mediaUrl ? "Media attached. Remove media to type message." : "Type follow-up message..."}
+                          rows={3}
+                          className={`w-full border ${step.media || step.mediaUrl ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white border-gray-100 focus:ring-4 focus:ring-pink-100'} rounded-2xl p-6 text-sm font-medium outline-none transition-all resize-none shadow-sm`}
+                        />
+                      </div>
+
+                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                         
+                         {/* Follow-up Attachments */}
+                         <div className="flex flex-wrap gap-2 items-center">
+                            <label className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border font-bold text-[10px] uppercase transition-all ${!(step.executionPriority || ['story', 'highlight', 'message']).includes('message') || (step.message && step.message.length > 0) ? 'bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed opacity-50' : 'bg-pink-50 text-[#E1306C] border-pink-100 hover:bg-pink-100'}`}>
+                               🎙️ Voice Note
+                               <input type="file" disabled={!(step.executionPriority || ['story', 'highlight', 'message']).includes('message') || (step.message && step.message.length > 0)} accept="audio/*" className="hidden" onChange={(e) => handleMediaUpload(e, idx)} />
+                            </label>
+                            <label className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border font-bold text-[10px] uppercase transition-all ${!(step.executionPriority || ['story', 'highlight', 'message']).includes('message') || (step.message && step.message.length > 0) ? 'bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed opacity-50' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'}`}>
+                               🎬 Video / Meme
+                               <input type="file" disabled={!(step.executionPriority || ['story', 'highlight', 'message']).includes('message') || (step.message && step.message.length > 0)} accept="video/*,image/*" className="hidden" onChange={(e) => handleMediaUpload(e, idx)} />
+                            </label>
+
+                            {step.mediaScanning && <span className="text-amber-500 text-[10px] font-bold animate-pulse">Scanning media...</span>}
+                            {step.media && !step.mediaScanning && (
+                               <div className="flex items-center gap-2 ml-2">
+                                  <span className="text-[10px] font-bold text-green-500 flex items-center gap-1"><ShieldCheck size={12}/> Safe</span>
+                                  <button type="button" onClick={() => updateFollowUp(idx, "media", null)} className="text-red-500 hover:text-red-600"><Trash2 size={12}/></button>
+                                  {step.media.type.startsWith('audio/') && <span className="text-xs">🎵 Audio attached</span>}
+                                  {step.media.type.startsWith('video/') && <span className="text-xs">🎥 Video attached</span>}
+                                  {step.media.type.startsWith('image/') && <span className="text-xs">🖼️ Image attached</span>}
+                               </div>
+                            )}
+                         </div>
+
+                         {/* Advanced Toggle */}
+                         <button
+                           type="button"
+                           onClick={() => updateFollowUp(idx, "showAdvanced", !step.showAdvanced)}
+                           className="flex items-center gap-1 px-4 py-2 bg-gray-900 text-white rounded-lg text-[10px] font-bold uppercase hover:bg-black transition-all shadow-md ml-auto"
+                         >
+                           <Settings size={14} /> Advanced Options {step.showAdvanced ? '▴' : '▾'}
+                         </button>
+                      </div>
+
+                      {/* Advanced Tray natively rendering */}
+                      {step.showAdvanced && (
+                        <div className="mt-4 p-6 bg-white border border-gray-200 rounded-2xl shadow-inner animate-in slide-in-from-top-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                           <div className="space-y-2">
+                              <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Follow Action</label>
+                              <select value={step.followBehavior} onChange={e => updateFollowUp(idx, "followBehavior", e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold outline-none">
+                                <option value="none">Disabled</option>
+                                <option value="before">Before Message</option>
+                                <option value="after">After Message</option>
+                              </select>
+                           </div>
+                           <div className="space-y-2">
+                              <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Like Post</label>
+                              <select value={step.likeBehavior} onChange={e => updateFollowUp(idx, "likeBehavior", e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold outline-none">
+                                <option value="none">Disabled</option>
+                                <option value="before">Before Message</option>
+                                <option value="after">After Message</option>
+                              </select>
+                           </div>
+                           <div className="space-y-2">
+                              <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Comment Post</label>
+                              <select value={step.commentBehavior} onChange={e => updateFollowUp(idx, "commentBehavior", e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold outline-none">
+                                <option value="none">Disabled</option>
+                                <option value="before">Before Message</option>
+                                <option value="after">After Message</option>
+                              </select>
+                           </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

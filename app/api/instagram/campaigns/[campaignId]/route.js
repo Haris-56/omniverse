@@ -11,7 +11,8 @@ export async function GET(request, { params }) {
 
   try {
     const db = await getDb();
-    const { campaignId } = params;
+    const resolvedParams = await params;
+    const { campaignId } = resolvedParams;
 
     const campaign = await db.collection("instagram_campaigns").findOne({
       _id: new ObjectId(campaignId),
@@ -37,13 +38,15 @@ export async function PUT(request, { params }) {
 
   try {
     const db = await getDb();
-    const { campaignId } = params;
+    const resolvedParams = await params;
+    const { campaignId } = resolvedParams;
     const body = await request.json();
 
     const { 
       name, 
       listId, 
       message, 
+      mediaUrl,
       dailyLimit, 
       minDelay, 
       maxDelay, 
@@ -58,13 +61,21 @@ export async function PUT(request, { params }) {
       enableAiAgent,
       aiAgentId,
       executionPriority,
-      hourlyLimit
+      hourlyLimit,
+      startDate,
+      endDate,
+      endOnCompletion,
+      smartDelay,
+      followBehavior,
+      likeBehavior,
+      commentBehavior
     } = body;
 
     const updatedCampaign = {
       name,
       listId,
       message,
+      mediaUrl: mediaUrl || null,
       dailyLimit: parseInt(dailyLimit) || 1,
       minDelay: parseInt(minDelay) || 10,
       maxDelay: parseInt(maxDelay) || 40,
@@ -80,6 +91,13 @@ export async function PUT(request, { params }) {
       aiAgentId: aiAgentId || null,
       executionPriority: executionPriority || ['story', 'highlight', 'message'],
       hourlyLimit: parseInt(hourlyLimit) || 5,
+      startDate: startDate !== undefined ? startDate : null,
+      endDate: endDate !== undefined ? endDate : null,
+      endOnCompletion: endOnCompletion ?? true,
+      smartDelay: smartDelay ?? true,
+      followBehavior: followBehavior || "none",
+      likeBehavior: likeBehavior || "none",
+      commentBehavior: commentBehavior || "none",
       updatedAt: new Date()
     };
 

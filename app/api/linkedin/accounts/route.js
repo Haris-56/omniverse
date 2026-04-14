@@ -33,23 +33,22 @@ export async function POST(request) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
 
-    // Assign Proxy Systematically
+    // Assign Proxy Systematically (Bypassed for local testing as per user request)
     const { getAssignedProxy } = await import("@/lib/proxy-allocator");
-    let assignedProxyDoc;
+    let assignedProxyDoc = null;
+    let proxy = null;
     try {
         assignedProxyDoc = await getAssignedProxy(session.user.id, 'linkedin');
+        proxy = {
+            host: assignedProxyDoc.host,
+            port: assignedProxyDoc.port,
+            protocol: assignedProxyDoc.protocol,
+            username: assignedProxyDoc.auth?.username,
+            password: assignedProxyDoc.auth?.password
+        };
     } catch (e) {
-        return NextResponse.json({ error: e.message }, { status: 503 });
+        console.warn('Proxy allocation failed, proceeding without proxy for testing:', e.message);
     }
-
-    // Format for automation usage (flatten auth)
-    const proxy = {
-        host: assignedProxyDoc.host,
-        port: assignedProxyDoc.port,
-        protocol: assignedProxyDoc.protocol,
-        username: assignedProxyDoc.auth?.username,
-        password: assignedProxyDoc.auth?.password
-    };
 
     const existing = await db.collection("linkedin_accounts").findOne({ 
       userId: session.user.id, 

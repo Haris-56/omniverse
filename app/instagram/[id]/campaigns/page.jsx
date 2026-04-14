@@ -17,7 +17,9 @@ import {
   Clock,
   Target,
   Camera,
-  Heart
+  Heart,
+  Pencil,
+  CheckCircle
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -248,6 +250,12 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
                             >
                               {camp.status === 'Active' ? <Pause size={16} /> : <Play size={16} />}
                             </button>
+                            <button
+                              onClick={() => router.push(`/instagram/${accountId}/campaigns/${camp._id}/edit`)}
+                              className="p-2.5 bg-blue-50 border border-blue-100 text-blue-500 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                            >
+                              <Pencil size={16} />
+                            </button>
                             <button 
                               onClick={() => handleDeleteCampaign(camp._id)}
                               className="p-2.5 bg-red-50 border border-red-100 text-red-500 rounded-xl hover:bg-[#E1306C] hover:text-white transition-all shadow-sm hover:shadow-pink-500/20"
@@ -293,12 +301,27 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button 
-                      onClick={() => handleToggleStatus(camp._id, camp.status)}
-                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-xs uppercase tracking-wide transition-all ${camp.status === 'Active' ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 shadow-sm' : 'bg-green-50 text-green-600 hover:bg-green-100 shadow-sm'}`}
+                  <button 
+                      onClick={() => camp.status !== 'Completed' && handleToggleStatus(camp._id, camp.status)}
+                      disabled={camp.status === 'Completed'}
+                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-xs uppercase tracking-wide transition-all ${
+                          camp.status === 'Completed' ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none' :
+                          camp.status === 'Active' ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 shadow-sm' : 
+                          'bg-green-50 text-green-600 hover:bg-green-100 shadow-sm'
+                      }`}
                   >
-                    {camp.status === 'Active' ? <Pause size={14} /> : <Play size={14} />}
-                    {camp.status === 'Active' ? 'Pause' : 'Resume'}
+                    {camp.status === 'Completed' ? <CheckCircle size={14} /> : camp.status === 'Active' ? <Pause size={14} /> : <Play size={14} />}
+                    {camp.status === 'Completed' ? 'Completed' : camp.status === 'Active' ? 'Pause' : 'Resume'}
+                  </button>
+                  <button
+                     onClick={() => camp.status !== 'Completed' && router.push(`/instagram/${accountId}/campaigns/${camp._id}/edit`)}
+                     disabled={camp.status === 'Completed'}
+                     className={`p-4 rounded-2xl transition-all ${
+                         camp.status === 'Completed' ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none' :
+                         'bg-blue-50 text-blue-500 hover:bg-blue-600 hover:text-white shadow-sm'
+                     }`}
+                  >
+                     <Pencil size={16} />
                   </button>
                   <button 
                      onClick={() => handleDeleteCampaign(camp._id)}

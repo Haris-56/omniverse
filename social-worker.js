@@ -1,27 +1,25 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 import { MongoClient } from 'mongodb';
-import { processLinkedInCampaigns } from './lib/social-automation/linkedin-engine.js';
 import { processFacebookCampaigns } from './lib/social-automation/facebook-engine.js';
 import { processInstagramCampaigns } from './lib/social-automation/instagram-engine.js';
 
+// Import new queue-based LinkedIn engine
+import './lib/queue/linkedin-worker.js';
+import './lib/queue/linkedin-scheduler.js';
+
 const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/omniverse";
-// Run cycle every 10-20 minutes to be safe/casual?
-// Instructions: "Activity windows drift daily... No streaks". 
-// A tight loop checking limits is fine, but the engine handles the "1 action per run".
-const TICK_RATE = 5 * 60 * 1000; // 5 minutes
 
 async function runSocialWorker() {
-    console.log(`[${new Date().toISOString()}] 🤖 Social Worker Tick...`);
+    console.log(`[${new Date().toISOString()}] 🤖 Social Worker Tick (FB/IG)...`);
     let client;
 
     try {
         client = new MongoClient(MONGO_URI);
         await client.connect();
-        const db = client.db();
+        const db = client.db(process.env.MONGODB_DB || "omniverse");
 
-        // Run Engines Sequentially
-        try { await processLinkedInCampaigns(db); } catch (e) { console.error("LinkedIn Engine Error:", e); }
+        // Run Engines Sequentially (except LI which runs via BullMQ now)
         try { await processFacebookCampaigns(db); } catch (e) { console.error("Facebook Engine Error:", e); }
         try { await processInstagramCampaigns(db); } catch (e) { console.error("Instagram Engine Error:", e); }
 
@@ -32,6 +30,15 @@ async function runSocialWorker() {
     }
 }
 
-console.log("Starting Social Automation Worker...");
-runSocialWorker();
-setInterval(runSocialWorker, TICK_RATE);
+function scheduleNextRun() {
+    const randomMinutes = Math.floor(Math.random() * 10) + 1; // 1 to 10 minutes
+    const TICK_RATE = randomMinutes * 60 * 1000;
+    console.log(`\n[Scheduler] Sleeping securely. Next Autonomous cycle in ${randomMinutes} mins...`);
+    
+    setTimeout(() => {
+        runSocialWorker().finally(scheduleNextRun);
+    }, TICK_RATE);
+}
+
+console.log("Starting Autonomous Social Intelligence Worker...");
+runSocialWorker().finally(scheduleNextRun);

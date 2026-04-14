@@ -65,6 +65,15 @@ export async function POST(request) {
       host = 'smtp.office365.com';
       port = 587;
       secure = false; // StartTLS
+    } else {
+      // Auto-configure 'secure' based on standard SMTP ports to prevent SSL version errors
+      if (Number(port) === 465) {
+        secure = true; // Implicit SSL/TLS
+      } else if (Number(port) === 587 || Number(port) === 25 || Number(port) === 2525) {
+        secure = false; // Explicit STARTTLS
+      } else {
+        secure = smtpSecure === true || smtpSecure === "true";
+      }
     }
 
     if (!host || !port) {
@@ -72,43 +81,6 @@ export async function POST(request) {
     }
 
     // Verify connection with Nodemailer
-    const { getAssignedProxy } = await import("@/lib/proxy-allocator");
-    const { SocksProxyAgent } = await import("socks-proxy-agent");
-    const { HttpsProxyAgent } = await import("https-proxy-agent");
-
-    let proxyAgent = undefined;
-    let proxyDetails = null;
-
-    try {
-        const assignedProxy = await getAssignedProxy(session.user.id, 'email');
-        if (assignedProxy) {
-            const { host, port, protocol, auth } = assignedProxy;
-            const authStr = auth?.username ? `${encodeURIComponent(auth.username)}:${encodeURIComponent(auth.password)}@` : '';
-            const proxyUrl = `${protocol}://${authStr}${host}:${port}`;
-            
-            if (protocol.startsWith('socks')) {
-                proxyAgent = new SocksProxyAgent(proxyUrl);
-            } else {
-                proxyAgent = new HttpsProxyAgent(proxyUrl);
-            }
-
-            proxyDetails = {
-                host, port, protocol,
-                username: auth?.username,
-                password: auth?.password,
-                url: proxyUrl // Store for quick access
-            };
-        }
-    } catch (e) {
-        console.warn("Failed to assign proxy for email, falling back to direct connection:", e.message);
-        // We can choose to fail hard here or allow direct. 
-        // Request says "1 ip for 1 email". Stick to proxy? 
-        // "everything in the whole project is fully dynamic". 
-        // Let's allow direct if no proxy but log it? Or fail? 
-        // The allocator throws if no proxy. So we should probably return error to user.
-        return NextResponse.json({ error: "No proxy available: " + e.message }, { status: 503 });
-    }
-
     const transporter = nodemailer.createTransport({
       host,
       port: Number(port),
@@ -117,7 +89,6 @@ export async function POST(request) {
         user: email,
         pass: password,
       },
-      agent: proxyAgent, // Use the proxy agent
       logger: true,
       debug: true
     });
@@ -158,7 +129,6 @@ export async function POST(request) {
         secure,
         user: email, 
       },
-      proxy: proxyDetails, // Save proxy
       password: encrypt(password), // Encrypt!
       settings: {
         // Defaults, can be overridden in Campaign
