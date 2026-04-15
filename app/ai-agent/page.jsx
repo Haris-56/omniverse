@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Bot, Trash2, Edit2, Zap, MessageSquare, Target, Settings2, ShieldCheck, Sparkles, Cpu } from "lucide-react";
+import { Plus, Bot, Trash2, Edit2, Zap, MessageSquare, Target, Settings2, ShieldCheck, Sparkles, Cpu, Activity, Calendar, Globe, Database, Hexagon, Loader2, ChevronRight } from "lucide-react";
 import AgentModal from "./components/AgentModal";
 
 export default function AIAgentPage() {
@@ -85,138 +85,134 @@ export default function AIAgentPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50/50 p-4 md:p-8 animate-in fade-in duration-500">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+    <div className="w-full font-sans pb-32 p-6 md:p-10 lg:p-12 bg-[#F8F4F2]/30 min-h-screen">
+      <div className="animate-in fade-in slide-in-from-bottom-5 duration-1000">
+      <div className="max-w-[1400px] mx-auto space-y-12">
+        
+        {/* Header Sector */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#B78D7D]/15 pb-8">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-               <span className="px-3 py-1 bg-purple-50 text-purple-600 text-[10px] font-bold uppercase tracking-wider rounded-full border border-purple-100 flex items-center gap-1">
-                 <ShieldCheck size={12} />
-                 Authenticated Agents
+            <div className="flex items-center gap-3 mb-4">
+               <span className="px-4 py-1.5 bg-[#B78D7D]/10 text-[#B78D7D] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#B78D7D]/20 flex items-center gap-2 font-mono">
+                 <ShieldCheck size={14} className="opacity-80" />
+                 Active Agents
                </span>
             </div>
-            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-              AI Agents
-              <Cpu size={28} className="text-purple-500" />
-            </h1>
-            <p className="text-gray-500 mt-2 max-w-lg">Train and deploy custom autonomous agents to handle complex campaign interactions.</p>
+            <h1 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">AI Agents</h1>
+            <p className="text-[#8E7A70] mt-3 text-lg font-medium max-w-2xl leading-relaxed">Customize how your AI responds to messages and interacts with people.</p>
           </div>
           <button
             onClick={openCreateModal}
-            className="group px-6 py-3 bg-purple-600 text-white text-sm font-bold rounded-2xl hover:bg-purple-700 transition-all shadow-xl shadow-purple-100 flex items-center justify-center gap-2"
+            className="group px-10 py-5 bg-[#B78D7D] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#A37B6D] transition-all shadow-[0_15px_30px_rgba(183,141,125,0.2)] flex items-center justify-center gap-3 active:scale-95 border border-white/10 font-mono"
           >
-            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-            Train New Agent
+            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" />
+            Create AI Agent
           </button>
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 space-y-4">
-            <div className="animate-spin w-10 h-10 border-4 border-purple-600 border-t-transparent rounded-full shadow-inner"></div>
-            <p className="text-gray-400 font-medium animate-pulse">Initializing Neural Cores...</p>
+          <div className="flex flex-col items-center justify-center py-40 space-y-8 text-center">
+             <div className="relative">
+                <div className="animate-spin w-12 h-12 border-[4px] border-[#B78D7D]/10 border-t-[#B78D7D] rounded-full shadow-sm" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                   <Sparkles size={20} className="text-[#B78D7D] animate-pulse" />
+                </div>
+             </div>
+             <p className="text-[#B2AAA6] font-black uppercase tracking-[0.3em] font-mono text-[9px]">Initializing AI...</p>
           </div>
         ) : agents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2rem] border border-dashed border-gray-200 text-center shadow-sm p-8">
-            <div className="w-24 h-24 bg-purple-50 text-purple-600 rounded-3xl flex items-center justify-center mb-6 -rotate-3">
-              <Bot size={48} />
+          <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2rem] border border-dashed border-[#B78D7D]/20 text-center shadow-lg p-16 max-w-3xl mx-auto relative overflow-hidden group">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#B78D7D]/5 rounded-full blur-3xl group-hover:bg-[#B78D7D]/10 transition-colors" />
+            <div className="w-20 h-20 bg-[#F8F4F2] text-[#B78D7D] rounded-3xl flex items-center justify-center mb-8 shadow-inner">
+               <Bot size={44} />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">No Active Agents</h3>
-            <p className="text-gray-500 max-w-md mb-8">
-              Create and train your first AI agent to automate human-like conversations and manage complex workflows.
-            </p>
-            <button
+            <h2 className="text-2xl font-black text-[#3E3A39] uppercase tracking-tighter">No Agents Found</h2>
+            <p className="text-[#8E7A70] mt-4 max-w-md mx-auto leading-relaxed text-lg">Create an AI personality to automatically manage your replies and engage with your audience 24/7.</p>
+            <button 
               onClick={openCreateModal}
-              className="px-8 py-3.5 bg-white border border-gray-200 text-gray-700 font-bold rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm flex items-center gap-2"
+              className="mt-10 px-10 py-5 bg-[#B78D7D]/10 text-[#B78D7D] rounded-xl font-black text-[10px] uppercase tracking-[0.4em] hover:bg-[#B78D7D] hover:text-white transition-all border border-[#B78D7D]/20"
             >
-              <Sparkles size={18} className="text-amber-400" />
-              Begin Training
+              Build Your First Agent
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {agents.map((agent) => (
-              <div
+              <div 
                 key={agent._id}
-                className="bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group overflow-hidden flex flex-col relative"
+                onClick={() => openEditModal(agent)}
+                className="group bg-white rounded-[2rem] border border-[#B78D7D]/10 shadow-sm hover:shadow-[0_20px_40px_rgba(183,141,125,0.08)] transition-all cursor-pointer relative overflow-hidden flex flex-col p-8"
               >
-                {/* Status Indicator Overlay */}
-                <div className="absolute top-6 right-6 z-10">
-                   <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-purple-600 bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-50 uppercase tracking-widest">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-                    Online
-                  </span>
-                </div>
+                 <div className="flex items-start justify-between mb-8">
+                    <div className="w-14 h-14 bg-[#F8F4F2] text-[#B78D7D] rounded-2xl flex items-center justify-center border border-[#B78D7D]/10 group-hover:rotate-12 transition-transform duration-500 shadow-inner">
+                       <Bot size={30} />
+                    </div>
+                    <div className="flex gap-2">
+                       <button
+                         onClick={(e) => { e.stopPropagation(); openEditModal(agent); }}
+                         className="p-3 bg-[#F8F4F2] text-[#B2AAA6] hover:text-[#B78D7D] rounded-xl hover:bg-[#B78D7D]/10 transition-all border border-[#B78D7D]/5 active:scale-90"
+                       >
+                         <Edit2 size={16} />
+                       </button>
+                       <button
+                         onClick={(e) => handleDelete(e, agent._id)}
+                         className="p-3 bg-[#F8F4F2] text-[#B2AAA6] hover:text-red-500 rounded-xl hover:bg-red-50 transition-all border border-[#B78D7D]/5 active:scale-90"
+                       >
+                         <Trash2 size={16} />
+                       </button>
+                    </div>
+                 </div>
 
-                <div className="p-8 flex-1">
-                  <div className="flex items-center gap-5 mb-8">
-                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                      <Bot size={28} />
-                    </div>
-                    <div>
-                      <h3 className="font-black text-gray-900 text-xl tracking-tight">{agent.name}</h3>
-                      <p className="text-xs text-purple-500 font-bold mt-0.5 uppercase tracking-widest opacity-70">{agent.platform}</p>
-                    </div>
-                  </div>
+                 <div className="space-y-1">
+                    <h3 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase group-hover:text-[#B78D7D] transition-colors line-clamp-1">{agent.name}</h3>
+                    <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono">ID: {agent._id.substring(0, 8)}</p>
+                 </div>
 
-                  <div className="space-y-5">
-                    <div className="relative p-5 bg-gray-50 rounded-3xl border border-gray-100 group-hover:bg-white group-hover:border-purple-100 transition-colors duration-300">
-                      <div className="flex items-start gap-4">
-                        <Target size={20} className="text-purple-400 mt-1 shrink-0" />
-                        <div>
-                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Primary Objective</p>
-                          <p className="text-sm text-gray-700 font-bold line-clamp-2 leading-relaxed italic">
-                            {agent.goal || "Objective not defined"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2 text-gray-600 bg-gray-50 px-4 py-3 rounded-2xl flex-1 border border-transparent group-hover:border-gray-100 transition-all">
-                        <MessageSquare size={18} className="text-purple-400" />
-                        <span className="font-bold text-xs truncate">{agent.tone} / {agent.style}</span>
-                      </div>
-                    </div>
+                 <div className="mt-8 space-y-4 flex-1">
+                    <p className="text-sm font-bold text-[#8E7A70] line-clamp-3 leading-relaxed italic border-l-4 border-[#B78D7D]/20 pl-4 bg-[#F8F4F2]/30 py-3 rounded-r-xl">
+                      "{agent.instructions?.substring(0, 100) || "No instructions set"}"
+                    </p>
+                 </div>
 
-                    {agent.triggers && agent.triggers.length > 0 && (
-                      <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 rounded-xl border border-amber-100 text-[10px] font-black uppercase tracking-widest">
-                        <Zap size={14} fill="currentColor" />
-                        {agent.triggers.length} Autonomous Triggers Active
-                      </div>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="px-8 py-5 bg-gray-50/50 border-t border-gray-50 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 group-hover:bg-white transition-colors duration-300">
-                  <div className="flex items-center gap-2">
-                     Last Trained: {new Date(agent.updatedAt).toLocaleDateString()}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => openEditModal(agent)}
-                      className="text-gray-400 hover:text-purple-600 transition-all p-2.5 hover:bg-white rounded-xl"
-                    >
-                      <Settings2 size={18} />
+                 <div className="grid grid-cols-2 gap-3 mt-8">
+                    <div className="bg-[#F8F4F2]/50 p-4 rounded-2xl border border-[#B78D7D]/5 group-hover:bg-[#F8F4F2] transition-colors">
+                       <p className="text-[8px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Knowledge</p>
+                       <div className="flex items-center gap-2">
+                          <Database size={12} className="text-[#B78D7D]" />
+                          <span className="text-[10px] font-black text-[#3E3A39] tracking-widest font-mono">Active</span>
+                       </div>
+                    </div>
+                    <div className="bg-[#F8F4F2]/50 p-4 rounded-2xl border border-[#B78D7D]/5 group-hover:bg-[#F8F4F2] transition-colors">
+                       <p className="text-[8px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Brain</p>
+                       <div className="flex items-center gap-2">
+                          <Cpu size={12} className="text-[#B78D7D]" />
+                          <span className="text-[10px] font-black text-[#3E3A39] tracking-widest font-mono">Neural_X1</span>
+                       </div>
+                    </div>
+                 </div>
+
+                 <div className="mt-8 pt-6 border-t border-[#B78D7D]/10 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                       <span className="flex items-center gap-1.5 px-3 py-1 bg-[#B78D7D]/10 text-[#B78D7D] rounded-lg text-[8px] font-black uppercase tracking-widest border border-[#B78D7D]/10">
+                          <Activity size={10} /> Online
+                       </span>
+                    </div>
+                    <button className="text-[9px] font-black text-[#B78D7D] uppercase tracking-widest font-mono flex items-center gap-2 group/btn">
+                       Edit Settings <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                     </button>
-                    <button
-                      onClick={(e) => handleDelete(e, agent._id)}
-                      className="text-gray-400 hover:text-red-600 transition-all p-2.5 hover:bg-white rounded-xl"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </div>
+                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+      </div>
 
       <AgentModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {setIsModalOpen(false); setEditingAgent(null);}}
         onSave={handleSaveAgent}
-        initialData={editingAgent}
+        editAgent={editingAgent}
       />
     </div>
   );

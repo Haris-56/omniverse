@@ -13,9 +13,10 @@ import {
   Terminal,
   Info,
   Rocket,
-  Camera,
   Lock,
-  Smartphone
+  Smartphone,
+  Activity,
+  Hexagon
 } from "lucide-react";
 
 export default function ConnectAccountModal({ isOpen, onClose, onAccountConnected, initialEmail = "" }) {
@@ -46,15 +47,14 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
   const handleConnect = async (e) => {
     if (e) e.preventDefault();
     if (!email || !password) {
-      setError("Username and Password are required");
+      setError("Email and Password are required");
       return;
     }
 
     setLoading(true);
     setError("");
     
-    // Preserve result if it's a challenge, so we don't hide the challenge UI while loading
-    if (result?.status !== "Checkpoint" && result?.status !== "AppConfirmation") {
+    if (result?.status !== "Checkpoint" && result?.status !== "TwoFactor") {
         setResult(null);
     }
 
@@ -79,8 +79,7 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
       const data = await res.json();
 
       if (!res.ok) {
-        // If it's a known checkpoint/confirmation, update result to show the specific UI
-        if (data.status === "Checkpoint" || data.status === "AppConfirmation") {
+        if (data.status === "Checkpoint" || data.status === "TwoFactor") {
            setResult({ status: data.status, reason: data.failureReason });
            return;
         }
@@ -113,248 +112,191 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900/60 flex items-center justify-center z-[100] p-4 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-white animate-in zoom-in duration-300">
+    <div className="fixed inset-0 flex items-center justify-center z-[9999] p-4 lg:p-20 animate-in fade-in duration-700 overflow-y-auto custom-scrollbar">
+      <div className="fixed inset-0 bg-[#3E3A39]/20 backdrop-blur-[60px]" onClick={handleClose} />
+      
+      <div className="bg-white rounded-[4rem] shadow-[0_80px_160px_rgba(183,141,125,0.2)] w-full max-w-7xl overflow-hidden border border-[#B78D7D]/20 relative z-10 animate-in zoom-in-95 duration-1000 my-auto">
         
         {/* Modal Header */}
-        <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-pink-50/30">
-          <div className="flex items-center gap-4">
-             <div className="w-12 h-12 bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-500/20">
-                <Camera size={24} />
+        <div className="p-10 border-b border-[#B78D7D]/10 flex justify-between items-center bg-[#F8F4F2]/50">
+          <div className="flex items-center gap-6">
+             <div className="w-16 h-16 bg-[#F8F4F2] text-[#B78D7D] rounded-[1.75rem] flex items-center justify-center shadow-sm border border-[#B78D7D]/10">
+                <Instagram size={32} />
              </div>
              <div>
-                <h2 className="text-xl font-bold text-gray-900 tracking-tight">Connect Instagram</h2>
-                <p className="text-xs font-medium text-[#E1306C] mt-0.5">Secure Login Assistant</p>
+                <h2 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase">Link Node</h2>
+                <p className="text-[10px] font-black text-[#B78D7D] uppercase tracking-[0.4em] mt-1 font-mono">Secure_Identity_Provision</p>
              </div>
           </div>
-          <button onClick={handleClose} className="p-2 hover:bg-white rounded-xl transition-all border border-transparent hover:border-gray-100 text-gray-400 hover:text-gray-900">
-            <X size={20} />
+          <button onClick={handleClose} className="p-4 bg-[#F8F4F2] hover:bg-[#B78D7D] group rounded-[1.25rem] transition-all border border-[#B78D7D]/10 text-[#B2AAA6] hover:text-white">
+            <X size={24} className="group-hover:rotate-90 transition-transform duration-500" />
           </button>
         </div>
 
-        <div className="p-8 md:p-10">
-          {result && result.status !== "Checkpoint" && result.status !== "AppConfirmation" ? (
-            <div className="text-center py-10 animate-in slide-in-from-bottom duration-500">
+        <div className="p-12 custom-scrollbar max-h-[70vh] overflow-y-auto">
+          {result && result.status !== "Checkpoint" && result.status !== "TwoFactor" ? (
+            <div className="text-center py-16 animate-in slide-in-from-bottom duration-500">
               {result.status === "Connected" ? (
                 <>
-                  <div className="w-20 h-20 bg-pink-50 text-[#E1306C] rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner animate-bounce">
-                    <CheckCircle size={32} />
+                  <div className="w-28 h-28 bg-[#B78D7D]/10 text-[#B78D7D] rounded-[3rem] flex items-center justify-center mx-auto mb-10 shadow-sm border border-[#B78D7D]/20">
+                    <CheckCircle size={48} />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Connected successfully!</h3>
-                  <p className="text-gray-500 text-sm font-medium">Your Instagram account is now linked and ready for use.</p>
+                  <h3 className="text-4xl font-black text-[#3E3A39] mb-4 tracking-tighter uppercase">Identity Synced</h3>
+                  <p className="text-[#8E7A70] font-bold italic text-lg">Your Instagram node has successfully integrated with the outreach cluster.</p>
                 </>
               ) : (
                 <>
-                  <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
-                    <AlertCircle size={32} />
+                  <div className="w-28 h-28 bg-rose-500/10 text-rose-500 rounded-[3rem] flex items-center justify-center mx-auto mb-10 shadow-sm border border-rose-500/20">
+                    <AlertCircle size={48} />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Login Failed</h3>
-                  <p className="text-red-500 font-medium mb-8 text-sm">{result.reason}</p>
+                  <h3 className="text-4xl font-black text-[#3E3A39] mb-4 tracking-tighter uppercase">Handshake Failed</h3>
+                  <p className="text-rose-500 font-black mb-12 text-lg italic">{result.reason}</p>
                   <button 
                     onClick={() => setResult(null)}
-                    className="px-8 py-4 bg-gray-900 text-white font-bold text-xs uppercase tracking-wider rounded-2xl hover:bg-gray-800 transition-all shadow-xl"
+                    className="px-14 py-6 bg-[#B78D7D] text-white font-black rounded-[2rem] hover:bg-[#A37B6D] transition-all shadow-lg text-[11px] uppercase tracking-[0.4em] font-mono"
                   >
-                    Try Again
+                    Retry Handshake
                   </button>
                 </>
               )}
             </div>
           ) : (
-            <form onSubmit={handleConnect} className="space-y-6">
+            <form onSubmit={handleConnect} className="space-y-10">
               {error && (
-                <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-xs font-semibold rounded-2xl flex items-center gap-3 animate-in slide-in-from-top">
-                  <AlertCircle size={16} />
+                <div className="p-6 bg-rose-500/5 border border-rose-500/10 text-rose-500 text-xs font-black rounded-2xl flex items-center gap-4 animate-shake uppercase tracking-widest font-mono">
+                  <AlertCircle size={22} />
                   {error}
                 </div>
               )}
 
-              {result?.status === "Checkpoint" ? (
-                <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
-                   <div className="p-4 bg-[#FFF5F7] border border-pink-100 rounded-2xl flex gap-4 items-start">
-                      <div className="p-2 bg-white rounded-xl text-[#E1306C] shadow-sm">
-                         <Lock size={18} />
+              {(result?.status === "Checkpoint" || result?.status === "TwoFactor") ? (
+                <div className="space-y-10 animate-in slide-in-from-top-4 duration-500">
+                   <div className="p-8 bg-[#B78D7D]/5 border border-[#B78D7D]/10 rounded-[2.5rem] flex gap-6 items-center">
+                      <div className="p-5 bg-white rounded-2xl text-[#B78D7D] border border-[#B78D7D]/10 shadow-sm">
+                         <Lock size={26} />
                       </div>
                       <div>
-                         <p className="text-sm font-bold text-gray-900">Security Code Required</p>
-                         <p className="text-xs font-medium text-gray-500 mt-0.5">Please enter the 6-digit code sent to your email or mobile device.</p>
+                         <p className="text-xl font-black text-[#3E3A39] uppercase">Identity Challenge</p>
+                         <p className="text-[10px] font-black text-[#8E7A70] mt-1 uppercase tracking-widest font-mono">Security code required to verify sequence protocol.</p>
                       </div>
                    </div>
 
-                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 ml-1">
-                       <ShieldCheck size={14} className="text-[#E1306C]" />
-                       <label className="text-xs font-semibold text-gray-500">Security Code</label>
-                    </div>
+                   <div className="space-y-4">
+                    <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono">Verification Code</label>
                     <input
                       type="text"
                       value={twoFactorCode}
                       onChange={(e) => setTwoFactorCode(e.target.value)}
-                      className="w-full bg-pink-50/30 border border-pink-100 rounded-2xl px-6 py-4 text-center text-2xl font-bold tracking-[0.5em] text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm"
+                      className="w-full bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-2xl px-10 py-6 text-center text-4xl font-black tracking-[0.8em] text-[#3E3A39] outline-none focus:border-[#B78D7D] transition-all font-mono shadow-sm"
                       placeholder="000000"
-                      maxLength={6}
                     />
                   </div>
-                </div>
-              ) : result?.status === "AppConfirmation" ? (
-                <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
-                   <div className="p-4 bg-[#F0F7FF] border border-blue-100 rounded-2xl flex gap-4 items-start">
-                      <div className="p-2 bg-white rounded-xl text-blue-600 shadow-sm">
-                         <Smartphone size={18} />
-                      </div>
-                      <div>
-                         <p className="text-sm font-bold text-gray-900">App Confirmation</p>
-                         <p className="text-xs font-medium text-gray-500 mt-0.5">Please open your Instagram or Facebook app on your mobile device and approve this login request.</p>
-                      </div>
-                   </div>
-                   
-                   <div className="py-2 text-center">
-                      <div className="inline-block px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-full animate-pulse">
-                         Waiting for your confirmation...
-                      </div>
-                   </div>
-
-                   <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 italic text-[10px] text-gray-400 text-center">
-                      Once you click "Approve" on your phone, click the button below.
-                   </div>
                 </div>
               ) : (
                 <>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 ml-1">
-                       <User size={14} className="text-[#E1306C]" />
-                       <label className="text-xs font-semibold text-gray-500">Username / Email</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div className="space-y-4">
+                      <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono">Handle / Email</label>
+                      <div className="relative group">
+                        <User size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within:text-[#B78D7D] transition-colors" />
+                        <input
+                          type="text"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-2xl pl-16 pr-8 py-5 text-sm font-bold text-[#3E3A39] outline-none focus:border-[#B78D7D] transition-all shadow-sm"
+                          placeholder="operator_identity"
+                        />
+                      </div>
                     </div>
-                    <input
-                      type="text"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-medium text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm"
-                      placeholder="e.g. your_instagram_handle"
-                    />
+
+                    <div className="space-y-4">
+                      <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono">Security Passkey</label>
+                      <div className="relative group">
+                        <Key size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within:text-[#B78D7D] transition-colors" />
+                        <input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-2xl pl-16 pr-8 py-5 text-sm font-bold text-[#3E3A39] outline-none focus:border-[#B78D7D] transition-all shadow-sm"
+                          placeholder="••••••••••••"
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 ml-1">
-                       <Key size={14} className="text-[#E1306C]" />
-                       <label className="text-xs font-semibold text-gray-500">Password</label>
-                    </div>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-medium text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm"
-                      placeholder="••••••••"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 ml-1">
-                       <Terminal size={14} className="text-[#E1306C]" />
-                       <label className="text-xs font-semibold text-gray-500">Optional: Cookies (JSON)</label>
-                    </div>
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono">Session Fragment (JSON Cookies)</label>
                     <textarea
                       value={cookies}
                       onChange={(e) => setCookies(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] px-6 py-4 text-xs font-mono text-gray-600 outline-none h-24 focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 focus:bg-white transition-all shadow-sm resize-none"
+                      className="w-full bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-[2.5rem] px-8 py-6 text-xs font-mono text-[#8E7A70] outline-none h-32 focus:border-[#B78D7D] transition-all shadow-sm resize-none custom-scrollbar"
                       placeholder='[{"domain": ".instagram.com", ...}]'
                     />
                   </div>
-
-                   {/* Proxy Configuration */}
-                   <div className="space-y-4 pt-2 border-t border-dashed border-gray-100">
-                    <div className="flex items-center gap-2">
-                       <input
-                          type="checkbox"
-                          id="useProxy"
-                          checked={useProxy}
-                          onChange={(e) => setUseProxy(e.target.checked)}
-                          className="w-4 h-4 rounded text-pink-500 focus:ring-pink-500/20 border-gray-300"
-                       />
-                       <label htmlFor="useProxy" className="text-xs font-semibold text-gray-700 cursor-pointer select-none">
-                          Use Custom Proxy
-                       </label>
+                  
+                  <div className="pt-10 border-t border-[#B78D7D]/10 space-y-8">
+                    <div className="flex items-center gap-4 group cursor-pointer" onClick={() => setUseProxy(!useProxy)}>
+                       <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${useProxy ? 'bg-[#B78D7D] border-[#B78D7D]' : 'border-[#B78D7D]/20 bg-white'}`}>
+                          {useProxy && <CheckCircle size={14} className="text-white" />}
+                       </div>
+                       <span className="text-xs font-black text-[#8E7A70] uppercase tracking-widest font-mono group-hover:text-[#B78D7D] transition-colors">
+                          Enable Secure Relay Tunnel
+                       </span>
                     </div>
 
                     {useProxy && (
-                       <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-top-2 fade-in duration-300">
-                          <div className="space-y-1">
-                             <label className="text-xs font-semibold text-gray-500 pl-1">Host / IP</label>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in slide-in-from-top-4 duration-500">
+                          <div className="space-y-3">
+                             <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-2">Relay Host</label>
                              <input
                                 type="text"
                                 value={proxyHost}
                                 onChange={(e) => setProxyHost(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
-                                placeholder="192.168.1.1"
+                                className="w-full bg-white border border-[#B78D7D]/20 rounded-xl px-6 py-4 text-sm font-bold text-[#3E3A39] outline-none focus:border-[#B78D7D] shadow-sm"
+                                placeholder="0.0.0.0"
                              />
                           </div>
-                          <div className="space-y-1">
-                             <label className="text-xs font-semibold text-gray-500 pl-1">Port</label>
+                          <div className="space-y-3">
+                             <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-2">Tunnel Port</label>
                              <input
                                 type="text"
                                 value={proxyPort}
                                 onChange={(e) => setProxyPort(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                className="w-full bg-white border border-[#B78D7D]/20 rounded-xl px-6 py-4 text-sm font-bold text-[#3E3A39] outline-none focus:border-[#B78D7D] shadow-sm"
                                 placeholder="8080"
-                             />
-                          </div>
-                          <div className="space-y-1">
-                             <label className="text-xs font-semibold text-gray-500 pl-1">Proxy User</label>
-                             <input
-                                type="text"
-                                value={proxyUsername}
-                                onChange={(e) => setProxyUsername(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
-                                placeholder="Optional"
-                             />
-                          </div>
-                          <div className="space-y-1">
-                             <label className="text-xs font-semibold text-gray-500 pl-1">Proxy Pass</label>
-                             <input
-                                type="password"
-                                value={proxyPassword}
-                                onChange={(e) => setProxyPassword(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
-                                placeholder="Optional"
                              />
                           </div>
                        </div>
                     )}
-                   </div>
+                  </div>
                 </>
               )}
 
-              <div className="pt-4 flex flex-col gap-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-pink-500/20 hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 size={18} className="animate-spin" />
-                      {result?.status === "Checkpoint" ? "Verifying Code..." : result?.status === "AppConfirmation" ? "Syncing Confirmation..." : "Logging in..."}
-                    </>
-                  ) : (
-                    <>
-                      {result?.status === "Checkpoint" ? <CheckCircle size={18} /> : result?.status === "AppConfirmation" ? <Smartphone size={18} /> : <Rocket size={18} />}
-                      {result?.status === "Checkpoint" ? "Confirm Security Code" : result?.status === "AppConfirmation" ? "I've Approved on App" : "Connect Account"}
-                    </>
-                  )}
-                </button>
-                
-                <div className="p-4 bg-pink-50/50 rounded-2xl border border-pink-50 flex gap-3 text-left">
-                   <Info size={16} className="text-[#E1306C] shrink-0" />
-                   <p className="text-xs font-medium text-[#E1306C]/80 leading-relaxed italic">
-                      {result?.status === "Checkpoint" 
-                        ? "Ensure you enter the most recent code received." 
-                        : result?.status === "AppConfirmation"
-                        ? "The bot is checking for a valid session. Approval typically takes 5-10 seconds to sync."
-                        : "Verify your login details. If your account has 2FA enabled, you may be prompted to enter a code on your mobile device."}
-                   </p>
-                </div>
-              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#B78D7D] text-white py-6 rounded-[2rem] font-black text-lg shadow-[0_20px_40px_rgba(183,141,125,0.3)] hover:bg-[#A37B6D] transition-all disabled:opacity-50 flex items-center justify-center gap-5 active:scale-[0.98] border border-white/10 mt-8 uppercase tracking-[0.3em] font-mono text-[12px]"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 size={24} className="animate-spin opacity-80" />
+                    <span className="animate-pulse">Active Handshake...</span>
+                  </>
+                ) : (
+                  <>
+                    <Rocket size={24} />
+                    <span>{result?.status === "Checkpoint" || result?.status === "TwoFactor" ? "Verify Sequence" : "Establish Link"}</span>
+                  </>
+                )}
+              </button>
             </form>
           )}
+        </div>
+        
+        {/* Footer info */}
+        <div className="p-10 bg-[#F8F4F2]/50 border-t border-[#B78D7D]/10 flex items-center justify-center gap-4">
+           <Activity size={18} className="text-[#B78D7D]" />
+           <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#B2AAA6] font-mono">End-to-End Encryption Enabled</span>
         </div>
       </div>
     </div>

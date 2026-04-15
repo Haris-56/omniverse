@@ -1,0 +1,92 @@
+I have put together the copy for your entire web app. I used very simple, conversational English—no "marketing speak," no complex technical words, and strictly following your "3rd-grade style" rule.
+
+---
+
+### **1. Signup & Login**
+**The Page:**
+* **Title:** Get Started.
+* **Text:** Use Omniverse to talk to your customers.
+**The Form:**
+* **Email:** Your email address.
+* **Password:** Pick a secret password.
+* **Button:** Go to my account.
+
+---
+
+### **2. Email Module**
+**The Page:**
+* **Title:** Emails.
+* **Text:** See how many emails you sent and who wrote back.
+**The "Connect" Form:**
+* **Email:** What is your email address?
+* **Password:** Your email password.
+* **Daily Limit:** How many emails can we send each day?
+* **Button:** Connect Email.
+**The "Plan" Form:**
+* **Subject:** The title of your email.
+* **Message:** What do you want to say?
+* **Button:** Save Email.
+
+---
+
+### **3. Contacts List Module**
+**The Page:**
+* **Title:** My People.
+* **Text:** This is a list of everyone you want to talk to.
+**The Form:**
+* **Add People:** Paste your list here.
+* **Details:** Put their names and where they work.
+* **Button:** Save List.
+
+---
+
+### **4. Social Media Modules (FB, IG, LI)**
+*Note: Use the same simple style for all three.*
+
+**The Pages:**
+* **Title:** Facebook / Instagram / LinkedIn.
+* **Text:** Manage your social accounts here.
+**The "Connect" Form:**
+* **Username:** Your account name.
+* **Password:** Your account password.
+* **Safety:** We will use a secret IP to keep you safe.
+* **Button:** Connect Account.
+**The "Plan" Form:**
+* **Task:** What should the computer do? (Send a friend request or send a message).
+* **Text:** What should the message say?
+* **Button:** Start Social Task.
+
+---
+
+### **5. Custom Campaign Builder**
+**The Page:**
+* **Title:** Make a Big Plan.
+* **Text:** Combine different ways to talk to people.
+**The Form:**
+* **Step 1:** Send a LinkedIn Invite.
+* **Wait:** Wait for 2 days.
+* **Step 2:** Send an Email.
+* **Step 3:** Send an Instagram message.
+* **Button:** Run the Big Plan.
+
+---
+
+### **6. AI Creator**
+**The Page:**
+* **Title:** AI Writer.
+* **Text:** The computer writes messages for you.
+**The Form:**
+* **What do you do?:** Describe your work in one sentence.
+* **Who are you talking to?:** Describe your customers.
+* **Button:** Let the AI write.
+
+---
+
+### **7. AI Closer**
+**The Page:**
+* **Title:** AI Helper.
+* **Text:** This helps you finish the talk and get the sale.
+**The Form:**
+* **Tone:** Do you want to sound friendly or like a boss?
+* **Goal:** What do you want them to do? (Example: "Book a call").
+* **Button:** Save AI Settings.

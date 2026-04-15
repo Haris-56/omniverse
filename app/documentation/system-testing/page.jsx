@@ -1,4 +1,4 @@
-import { CheckCircle, XCircle, ShieldAlert, Cpu, Activity, Server, Radio, RefreshCcw } from "lucide-react";
+import { CheckCircle, XCircle, ShieldAlert, Cpu, Activity, Server, Radio, RefreshCcw, ShieldCheck, Database, Zap, Hexagon } from "lucide-react";
 
 export default function SystemTestingPage() {
   const tests = [
@@ -10,105 +10,108 @@ export default function SystemTestingPage() {
   ];
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      <div className="border-b border-white/10 pb-8 relative group">
-        <div className="absolute -left-8 top-2 w-1 h-12 bg-rose-500 rounded-r-lg shadow-[0_0_15px_rgba(244,63,94,0.6)]"></div>
-        <h1 className="text-4xl font-extrabold text-white tracking-tight">System & Security Testing</h1>
-        <p className="text-slate-400 mt-3 text-lg leading-relaxed max-w-2xl">
+    <div className="space-y-16 animate-in fade-in slide-in-from-bottom-5 duration-1000 pb-32 font-sans">
+      
+      {/* Header Sector */}
+      <div className="border-b border-[#B78D7D]/15 pb-12 relative">
+        <div className="absolute -left-8 top-1.5 w-1.5 h-12 bg-[#B78D7D] rounded-full shadow-sm"></div>
+        <h1 className="text-5xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">System & Security_<span className="text-[#B78D7D]">Testing</span></h1>
+        <p className="text-[#8E7A70] mt-4 text-xl font-bold leading-relaxed max-w-3xl italic">
           Comprehensive evaluation analyzing volumetric stress, proxy evasion stealth metrics, and encryption rigidity scaling.
         </p>
       </div>
 
-      <div className="bg-[#121214] rounded-3xl border border-white/5 p-8 lg:p-12 shadow-2xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-rose-900/10 via-transparent to-transparent"></div>
-        <h2 className="text-xl font-bold text-white mb-10 tracking-wide relative z-10 flex items-center gap-3">
-          <Activity size={24} className="text-rose-400" /> Infrastructure Pressure Map
+      <div className="bg-white rounded-[4rem] border border-[#B78D7D]/10 p-10 lg:p-16 shadow-lg relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#B78D7D]/5 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-1000"></div>
+        
+        <h2 className="text-2xl font-black text-[#3E3A39] mb-12 tracking-tight relative z-10 flex items-center gap-4 uppercase leading-none">
+          <Activity size={32} className="text-[#B78D7D] animate-pulse" /> Infrastructure_Pressure_Map
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
            {/* Section 1: Security & Masking */}
-           <div className="bg-[#0A0A0B] border border-white/5 p-6 rounded-2xl flex flex-col gap-6 shadow-inner">
-             <div className="flex items-center gap-4 text-rose-400 pb-4 border-b border-white/5">
-                <ShieldAlert size={20} />
-                <h3 className="font-bold text-white uppercase tracking-widest text-xs">Security & Evasion</h3>
-             </div>
-             
-             <div className="flex items-center justify-between p-4 bg-rose-500/5 rounded-xl border border-rose-500/10 hover:bg-rose-500/10 transition-colors group cursor-default shadow-lg">
-                <div className="flex items-center gap-3">
-                   <div className="p-2 bg-rose-500/10 rounded-lg group-hover:bg-rose-500/20 transition-colors"><Radio size={16} className="text-rose-400" /></div>
-                   <span className="text-xs font-mono text-rose-200">playwright-extra</span>
-                </div>
-                <div className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">CreepJS Evasion</div>
-             </div>
-             
-             <div className="flex items-center justify-between p-4 bg-rose-500/5 rounded-xl border border-rose-500/10 hover:bg-rose-500/10 transition-colors group cursor-default shadow-lg">
-                <div className="flex items-center gap-3">
-                   <div className="p-2 bg-rose-500/10 rounded-lg group-hover:bg-rose-500/20 transition-colors"><ShieldAlert size={16} className="text-rose-400" /></div>
-                   <span className="text-xs font-mono text-rose-200">AES-256-GCM Auth</span>
-                </div>
-                <div className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">MongoDB Native</div>
-             </div>
+           <div className="bg-[#F8F4F2]/50 border border-[#B78D7D]/10 p-10 rounded-[3rem] flex flex-col gap-8 shadow-inner group/card hover:bg-white transition-all duration-500">
+              <div className="flex items-center gap-5 text-[#B78D7D] pb-6 border-b border-[#B78D7D]/10">
+                 <ShieldCheck size={24} />
+                 <h3 className="font-black text-[#3E3A39] uppercase tracking-[0.4em] text-[10px] font-mono">Security_&_Evasion</h3>
+              </div>
+              
+              <div className="flex items-center justify-between p-6 bg-white rounded-2xl border border-[#B78D7D]/10 shadow-sm transition-all hover:border-[#B78D7D]/40 group/sub">
+                 <div className="flex items-center gap-4">
+                    <div className="p-3 bg-[#F8F4F2] rounded-xl text-[#B78D7D] group-hover/sub:bg-[#B78D7D] group-hover/sub:text-white transition-all shadow-inner"><Radio size={18} /></div>
+                    <span className="text-[12px] font-black text-[#3E3A39] font-mono tracking-tighter">PLAYWRIGHT::EXTRA</span>
+                 </div>
+                 <div className="text-[9px] uppercase font-black text-[#B2AAA6] tracking-[0.3em] font-mono italic">CreepJS Evasion</div>
+              </div>
+              
+              <div className="flex items-center justify-between p-6 bg-white rounded-2xl border border-[#B78D7D]/10 shadow-sm transition-all hover:border-[#B78D7D]/40 group/sub">
+                 <div className="flex items-center gap-4">
+                    <div className="p-3 bg-[#F8F4F2] rounded-xl text-[#B78D7D] group-hover/sub:bg-[#B78D7D] group-hover/sub:text-white transition-all shadow-inner"><ShieldAlert size={18} /></div>
+                    <span className="text-[12px] font-black text-[#3E3A39] font-mono tracking-tighter">AES-256-GCM_AUTH</span>
+                 </div>
+                 <div className="text-[9px] uppercase font-black text-[#B2AAA6] tracking-[0.3em] font-mono italic">MongoDB Native</div>
+              </div>
            </div>
 
            {/* Section 2: Load Simulation */}
-           <div className="bg-[#0A0A0B] border border-white/5 p-6 rounded-2xl flex flex-col gap-6 shadow-inner">
-             <div className="flex items-center gap-4 text-blue-400 pb-4 border-b border-white/5">
-                <Cpu size={20} />
-                <h3 className="font-bold text-white uppercase tracking-widest text-xs">Load Simulation Matrix</h3>
-             </div>
-             
-             <div className="flex flex-col gap-0">
-               <div className="flex items-center justify-between p-3 rounded-t-xl bg-blue-500/10 border border-t-blue-500/20 border-x-blue-500/20 border-b-0 text-xs font-mono text-blue-300">
-                  <span className="flex items-center gap-2"><Server size={14} /> 50,000 Queue Jobs</span>
-                  <span className="text-[10px] tracking-widest text-slate-400 uppercase">Input</span>
-               </div>
-               <div className="flex items-center justify-center p-2 bg-blue-500/5 border-x border-blue-500/20 text-blue-400/50">
-                  <RefreshCcw size={16} className="animate-spin duration-3000" />
-               </div>
-               <div className="flex items-center justify-between p-3 rounded-b-xl bg-blue-500/5 border border-b-blue-500/20 border-x-blue-500/20 border-t-0 text-xs font-mono text-blue-300">
-                  <span className="flex items-center gap-2"><Activity size={14} /> Memory: 1.41 GB</span>
-                  <span className="text-[10px] tracking-widest text-emerald-400 uppercase">Stable</span>
-               </div>
-             </div>
+           <div className="bg-[#F8F4F2]/50 border border-[#B78D7D]/10 p-10 rounded-[3rem] flex flex-col gap-8 shadow-inner group/card hover:bg-white transition-all duration-500">
+              <div className="flex items-center gap-5 text-[#B78D7D] pb-6 border-b border-[#B78D7D]/10">
+                 <Cpu size={24} />
+                 <h3 className="font-black text-[#3E3A39] uppercase tracking-[0.4em] text-[10px] font-mono">Load_Simulation_Matrix</h3>
+              </div>
+              
+              <div className="flex flex-col gap-0 shadow-sm rounded-[2rem] overflow-hidden border border-[#B78D7D]/10">
+                <div className="flex items-center justify-between p-5 bg-white border-b border-[#B78D7D]/5 text-[11px] font-black text-[#3E3A39] font-mono uppercase tracking-widest">
+                   <span className="flex items-center gap-3"><Server size={14} className="text-[#B78D7D]" /> 50,000 Queue Jobs</span>
+                   <span className="text-[9px] text-[#B2AAA6] italic">Input</span>
+                </div>
+                <div className="flex items-center justify-center py-6 bg-[#F8F4F2]/50 text-[#B2AAA6]">
+                   <RefreshCcw size={20} className="animate-spin-slow opacity-40" />
+                </div>
+                <div className="flex items-center justify-between p-5 bg-white border-t border-[#B78D7D]/5 text-[11px] font-black text-[#3E3A39] font-mono uppercase tracking-widest">
+                   <span className="flex items-center gap-3"><Activity size={14} className="text-emerald-500" /> Memory: 1.41 GB</span>
+                   <span className="text-[9px] text-emerald-500 italic uppercase">Stable</span>
+                </div>
+              </div>
            </div>
         </div>
+
+        <div className="absolute inset-0 opacity-[0.01] pointer-events-none group-hover:opacity-[0.02] transition-opacity bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
       </div>
 
-      {/* Styled Table */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-white tracking-tight">Execution Matrix</h2>
-        <div className="overflow-x-auto rounded-3xl border border-white/5 bg-[#0e0e10] shadow-[0_4px_40px_rgba(0,0,0,0.5)]">
-          <table className="w-full text-left text-sm text-slate-300">
-            <thead className="bg-[#121214] text-[10px] uppercase text-slate-500 tracking-widest border-b border-white/5">
+      {/* Styled Table Sector */}
+      <div className="space-y-10">
+        <h2 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none flex items-center gap-4">
+           <Zap size={28} className="text-[#B78D7D]" /> Execution_Matrix
+        </h2>
+        <div className="overflow-hidden rounded-[3.5rem] border border-[#B78D7D]/15 bg-white shadow-xl relative group">
+          <table className="w-full text-left text-sm text-[#3E3A39]">
+            <thead className="bg-[#F8F4F2]/50 text-[10px] uppercase text-[#B2AAA6] tracking-[0.5em] border-b border-[#B78D7D]/10 font-mono">
               <tr>
-                <th className="px-6 py-5 font-semibold">Test ID</th>
-                <th className="px-6 py-5 font-semibold">Target Domain</th>
-                <th className="px-6 py-5 font-semibold">Description</th>
-                <th className="px-6 py-5 font-semibold">Expected Result</th>
-                <th className="px-6 py-5 font-semibold w-32">Status</th>
+                <th className="px-8 py-8 font-black">Test_ID</th>
+                <th className="px-8 py-8 font-black">Target_Domain</th>
+                <th className="px-8 py-8 font-black">Architecture_Description</th>
+                <th className="px-8 py-8 font-black">Expected_Resonance</th>
+                <th className="px-8 py-8 font-black w-40">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#B78D7D]/5 relative z-10">
               {tests.map((t, i) => (
-                <tr key={i} className="hover:bg-white/[0.02] transition-colors group">
-                  <td className="px-6 py-5 whitespace-nowrap font-bold text-rose-400 font-mono text-xs">{t.id}</td>
-                  <td className="px-6 py-5">
-                      <span className="font-mono text-xs text-rose-300/80 bg-rose-500/10 border border-rose-500/20 rounded px-2.5 py-1 whitespace-nowrap">{t.component}</span>
+                <tr key={i} className="hover:bg-[#F8F4F2]/30 transition-all group/row duration-500">
+                  <td className="px-8 py-8 whitespace-nowrap font-black text-[#B78D7D] font-mono text-[12px] group-hover/row:translate-x-1 transition-transform">{t.id}</td>
+                  <td className="px-8 py-8">
+                      <span className="font-black font-mono text-[10px] text-[#B78D7D] bg-[#F8F4F2] border border-[#B78D7D]/15 rounded-xl px-4 py-2 uppercase tracking-widest shadow-inner leading-none">{t.component}</span>
                   </td>
-                  <td className="px-6 py-5 text-slate-300 font-medium leading-relaxed">{t.desc}</td>
-                  <td className="px-6 py-5 text-slate-400 text-xs leading-relaxed">{t.expected}</td>
-                  <td className="px-6 py-5">
+                  <td className="px-8 py-8 text-[#5E5A59] font-bold leading-relaxed italic">{t.desc}</td>
+                  <td className="px-8 py-8 text-[#B2AAA6] font-black text-[10px] leading-relaxed font-mono tracking-widest uppercase">{t.expected}</td>
+                  <td className="px-8 py-8">
                     {t.status === "Pass" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                        <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm font-mono leading-none">
                             <CheckCircle size={14} /> Pass
                         </span>
-                    ) : t.status === "Fail" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-rose-500/10 text-rose-400 border border-rose-500/20 shadow-[0_0_15px_rgba(244,63,94,0.1)]">
-                            <XCircle size={14} /> Fail
-                        </span>
                     ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-slate-500/10 text-slate-400 border border-slate-500/20">
-                            <span className="h-2 w-2 rounded-full bg-slate-400" /> Wait
+                        <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-rose-50 text-rose-600 border border-rose-100 shadow-sm font-mono leading-none">
+                            <XCircle size={14} /> Fail
                         </span>
                     )}
                   </td>
@@ -116,8 +119,21 @@ export default function SystemTestingPage() {
               ))}
             </tbody>
           </table>
+          <div className="absolute inset-0 opacity-[0.01] pointer-events-none group-hover:opacity-[0.02] transition-opacity bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
         </div>
       </div>
+
+       {/* Global Branding Watermark */}
+       <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03] select-none z-[-1] grayscale">
+         <div className="flex flex-col items-end gap-10">
+            <h1 className="text-[14rem] font-black font-sans tracking-tighter uppercase leading-none text-[#B78D7D]">SECURITY</h1>
+            <div className="flex items-center gap-10">
+               <Hexagon size={80} strokeWidth={2} className="text-[#B78D7D]" />
+               <p className="text-4xl font-black uppercase tracking-[1em] text-[#B78D7D] font-mono">STRESS_TEST</p>
+            </div>
+         </div>
+      </div>
+
     </div>
   );
 }

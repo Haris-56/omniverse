@@ -6,7 +6,9 @@ import {
   UserCheck, UserX, Shield, 
   ExternalLink, Mail, ArrowUpDown,
   History, CreditCard, Network,
-  Loader2, CheckCircle2, AlertCircle
+  Loader2, CheckCircle2, AlertCircle, RefreshCw,
+  Cpu, Zap, Globe, ShieldCheck, Trash2,
+  Hexagon, Settings, Activity
 } from "lucide-react";
 
 export default function UserManagement() {
@@ -94,255 +96,274 @@ export default function UserManagement() {
   );
 
   return (
-    <div className="space-y-8 pb-20 animate-in fade-in duration-500">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">User Management</h1>
-          <p className="text-slate-500 font-medium mt-1">Control access, monitor usage, and manage member configurations.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button onClick={fetchData} className="px-6 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 font-bold text-sm hover:bg-slate-50 transition-all flex items-center gap-2 active:scale-95">
-            <RefreshCw className={loading ? "animate-spin" : ""} size={16} /> Refresh Fleet
+    <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 font-sans p-4 lg:p-0 pb-32">
+      <div className="max-w-full mx-auto space-y-20">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 border-b border-[#B78D7D]/10 pb-16">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+               <span className="px-5 py-2 bg-[#B78D7D]/10 text-[#B78D7D] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#B78D7D]/20 flex items-center gap-3 font-mono">
+                 <ShieldCheck size={16} className="opacity-80" />
+                 Authority_Center::Active
+               </span>
+            </div>
+            <h1 className="text-7xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">
+              User <span className="text-[#B78D7D]">Registry</span>
+            </h1>
+            <p className="text-[#8E7A70] text-2xl font-medium max-w-3xl leading-relaxed italic">Administer high-fidelity identity nodes and modulate neural access hierarchies.</p>
+          </div>
+          <button 
+            onClick={fetchData}
+            className="group px-12 py-6 bg-white text-[#3E3A39] font-black uppercase text-[11px] tracking-[0.4em] rounded-[2rem] flex items-center justify-center gap-5 transition-all shadow-sm hover:bg-[#F8F4F2] active:scale-95 font-mono border border-[#B78D7D]/15"
+          >
+            <RefreshCw size={22} className={loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-700"} /> 
+            Sync_Fleet
           </button>
         </div>
-      </div>
 
-      {/* Search Bar */}
-      <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-          <input 
-            type="text" 
-            placeholder="Search users by name, email or ID..." 
-            className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/20 font-medium text-slate-900 transition-all"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        {/* Global Search Interface */}
+        <div className="bg-white p-12 rounded-[4rem] border border-[#B78D7D]/15 shadow-sm relative overflow-hidden group">
+          <div className="relative z-10">
+            <label className="text-[11px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-8 mb-6 block leading-none">Search_Matrix</label>
+            <div className="relative">
+              <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-[#B2AAA6]" size={28} />
+              <input 
+                type="text" 
+                placeholder="Identify user by name, email or secure ID token..." 
+                className="w-full pl-20 pr-8 py-7 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-[2.5rem] outline-none focus:border-[#B78D7D] font-bold text-[#3E3A39] transition-all shadow-sm italic placeholder:text-[#B2AAA6]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
         </div>
-      </div>
 
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-32 space-y-4">
-           <Loader2 size={40} className="text-indigo-600 animate-spin" />
-           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Scanning Grid Identities...</p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden min-h-[400px]">
-          <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left border-collapse min-w-[900px]">
-            <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100 transition-colors">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">User Details</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Plan</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Campaigns</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Joined</th>
-                <th className="px-8 py-5"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredUsers.map((user) => (
-                <tr key={user.id || user._id} className="hover:bg-slate-50/50 transition-all group">
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center font-black text-lg uppercase border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                        {user.name?.charAt(0) || 'U'}
-                      </div>
-                      <div>
-                        <h4 className="font-black text-slate-900 text-base">{user.name || "N/A"}</h4>
-                        <p className="text-slate-400 font-bold text-xs">{user.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                      <span className="font-bold text-slate-700 text-sm">{user.plan}</span>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${user.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-red-50 text-red-600 border border-red-100'}`}>
-                      {user.status === 'Active' ? <UserCheck size={12} /> : <UserX size={12} />}
-                      {user.status}
-                    </span>
-                  </td>
-                  <td className="px-8 py-6 text-center">
-                    <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-black">
-                      {user.stats?.campaigns || 0}
-                    </span>
-                  </td>
-                  <td className="px-8 py-6">
-                     <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">
-                       {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '---'}
-                     </p>
-                  </td>
-                  <td className="px-8 py-6 text-right">
-                    <button 
-                      onClick={() => setSelectedUser(user)}
-                      className="px-4 py-2 bg-slate-50 border border-slate-100 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all active:scale-95 shadow-sm"
-                    >
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {filteredUsers.length === 0 && (
-                <tr>
-                   <td colSpan="6" className="py-24 text-center">
-                      <div className="flex flex-col items-center gap-4 max-w-xs mx-auto">
-                        <div className="w-20 h-20 bg-slate-50 rounded-[2.5rem] flex items-center justify-center text-slate-200">
-                          <UserX size={40} />
+        {/* Grid Display */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-48 space-y-10 animate-pulse text-center">
+             <div className="relative">
+                <div className="w-24 h-24 border-8 border-[#F8F4F2] border-t-[#B78D7D] rounded-full animate-spin shadow-inner" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                   <Hexagon size={40} className="text-[#B78D7D]" />
+                </div>
+             </div>
+             <p className="text-[11px] font-black text-[#B2AAA6] uppercase tracking-[0.6em] font-mono">Decoding_Neural_Nodes...</p>
+          </div>
+        ) : (
+          <div className="bg-white rounded-[4rem] overflow-hidden relative border border-[#B78D7D]/10 shadow-sm">
+             <div className="absolute inset-x-0 bottom-0 h-[3px] bg-gradient-to-r from-transparent via-[#B78D7D]/30 to-transparent" />
+            <div className="overflow-x-auto custom-scrollbar">
+              <table className="w-full text-left">
+                <thead className="bg-[#F8F4F2]/50 text-[11px] font-black uppercase text-[#B2AAA6] tracking-[0.4em] font-mono border-b border-[#B78D7D]/10">
+                  <tr>
+                    <th className="p-12">Identity_Node</th>
+                    <th className="p-12">Tier_Hierarchy</th>
+                    <th className="p-12">Subsystem_Status</th>
+                    <th className="p-12 text-center">Load</th>
+                    <th className="p-12">Induction_ST</th>
+                    <th className="p-12 text-right px-16">Operations</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#B78D7D]/5">
+                  {filteredUsers.map((user) => (
+                    <tr key={user.id || user._id} className="hover:bg-[#F8F4F2]/30 transition-all group cursor-default">
+                      <td className="p-12">
+                        <div className="flex items-center gap-8">
+                          <div className="w-20 h-20 bg-[#F8F4F2] border border-[#B78D7D]/10 text-[#B78D7D] rounded-[2rem] flex items-center justify-center font-black text-3xl shadow-sm group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
+                            {user.name?.charAt(0) || 'U'}
+                          </div>
+                          <div>
+                            <h4 className="font-black text-[#3E3A39] text-2xl tracking-tighter uppercase leading-none">{user.name || "UNIDENTIFIED"}</h4>
+                            <p className="text-[#8E7A70] font-black text-[11px] mt-4 font-mono group-hover:text-[#B78D7D] transition-colors uppercase tracking-widest italic">{user.email}</p>
+                          </div>
                         </div>
-                        <p className="text-slate-400 font-bold italic">No matching identities found in current perimeter.</p>
-                      </div>
-                   </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                      </td>
+                      <td className="p-12">
+                        <div className="flex items-center gap-4">
+                          <div className="w-3 h-3 rounded-full bg-[#B78D7D] shadow-[0_0_12px_rgba(183,141,125,0.4)]" />
+                          <span className="font-black text-[#8E7A70] text-[12px] uppercase tracking-[0.2em] font-mono">Plan::{user.plan}</span>
+                        </div>
+                      </td>
+                      <td className="p-12">
+                        <span className={`inline-flex items-center gap-4 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] font-mono border ${user.status === 'Active' ? 'bg-[#B78D7D]/10 text-[#B78D7D] border-[#B78D7D]/20' : 'bg-rose-50 text-rose-500 border-rose-200'} shadow-sm`}>
+                          <div className={`w-2 h-2 rounded-full ${user.status === 'Active' ? 'bg-[#B78D7D] animate-pulse' : 'bg-rose-500'}`} />
+                          {user.status}
+                        </span>
+                      </td>
+                      <td className="p-12 text-center">
+                        <span className="px-6 py-3 bg-[#F8F4F2] border border-[#B78D7D]/10 text-[#8E7A70] rounded-[1.25rem] text-[11px] font-black font-mono shadow-sm group-hover:text-[#B78D7D] transition-colors uppercase tracking-widest">
+                          {user.stats?.campaigns || 0} U
+                        </span>
+                      </td>
+                      <td className="p-12">
+                         <p className="text-[#B2AAA6] font-black text-[11px] uppercase tracking-[0.3em] font-mono group-hover:text-[#8E7A70] transition-colors italic">
+                           {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '---'}
+                         </p>
+                      </td>
+                      <td className="p-12 text-right px-16">
+                        <button 
+                          onClick={() => setSelectedUser(user)}
+                          className="px-10 py-5 bg-white border border-[#B78D7D]/20 text-[#B2AAA6] rounded-[2rem] text-[11px] font-black uppercase tracking-[0.4em] hover:bg-[#B78D7D] hover:text-white transition-all active:scale-95 font-mono shadow-sm"
+                        >
+                          Calibrate_Node
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredUsers.length === 0 && (
+                    <tr>
+                       <td colSpan="6" className="py-48 text-center opacity-30">
+                          <div className="flex flex-col items-center gap-10 max-w-sm mx-auto">
+                            <div className="w-28 h-28 bg-[#F8F4F2] rounded-[3.5rem] border border-[#B78D7D]/10 flex items-center justify-center text-[#B2AAA6] shadow-sm">
+                              <UserX size={56} />
+                            </div>
+                            <p className="text-[12px] font-black text-[#B2AAA6] uppercase tracking-[0.6em] font-mono italic">Zero_Result_Set</p>
+                          </div>
+                       </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
-      )}
 
-      {/* User Detail View (Modal) */}
+      {/* User Manifest Overlay (Modal) */}
       {selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in" onClick={() => setSelectedUser(null)} />
-          <div className="bg-white w-full max-w-4xl rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col md:flex-row animate-in zoom-in-95 duration-300 max-h-[90vh]">
+        <div className="fixed inset-0 z-[600] flex items-center justify-center p-4 lg:p-8 overflow-y-auto custom-scrollbar">
+          <div className="fixed inset-0 bg-[#3E3A39]/60 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setSelectedUser(null)} />
+          
+          <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-[#B78D7D]/10 relative z-10 overflow-hidden flex flex-col xl:flex-row animate-in zoom-in-95 duration-500 my-auto">
+             <div className="absolute inset-x-0 bottom-0 h-1bg-gradient-to-r from-transparent via-[#B78D7D]/40 to-transparent" />
             
-            {/* Left Panel: Profile */}
-            <div className="md:w-1/3 bg-slate-50 p-10 flex flex-col items-center border-r border-slate-100 shrink-0">
-               <div className="w-24 h-24 bg-white rounded-[2rem] shadow-xl shadow-slate-200 flex items-center justify-center text-3xl font-black text-indigo-600 mb-6 border border-slate-100">
-                 {selectedUser.name?.charAt(0)}
+            {/* Left Sector: Core Identity */}
+            <div className="xl:w-2/5 bg-[#F8F4F2]/50 p-10 flex flex-col items-center border-r border-[#B78D7D]/10 shrink-0 relative">
+               <div className="w-24 h-24 bg-white rounded-2xl shadow-sm flex items-center justify-center text-4xl font-black text-[#B78D7D] mb-6 border border-[#B78D7D]/10 group relative transition-all duration-700 hover:scale-105">
+                  <div className="absolute inset-0 bg-[#B78D7D]/5 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="relative z-10">{selectedUser.name?.charAt(0)}</span>
                </div>
-               <h3 className="text-2xl font-black text-slate-900 mb-1">{selectedUser.name}</h3>
-               <p className="text-slate-400 font-bold text-sm mb-8">{selectedUser.email}</p>
                
-               <div className="w-full space-y-4 mb-8">
-                  <div className="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Subscription Tier</p>
-                    <div className="space-y-3">
-                      <select 
-                        value={selectedUser.planId || ""}
-                        disabled={updating}
-                        onChange={(e) => handleUpdateUser(selectedUser.id || selectedUser._id, { planId: e.target.value })}
-                        className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-black text-indigo-600 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/20 transition-all appearance-none cursor-pointer"
-                      >
-                        <option value="" disabled>Select User Plan...</option>
-                        {plans.length === 0 && <option disabled>Loading protocols...</option>}
-                        {plans.map(p => (
-                          <option key={p._id} value={p._id}>
-                            Tier: {p.name} — ${p.price}/mo
-                          </option>
-                        ))}
-                      </select>
-                      {plans.length === 0 && (
-                        <p className="text-[10px] font-bold text-red-500 mt-2 flex items-center gap-1">
-                          <AlertCircle size={10} /> Plan synchronization failing. Check backend seeding.
-                        </p>
-                      )}
-                      <p className="text-[10px] font-bold text-slate-400 italic px-1">
-                        * Upgrading will instantly expand the user's campaign and email limits.
-                      </p>
+               <h3 className="text-3xl font-black text-[#3E3A39] mb-2 tracking-tighter uppercase text-center leading-tight">{selectedUser.name}</h3>
+               <p className="text-[#8E7A70] font-bold text-[10px] mb-8 uppercase tracking-widest font-mono italic">{selectedUser.email}</p>
+               
+               <div className="w-full space-y-6 mb-8">
+                  <div className="p-6 bg-white rounded-2xl border border-[#B78D7D]/10 shadow-sm transition-all hover:border-[#B78D7D]/30">
+                    <p className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider mb-4 font-mono leading-none">Authorization Tier</p>
+                    <div className="space-y-4">
+                      <div className="relative group">
+                        <select 
+                          value={selectedUser.planId || ""}
+                          disabled={updating}
+                          onChange={(e) => handleUpdateUser(selectedUser.id || selectedUser._id, { planId: e.target.value })}
+                          className="w-full p-4 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-xl text-[11px] font-bold text-[#3E3A39] outline-none focus:border-[#B78D7D] transition-all appearance-none cursor-pointer font-mono tracking-widest uppercase shadow-sm"
+                        >
+                          <option value="" disabled>IDENT PLAN SELECTOR...</option>
+                          {plans.map(p => (
+                            <option key={p._id} value={p._id}>
+                              NODE::{p.name.toUpperCase()} — ${p.price}/LC
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#B2AAA6]">
+                           <Settings size={16} />
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">System Status</p>
-                    <div className="flex gap-2">
+                  <div className="p-6 bg-white rounded-2xl border border-[#B78D7D]/10 shadow-sm transition-all hover:border-[#B78D7D]/30">
+                    <p className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider mb-4 font-mono leading-none">Mission State</p>
+                    <div className="flex gap-4">
                        <button 
                          onClick={() => handleUpdateUser(selectedUser.id || selectedUser._id, { status: "Active" })}
-                         className={`flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all ${selectedUser.status === 'Active' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-100' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
-                       >Active</button>
+                         disabled={updating}
+                         className={`flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all font-mono border ${selectedUser.status === 'Active' ? 'bg-[#B78D7D]/10 text-[#B78D7D] border-[#B78D7D]/30 shadow-sm' : 'bg-[#F8F4F2] text-[#B2AAA6] border-[#B78D7D]/10 hover:border-[#B78D7D]/30'}`}
+                       >Active Link</button>
                        <button 
                          onClick={() => handleUpdateUser(selectedUser.id || selectedUser._id, { status: "Suspended" })}
-                         className={`flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all ${selectedUser.status === 'Suspended' ? 'bg-red-500 text-white shadow-lg shadow-red-100' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
-                       >Suspend</button>
+                         disabled={updating}
+                         className={`flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all font-mono border ${selectedUser.status === 'Suspended' ? 'bg-rose-50 text-rose-500 border-rose-200 shadow-sm' : 'bg-[#F8F4F2] text-[#B2AAA6] border-[#B78D7D]/10 hover:border-[#B78D7D]/30'}`}
+                       >Decommission</button>
                     </div>
                   </div>
                </div>
 
                <button 
                  onClick={() => setSelectedUser(null)}
-                 className="w-full py-4 border border-slate-200 text-slate-400 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all mt-auto"
+                 className="w-full py-4 bg-white text-[#B2AAA6] rounded-xl font-bold text-[10px] uppercase tracking-widest hover:text-[#3E3A39] hover:bg-[#F8F4F2] transition-all mt-auto font-mono border border-[#B78D7D]/15 shadow-sm"
                >
-                 Close Manifest
+                 Close Manifest Registry
                </button>
             </div>
 
-            {/* Right Panel: Stats & Details */}
-            <div className="flex-1 p-10 overflow-y-auto custom-scrollbar">
-               <div className="mb-10">
-                 <h4 className="text-xl font-black text-slate-900 tracking-tight">Telemetry Overview</h4>
-                 <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">Resource consumption metrics</p>
+            {/* Right Sector: Telemetry & Records */}
+            <div className="flex-1 p-10 overflow-y-auto custom-scrollbar relative">
+               <div className="mb-10 relative z-10 flex justify-between items-end">
+                 <div>
+                    <h4 className="text-2xl font-bold text-[#3E3A39] tracking-tight uppercase leading-none">Neural Telemetry</h4>
+                    <p className="text-[#8E7A70] font-bold text-[10px] uppercase tracking-widest mt-3 font-mono flex items-center gap-3">
+                       <Activity size={14} className="text-[#B78D7D]" />
+                       Operational Resource Metrics
+                    </p>
+                 </div>
+                 {updating && <Loader2 size={24} className="animate-spin text-[#B78D7D] opacity-60" />}
                </div>
 
-               <div className="grid grid-cols-2 gap-4 mb-10">
-                 <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Campaigns</p>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-black text-slate-900">{selectedUser.stats?.campaigns || 0}</span>
-                      {updating && <Loader2 size={14} className="animate-spin text-indigo-500" />}
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 relative z-10">
+                 <div className="p-8 bg-[#F8F4F2]/30 rounded-3xl border border-[#B78D7D]/10 shadow-sm group hover:bg-white hover:border-[#B78D7D]/30 transition-all duration-500">
+                    <p className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider mb-4 font-mono leading-none">Neural Chains</p>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-5xl font-black text-[#3E3A39] tracking-tighter leading-none">{selectedUser.stats?.campaigns || 0}</span>
+                      <span className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-widest font-mono">Units</span>
                     </div>
                  </div>
-                 <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Connected Accounts</p>
-                    <span className="text-2xl font-black text-slate-900">{selectedUser.stats?.accounts || 0}</span>
+                 <div className="p-8 bg-[#F8F4F2]/30 rounded-3xl border border-[#B78D7D]/10 shadow-sm group hover:bg-white hover:border-[#B78D7D]/30 transition-all duration-500">
+                    <p className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider mb-4 font-mono leading-none">Identity Links</p>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-5xl font-black text-[#3E3A39] tracking-tighter leading-none">{selectedUser.stats?.accounts || 0}</span>
+                      <span className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-widest font-mono">Nodes</span>
+                    </div>
                  </div>
                </div>
 
-               <div className="space-y-6">
-                 <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest">Metadata</h4>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ID: {selectedUser.id || selectedUser._id}</span>
+               <div className="space-y-8 relative z-10">
+                 <div className="flex items-center justify-between border-b border-[#B78D7D]/10 pb-6">
+                    <h4 className="text-[10px] font-bold text-[#3E3A39] uppercase tracking-wider font-mono leading-none">Node Metadata Signature</h4>
+                    <span className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider font-mono select-all bg-[#F8F4F2] px-3 py-1.5 rounded-lg border border-[#B78D7D]/5 shadow-inner">UUID: {selectedUser.id || selectedUser._id}</span>
                  </div>
                  
-                 <div className="p-6 bg-amber-50 rounded-[2rem] border border-amber-100 border-dashed relative overflow-hidden group">
-                    <div className="absolute right-0 top-0 p-4 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-700">
-                       <Shield size={64} />
+                 <div className="p-8 bg-rose-50 rounded-3xl border border-rose-200 relative overflow-hidden group shadow-sm">
+                    <div className="flex items-center gap-4 mb-6">
+                       <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-rose-500 border border-rose-200 shadow-sm transition-transform duration-700 group-hover:rotate-6">
+                          <Trash2 size={24} />
+                       </div>
+                       <h5 className="text-xl font-bold text-rose-500 uppercase tracking-tighter leading-none">Destructive Commands</h5>
                     </div>
-                    <h5 className="text-sm font-black text-amber-700 mb-2 flex items-center gap-2 relative z-10">
-                      <Shield size={16} /> Admin Authority
-                    </h5>
-                    <p className="text-xs font-medium text-amber-600/80 mb-6 leading-relaxed relative z-10 max-w-sm">
-                      Changes to the plan or status take effect immediately. Ensure user verification before applying "Agency" or "Professional" levels.
+                    <p className="text-sm font-medium text-[#8E7A70] mb-8 leading-relaxed max-w-lg italic opacity-70">
+                      "Execute terminal deletion of this identity record. Action results in immediate cluster disconnection."
                     </p>
-                    <div className="flex gap-3 relative z-10">
-                       <button className="px-5 py-2.5 bg-amber-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-amber-200/50 hover:bg-amber-700 transition-all active:scale-95">
-                         Force Password Reset
+                    <div className="flex flex-wrap gap-4">
+                       <button className="px-6 py-3 bg-white hover:bg-rose-50 text-[#8E7A70] rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95 border border-rose-200 font-mono shadow-sm">
+                         Trigger Password Reset
                        </button>
                        <button 
                          onClick={() => handleDeleteUser(selectedUser.id || selectedUser._id)}
-                         className="px-5 py-2.5 bg-red-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-red-200/50 hover:bg-red-700 transition-all active:scale-95"
+                         className="px-6 py-3 bg-rose-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-md hover:bg-rose-600 transition-all active:scale-95 border border-white/10 font-mono"
                        >
-                         Delete User Record
+                         Execute Purge
                        </button>
                     </div>
                  </div>
                </div>
             </div>
+            
+            {/* Background Texture */}
+            <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
           </div>
         </div>
       )}
     </div>
-  );
-}
-
-function RefreshCw(props) {
-  return (
-    <svg 
-      {...props}
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" stroke="currentColor" 
-      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-    >
-      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-      <path d="M21 3v5h-5"/>
-      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
-      <path d="M3 21v-5h5"/>
-    </svg>
   );
 }

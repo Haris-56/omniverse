@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   ArrowLeft, 
@@ -23,7 +23,9 @@ import {
   ShieldCheck,
   ChevronRight,
   Loader2,
-  GripVertical
+  GripVertical,
+  Hexagon,
+  ChevronLeft
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { 
@@ -83,35 +85,51 @@ function SortableBlock({ block, idx, isLast, isSelected, onSelect, onRemove }) {
     position: 'relative'
   };
 
+  const getPlatformColors = (p) => {
+    const colors = {
+      facebook: 'text-blue-500 bg-blue-50 border-blue-100',
+      instagram: 'text-rose-500 bg-rose-50 border-rose-100',
+      linkedin: 'text-sky-500 bg-sky-50 border-sky-100',
+      email: 'text-[#B78D7D] bg-[#F8F4F2] border-[#B78D7D]/20',
+      automation: 'text-amber-500 bg-amber-50 border-amber-100'
+    };
+    return colors[p] || 'text-[#B78D7D] bg-[#F8F4F2] border-[#B78D7D]/20';
+  };
+
   return (
-    <div ref={setNodeRef} style={style} className="w-full flex flex-col items-center group/block">
+    <div ref={setNodeRef} style={style} className="w-full flex flex-col items-center group/block font-sans animate-in fade-in duration-500">
       <div 
         onClick={() => onSelect(block)}
-        className={`w-full max-w-sm bg-white border rounded-[2rem] p-4 md:p-5 flex items-center gap-4 md:gap-5 transition-all duration-300 cursor-pointer shadow-sm relative z-10 ${isSelected ? 'border-indigo-600 ring-4 ring-indigo-50 shadow-indigo-100' : 'border-gray-100 hover:border-indigo-200 hover:shadow-xl'} ${isDragging ? 'opacity-50 scale-105 shadow-2xl border-indigo-400' : ''}`}
+        className={`w-full max-w-lg bg-white border-2 rounded-2xl p-5 flex items-center gap-4 transition-all duration-300 cursor-pointer relative z-10 ${
+            isSelected 
+            ? 'border-[#B78D7D] shadow-lg ring-4 ring-[#B78D7D]/10' 
+            : 'border-[#B78D7D]/15 hover:border-[#B78D7D]/40 hover:shadow-md'
+        } ${isDragging ? 'opacity-50 scale-105 rotate-1 border-[#B78D7D]' : ''}`}
       >
         <div 
           {...attributes} 
           {...listeners}
-          className="p-1 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing"
+          className="p-2 text-[#B2AAA6] hover:text-[#B78D7D] cursor-grab active:cursor-grabbing transition-colors"
         >
-           <GripVertical size={18} />
+           <GripVertical size={20} />
         </div>
 
-        <div className={`w-12 h-12 md:w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${block.platform === 'facebook' ? 'bg-blue-50 text-blue-600' : block.platform === 'instagram' ? 'bg-purple-50 text-purple-600' : block.platform === 'linkedin' ? 'bg-sky-50 text-sky-600' : block.platform === 'email' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-           {ACTIONS[block.platform]?.find(a => a.id === block.templateId)?.icon || <Zap size={20} />}
+        <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 border shadow-inner transition-transform group-hover/block:-rotate-6 duration-300 ${getPlatformColors(block.platform)}`}>
+           {ACTIONS[block.platform]?.find(a => a.id === block.templateId)?.icon || <Zap size={24} />}
         </div>
         
         <div className="flex-1 min-w-0">
-           <p className="font-black text-gray-900 tracking-tight text-sm md:text-base truncate">{block.label}</p>
-           <div className="flex items-center gap-2 mt-1">
+           <p className="font-bold text-[#3E3A39] text-base mb-1 truncate">{block.label}</p>
+           <div className="flex items-center gap-3">
+              <span className="text-[10px] font-bold text-[#B2AAA6] font-mono leading-none">ID: {block.id.slice(-4)}</span>
               {block.platform !== 'automation' && (
-                 <div className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border ${block.config.accountId ? 'border-green-100 bg-green-50 text-green-600' : 'border-amber-100 bg-amber-50 text-amber-600'}`}>
-                    {block.config.accountId ? 'Account Linked' : 'No Account'}
+                 <div className={`text-[9px] font-bold px-2 py-1 rounded border leading-none ${block.config.accountId ? 'border-emerald-200 bg-emerald-50 text-emerald-600' : 'border-amber-200 bg-amber-50 text-amber-600'}`}>
+                    {block.config.accountId ? 'Ready' : 'Needs Setup'}
                  </div>
               )}
               {block.config.delay > 0 && (
-                <div className="text-[8px] font-black uppercase px-2 py-0.5 rounded-full border border-indigo-100 bg-indigo-50 text-indigo-600">
-                   {block.config.delay}m wait
+                <div className="text-[9px] font-bold px-2 py-1 rounded border border-[#B78D7D]/20 bg-[#F8F4F2] text-[#B78D7D] leading-none">
+                   Wait: {block.config.delay}m
                 </div>
               )}
            </div>
@@ -119,12 +137,17 @@ function SortableBlock({ block, idx, isLast, isSelected, onSelect, onRemove }) {
         
         <button 
           onClick={(e) => { e.stopPropagation(); onRemove(block.id); }} 
-          className="p-2 text-gray-300 hover:text-red-500 transition-opacity"
+          className="p-3 text-[#B2AAA6] hover:text-rose-500 transition-all hover:bg-rose-50 rounded-xl active:scale-90"
         >
-           <Trash2 size={16} />
+           <Trash2 size={20} />
         </button>
+
+        {/* Texture */}
+        <div className="absolute inset-0 opacity-[0.015] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
       </div>
-      {!isLast && <div className="w-0.5 h-12 bg-indigo-100" />}
+      {!isLast && <div className="w-[3px] h-20 bg-gradient-to-b from-[#B78D7D]/30 to-[#B78D7D]/5 relative">
+          <div className="absolute inset-0 bg-[#B78D7D]/10 blur-[6px]"></div>
+      </div>}
     </div>
   );
 }
@@ -240,7 +263,7 @@ export default function CampaignBuilderPage() {
         body: JSON.stringify({ 
           name: campaignName, 
           blocks, 
-          status: 'Running', // Auto-run on deploy
+          status: 'Running', 
           isAdvanced: true,
           platform: 'multi-channel'
         })
@@ -258,64 +281,64 @@ export default function CampaignBuilderPage() {
   };
 
   if (loading) return (
-    <div className="h-screen w-full flex flex-col items-center justify-center bg-[#FAFBFF] space-y-6">
+    <div className="h-screen w-full flex flex-col items-center justify-center bg-[#F8F4F2] space-y-12">
        <div className="relative">
-          <div className="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+          <div className="w-24 h-24 border-[5px] border-[#B78D7D]/10 border-t-[#B78D7D] rounded-full animate-spin shadow-sm"></div>
           <div className="absolute inset-0 flex items-center justify-center">
-             <Zap size={24} className="text-indigo-600 animate-pulse" />
+             <Zap size={32} className="text-[#B78D7D] animate-pulse" />
           </div>
        </div>
-       <p className="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px]">Synchronizing Multi-Channel Nodes...</p>
+       <p className="text-[#B2AAA6] font-bold uppercase tracking-widest text-xs">Loading Campaign...</p>
     </div>
   );
 
   return (
-    <div className="h-screen w-full flex flex-col bg-[#F8F9FE] overflow-hidden">
+    <div className="h-screen w-full flex flex-col bg-[#F8F4F2] overflow-hidden font-sans">
       
       {/* HEADER */}
-      <div className="h-20 bg-white border-b border-gray-100 px-4 md:px-8 flex items-center justify-between shrink-0 z-50">
-        <div className="flex items-center gap-2 md:gap-6">
-          <Link href="/campaign-builder" className="p-2.5 md:p-3 bg-gray-50 hover:bg-white border border-transparent hover:border-gray-100 rounded-2xl transition-all text-gray-500">
-            <ArrowLeft size={18} />
+      <div className="h-16 bg-white border-b border-[#B78D7D]/15 px-4 md:px-6 flex items-center justify-between shrink-0 z-[60] shadow-sm relative">
+        <div className="flex items-center gap-4">
+          <Link href="/campaign-builder" className="p-2 bg-[#F8F4F2] hover:bg-white border border-[#B78D7D]/15 hover:border-[#B78D7D]/40 rounded-lg transition-all text-[#B2AAA6] hover:text-[#B78D7D] active:scale-90 group shadow-sm">
+            <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           </Link>
-          <div className="hidden md:block h-10 w-px bg-gray-100" />
+          <div className="hidden md:block h-8 w-[1px] bg-[#B78D7D]/20" />
           <div className="min-w-0">
             <input 
               value={campaignName}
               onChange={(e) => setCampaignName(e.target.value)}
-              className="text-sm md:text-xl font-black text-gray-900 bg-transparent border-none outline-none focus:ring-0 p-0 tracking-tight placeholder-gray-300 truncate"
+              className="text-lg md:text-xl font-bold text-[#3E3A39] bg-transparent border-none outline-none focus:ring-0 p-0 tracking-tight placeholder-[#B2AAA6]/40 truncate font-sans leading-none"
               placeholder="Unnamed Campaign"
             />
-            <div className="flex items-center gap-2 mt-0.5">
-               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse flex-shrink-0" />
-               <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-gray-400 whitespace-nowrap">Orchestrator v2.0 Active</p>
+            <div className="flex items-center gap-2 mt-1.5">
+               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse flex-shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
+               <p className="text-[10px] font-medium text-[#B2AAA6] whitespace-nowrap">Platform Sync Active</p>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-3">
            {/* Mobile Panel Toggles */}
            <button 
              onClick={() => { setIsLeftPanelOpen(!isLeftPanelOpen); setIsRightPanelOpen(false); }}
-             className={`p-2.5 rounded-xl border transition-all md:hidden ${isLeftPanelOpen ? 'bg-indigo-600' : 'bg-white text-gray-400'}`}
+             className={`p-2 rounded-lg border transition-all md:hidden ${isLeftPanelOpen ? 'bg-[#B78D7D] text-white shadow-md' : 'bg-white text-[#B2AAA6] border-[#B78D7D]/15'}`}
            >
-              <Zap size={20} className={isLeftPanelOpen ? 'text-white' : ''} />
+              <Zap size={18} />
            </button>
            <button 
              onClick={() => { setIsRightPanelOpen(!isRightPanelOpen); setIsLeftPanelOpen(false); }}
-             className={`p-2.5 rounded-xl border transition-all md:hidden ${isRightPanelOpen ? 'bg-indigo-600' : 'bg-white text-gray-400'}`}
+             className={`p-2 rounded-lg border transition-all md:hidden ${isRightPanelOpen ? 'bg-[#B78D7D] text-white shadow-md' : 'bg-white text-[#B2AAA6] border-[#B78D7D]/15'}`}
            >
-              <Settings size={20} className={isRightPanelOpen ? 'text-white' : ''} />
+              <Settings size={18} />
            </button>
 
            <button 
              onClick={handleSave}
              disabled={saving}
-             className="px-4 md:px-8 py-2.5 md:py-3.5 bg-[#6F3FF5] text-white font-black text-[10px] md:text-sm rounded-2xl shadow-xl shadow-purple-200 hover:bg-[#5c2cd9] transition-all disabled:opacity-70 flex items-center gap-2 md:gap-3"
+             className="px-4 py-2 bg-[#B78D7D] text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-sm hover:bg-[#A37B6D] transition-all disabled:opacity-70 flex items-center gap-2 border border-white/10 active:scale-95"
            >
-             {saving ? <Loader2 size={18} className="animate-spin" /> : <ShieldCheck size={18} />}
-             <span className="hidden sm:inline">{saving ? "Deploying..." : "Deploy Automation"}</span>
-             <span className="sm:hidden">{saving ? "Deploy" : "Deploy"}</span>
+             {saving ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={16} />}
+             <span className="hidden sm:inline">{saving ? "Deploying..." : "Deploy"}</span>
+             <span className="sm:hidden">{saving ? "..." : "Deploy"}</span>
            </button>
         </div>
       </div>
@@ -325,20 +348,20 @@ export default function CampaignBuilderPage() {
         
         {/* LEFT: ACTION DRAWER */}
         <div className={`
-          absolute inset-y-0 left-0 w-80 bg-white border-r border-gray-100 flex flex-col shrink-0 z-40 transition-transform duration-500 md:relative md:translate-x-0
+          absolute inset-y-0 left-0 w-64 bg-white border-r border-[#B78D7D]/15 flex flex-col shrink-0 z-50 transition-transform duration-300 md:relative md:translate-x-0 shadow-xl md:shadow-none
           ${isLeftPanelOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
-          <div className="p-6 border-b border-gray-100">
-             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em]">Command Nodes</h3>
-                <button onClick={() => setIsLeftPanelOpen(false)} className="md:hidden text-gray-400"><X size={18} /></button>
+          <div className="p-4 border-b border-[#B78D7D]/10 bg-[#F8F4F2]/30">
+             <div className="flex items-center justify-between mb-3">
+                <h3 className="text-xs font-bold text-[#3E3A39] uppercase tracking-wider">Actions</h3>
+                <button onClick={() => setIsLeftPanelOpen(false)} className="md:hidden text-[#B2AAA6] hover:text-[#B78D7D] transition-colors"><X size={20} /></button>
              </div>
-             <div className="flex bg-gray-50 p-1 rounded-xl">
+             <div className="flex bg-[#F8F4F2] border border-[#B78D7D]/15 p-1.5 rounded-2xl shadow-inner gap-1">
                 {['facebook', 'instagram', 'linkedin', 'email', 'automation'].map(plat => (
                    <button 
                      key={plat}
                      onClick={() => setActiveTab(plat)}
-                     className={`flex-1 p-2.5 rounded-lg flex items-center justify-center transition-all ${activeTab === plat ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
+                     className={`flex-1 py-3 rounded-xl flex items-center justify-center transition-all ${activeTab === plat ? 'bg-white text-[#B78D7D] shadow border border-[#B78D7D]/10' : 'text-[#B2AAA6] hover:text-[#B78D7D]'}`}
                    >
                      {plat === 'facebook' && <Facebook size={18} />}
                      {plat === 'instagram' && <Instagram size={18} />}
@@ -350,39 +373,44 @@ export default function CampaignBuilderPage() {
              </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
              {ACTIONS[activeTab].map(template => (
                <button
                  key={template.id}
                  onClick={() => addBlock(template)}
-                 className="w-full bg-white border border-gray-100 p-4 rounded-2xl flex items-center gap-4 hover:border-indigo-500 hover:bg-indigo-50/30 hover:scale-[1.02] transition-all group group shadow-sm text-left"
+                 className="w-full bg-white border border-[#B78D7D]/15 p-3 rounded-xl flex items-center gap-3 hover:border-[#B78D7D]/50 hover:bg-[#F8F4F2] hover:-translate-y-0.5 transition-all group shadow-sm text-left"
                >
-                 <div className="w-10 h-10 bg-gray-50 rounded-[1.25rem] flex items-center justify-center text-gray-400 group-hover:bg-white group-hover:text-indigo-600 shadow-inner transition-colors">
-                    {template.id.includes('delay') ? <Clock size={20} /> : template.icon}
+                 <div className="w-10 h-10 bg-[#F8F4F2] rounded-lg flex items-center justify-center text-[#B2AAA6] group-hover:text-[#B78D7D] shadow-inner transition-all border border-transparent group-hover:border-[#B78D7D]/20 shrink-0">
+                    {template.id.includes('delay') ? <Clock size={16} /> : React.cloneElement(template.icon, { size: 16 })}
                  </div>
-                 <div className="flex-1">
-                    <p className="font-bold text-gray-900 group-hover:text-indigo-600 text-sm tracking-tight">{template.label}</p>
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Add to sequence</p>
+                 <div className="flex-1 min-w-0">
+                    <p className="font-bold text-[#3E3A39] group-hover:text-[#B78D7D] text-xs truncate transition-colors">{template.label}</p>
                  </div>
-                 <Plus size={16} className="text-gray-300 group-hover:text-indigo-500" />
+                 <Plus size={16} className="text-[#B2AAA6]/40 group-hover:text-[#B78D7D] group-hover:rotate-90 transition-all shrink-0" />
                </button>
              ))}
+          </div>
+          
+          <div className="p-6 border-t border-[#B78D7D]/10 bg-[#F8F4F2]/20">
+             <div className="flex items-center gap-3 p-4 bg-white border border-[#B78D7D]/15 rounded-xl shadow-sm">
+                <ShieldCheck size={20} className="text-emerald-500 shrink-0" />
+                <p className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider">Safe Mode Enabled</p>
+             </div>
           </div>
         </div>
 
         {/* CENTER: FLOW CANVAS */}
-        <div className="flex-1 bg-[#F8F9FC] relative overflow-hidden flex flex-col">
-          <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-40"></div>
-          
-          <div className="flex-1 overflow-y-auto p-6 md:p-12 relative z-0 custom-scrollbar">
+        <div className="flex-1 bg-[#F8F4F2]/50 relative overflow-hidden flex flex-col items-center">
+          <div className="flex-1 overflow-y-auto w-full p-6 md:p-12 relative z-0 custom-scrollbar overscroll-contain">
             <div className="max-w-xl mx-auto flex flex-col items-center">
               
               <div className="mb-12 relative group">
-                <div className="px-6 md:px-8 py-3 md:py-4 bg-white border border-green-200 rounded-[2rem] shadow-xl shadow-green-100/50 text-xs md:text-sm font-black text-gray-700 flex items-center gap-3">
-                  <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
-                  <span className="uppercase tracking-[0.2em] text-[9px] md:text-[10px]">Sequence Entry Point</span>
+                <div className="px-8 py-4 bg-white border border-[#B78D7D]/20 rounded-full shadow-md text-[10px] font-bold text-[#3E3A39] flex items-center gap-3 transition-all hover:scale-105 active:scale-95 cursor-default group overflow-hidden">
+                  <div className="absolute inset-0 bg-[#B78D7D]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)] relative z-10" />
+                  <span className="uppercase tracking-widest relative z-10">Campaign Start</span>
                 </div>
-                {blocks.length > 0 && <div className="absolute left-1/2 -bottom-12 w-0.5 h-12 bg-gradient-to-b from-green-200 to-indigo-200 -translate-x-1/2" />}
+                {blocks.length > 0 && <div className="absolute left-1/2 -bottom-12 w-[3px] h-12 bg-gradient-to-b from-emerald-500/30 via-[#B78D7D]/20 to-[#B78D7D]/10 -translate-x-1/2" />}
               </div>
 
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -400,12 +428,12 @@ export default function CampaignBuilderPage() {
                       />
                     ))}
                     {blocks.length === 0 && (
-                      <div className="w-full max-w-sm p-12 border-2 border-dashed border-gray-200 rounded-[3rem] bg-white/50 backdrop-blur-sm flex flex-col items-center justify-center text-center opacity-60">
-                         <div className="w-16 h-16 bg-gray-100 rounded-3xl flex items-center justify-center text-gray-300 mb-4">
-                            <Plus size={32} />
+                      <div className="w-full max-w-lg p-16 border-2 border-dashed border-[#B78D7D]/20 rounded-3xl bg-white shadow-sm flex flex-col items-center justify-center text-center opacity-60 hover:opacity-100 transition-opacity duration-500">
+                         <div className="w-20 h-20 bg-[#F8F4F2] rounded-[1.5rem] flex items-center justify-center text-[#B2AAA6] mb-6 border border-[#B78D7D]/10 group-hover:rotate-12 transition-transform shadow-inner">
+                            <Plus size={40} />
                          </div>
-                         <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest">Build Protocol</h4>
-                         <p className="text-xs text-gray-400 mt-2">Add components from the left command drawer.</p>
+                         <h4 className="text-xl font-bold text-[#3E3A39]">Add First Step</h4>
+                         <p className="text-[#8E7A70] mt-3 text-sm max-w-xs">Drag actions from the left or click to build your campaign flow.</p>
                       </div>
                     )}
                   </div>
@@ -413,59 +441,64 @@ export default function CampaignBuilderPage() {
               </DndContext>
             </div>
           </div>
+          
+           {/* Global Branding Watermark */}
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.02] select-none z-[-1] grayscale">
+              <Hexagon size={1200} strokeWidth={0.5} className="animate-spin-slow rotate-12 text-[#B78D7D]" />
+           </div>
         </div>
 
         {/* RIGHT: CONFIG PANEL */}
         <div className={`
-          absolute inset-y-0 right-0 w-[90%] md:w-96 bg-white border-l border-gray-100 flex flex-col shrink-0 z-40 transition-transform duration-500 md:relative md:translate-x-0
-          ${isRightPanelOpen ? 'translate-x-0' : 'translate-x-[110%]'}
+          absolute inset-y-0 right-0 w-full md:w-[320px] bg-white border-l border-[#B78D7D]/15 flex flex-col shrink-0 z-50 transition-transform duration-300 md:relative md:translate-x-0 shadow-xl md:shadow-none
+          ${isRightPanelOpen ? 'translate-x-0' : 'translate-x-full'}
         `}>
-          <div className="p-6 md:p-8 border-b border-gray-100 flex items-center justify-between">
-             <div className="min-w-0">
-                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] mb-1">Parameters</h3>
-                <h2 className="text-lg font-black text-gray-900 truncate">{configBlock ? configBlock.label : "Select Node"}</h2>
+          <div className="p-4 border-b border-[#B78D7D]/10 flex items-center justify-between bg-[#F8F4F2]/30 relative z-10">
+             <div className="min-w-0 pr-4">
+                <h3 className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider mb-1">Settings</h3>
+                <h2 className="text-lg font-bold text-[#3E3A39] truncate">{configBlock ? configBlock.label : "No Selection"}</h2>
              </div>
-             <button onClick={() => setIsRightPanelOpen(false)} className="md:hidden text-gray-400"><X size={18} /></button>
+             <button onClick={() => setIsRightPanelOpen(false)} className="md:hidden p-2 bg-white rounded-lg text-[#B2AAA6] hover:text-[#B78D7D] transition-all shadow-sm shrink-0"><X size={20} /></button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
              {configBlock ? (
-                <div className="space-y-8">
-                   <div className="space-y-4">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                   <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Cpu size={16} className="text-indigo-600" />
-                        <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">AI Persona</h4>
+                        <Cpu size={16} className="text-[#B78D7D]" />
+                        <h4 className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider">AI Agent</h4>
                       </div>
                       <select 
                         value={configBlock.config.agentId}
                         onChange={(e) => updateBlockConfig(configBlock.id, { agentId: e.target.value })}
-                        className="w-full bg-gray-50 border border-gray-100 p-4 rounded-2xl text-xs font-bold text-gray-900 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                        className="w-full bg-[#F8F4F2] border border-[#B78D7D]/10 p-3 rounded-lg text-xs font-bold text-[#3E3A39] outline-none focus:bg-white focus:border-[#B78D7D]/40 transition-all cursor-pointer shadow-inner appearance-none"
                       >
-                         <option value="">Manual Control</option>
+                         <option value="">Manual (No AI)</option>
                          {agents.map(a => <option key={a._id} value={a._id}>{a.name}</option>)}
                       </select>
                    </div>
 
                    {configBlock.platform !== 'automation' && (
-                     <div className="space-y-4 pt-6 border-t border-gray-50">
+                     <div className="space-y-3 pt-4 border-t border-[#F8F4F2]">
                         <div className="flex items-center gap-2">
-                          <User size={16} className="text-indigo-600" />
-                          <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Source Account</h4>
+                          <User size={16} className="text-[#B78D7D]" />
+                          <h4 className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider">Account to use</h4>
                         </div>
                         <div className="grid grid-cols-1 gap-2">
                            {accounts[configBlock.platform]?.length === 0 ? (
-                              <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 flex flex-col items-center text-center">
-                                 <AlertCircle size={18} className="text-amber-600 mb-2" />
-                                 <p className="text-[9px] font-black text-amber-900 uppercase">No connected accounts</p>
+                              <div className="p-4 bg-rose-50 rounded-lg border border-rose-100 flex flex-col items-center text-center shadow-inner group/error">
+                                 <AlertCircle size={20} className="text-rose-500 mb-2" />
+                                 <p className="text-[10px] font-bold text-rose-600">No accounts connected. Go to settings to link one.</p>
                               </div>
                            ) : accounts[configBlock.platform]?.map(acc => (
                              <button
                                key={acc._id}
                                onClick={() => updateBlockConfig(configBlock.id, { accountId: acc._id })}
-                               className={`p-4 rounded-2xl border text-left transition-all flex items-center gap-3 ${configBlock.config.accountId === acc._id ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg' : 'bg-white border-gray-100 hover:border-indigo-200'}`}
+                               className={`p-3 rounded-lg border text-left transition-all flex items-center gap-3 shadow-sm ${configBlock.config.accountId === acc._id ? 'bg-[#B78D7D] border-[#B78D7D] text-white' : 'bg-white border-[#B78D7D]/10 hover:border-[#B78D7D]/40 text-[#B2AAA6] hover:text-[#3E3A39]'}`}
                              >
-                                <div className="p-2 bg-gray-100 rounded-lg text-gray-500"><User size={14} /></div>
-                                <span className="text-xs font-black truncate">{acc.name || acc.email}</span>
+                                <div className={`p-1.5 rounded-md transition-colors ${configBlock.config.accountId === acc._id ? 'bg-white/20' : 'bg-[#F8F4F2]'}`}><User size={14} /></div>
+                                <span className="text-xs font-bold truncate">{acc.name || acc.email}</span>
                              </button>
                            ))}
                         </div>
@@ -473,54 +506,62 @@ export default function CampaignBuilderPage() {
                    )}
 
                    {configBlock.platform !== 'automation' && (
-                     <div className="space-y-4 pt-6 border-t border-gray-50">
+                     <div className="space-y-3 pt-4 border-t border-[#F8F4F2]">
                         <div className="flex items-center gap-2">
-                          <MessageSquare size={16} className="text-indigo-600" />
-                          <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Payload</h4>
+                          <MessageSquare size={16} className="text-[#B78D7D]" />
+                          <h4 className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider">Message Template</h4>
                         </div>
                         <textarea 
                           value={configBlock.config.message}
                           onChange={(e) => updateBlockConfig(configBlock.id, { message: e.target.value })}
-                          className="w-full bg-gray-50 border border-gray-100 p-4 rounded-2xl text-xs font-medium min-h-[140px] outline-none focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all resize-none"
-                          placeholder="Craft your sequence node content..."
+                          className="w-full bg-[#F8F4F2] border border-[#B78D7D]/10 p-3 rounded-lg text-xs font-medium text-[#3E3A39] min-h-[120px] outline-none focus:bg-white focus:border-[#B78D7D]/40 transition-all resize-none custom-scrollbar shadow-inner placeholder-[#B2AAA6]/50"
+                          placeholder="Type your message here..."
                         />
                      </div>
                    )}
 
-                   <div className="space-y-4 pt-6 border-t border-gray-50">
+                   <div className="space-y-3 pt-4 border-t border-[#F8F4F2]">
                       <div className="flex items-center gap-2">
-                        <Clock size={16} className="text-indigo-600" />
-                        <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Execution Delay (Min)</h4>
+                        <Clock size={16} className="text-[#B78D7D]" />
+                        <h4 className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider">Delay (Minutes)</h4>
                       </div>
-                      <input 
-                        type="number"
-                        min="0"
-                        value={configBlock.config.delay}
-                        onChange={(e) => updateBlockConfig(configBlock.id, { delay: parseInt(e.target.value) || 0 })}
-                        className="w-full bg-gray-50 border border-gray-100 p-4 rounded-2xl text-xs font-black text-gray-900 outline-none focus:ring-4 focus:ring-indigo-50"
-                      />
+                      <div className="relative group/delay">
+                         <input 
+                           type="number"
+                           min="0"
+                           value={configBlock.config.delay}
+                           onChange={(e) => updateBlockConfig(configBlock.id, { delay: parseInt(e.target.value) || 0 })}
+                           className="w-full bg-[#F8F4F2] border border-[#B78D7D]/10 p-3 rounded-lg text-lg font-bold text-[#3E3A39] outline-none focus:bg-white focus:border-[#B78D7D]/40 transition-all shadow-inner"
+                         />
+                         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#B2AAA6] text-[10px] font-bold uppercase">MIN</div>
+                      </div>
                    </div>
                 </div>
              ) : (
-                <div className="h-full flex flex-col items-center justify-center text-center opacity-30 py-20">
-                   <div className="w-16 h-16 bg-gray-100 rounded-3xl flex items-center justify-center mb-4">
-                      <Settings size={32} className="animate-spin-slow" />
+                <div className="h-full flex flex-col items-center justify-center text-center py-12 px-6">
+                   <div className="w-20 h-20 bg-[#F8F4F2] rounded-2xl border border-[#B78D7D]/10 flex items-center justify-center mb-6 text-[#B2AAA6] opacity-50">
+                      <Settings size={32} />
                    </div>
-                   <p className="text-xs font-bold text-gray-400 italic">Select a command block to adjust parameters.</p>
+                   <h5 className="text-lg font-bold text-[#B2AAA6] mb-2">Select an action</h5>
+                   <p className="text-[#8E7A70] text-sm max-w-[200px] text-center opacity-70">Click a node on the canvas to configure it.</p>
                 </div>
              )}
           </div>
           
-          {configBlock && (
-             <div className="p-6 border-t border-gray-50">
+          <div className="p-6 border-t border-[#B78D7D]/10 bg-[#F8F4F2]/20">
+             {configBlock ? (
                 <button 
                   onClick={() => { setConfigBlock(null); setIsRightPanelOpen(false); }}
-                  className="w-full py-4 bg-white border border-gray-200 text-gray-700 font-black text-[10px] uppercase rounded-2xl hover:bg-gray-50 transition-all active:scale-95"
+                  className="w-full py-3 bg-white border border-[#B78D7D]/15 text-[#B2AAA6] font-bold text-xs rounded-xl hover:bg-[#F8F4F2] hover:text-[#3E3A39] shadow-sm transition-all active:scale-95"
                 >
-                  Deselect Node
+                  Close Settings
                 </button>
-             </div>
-          )}
+             ) : (
+                <div className="w-full py-3 text-center">
+                   <p className="text-xs font-medium text-[#B2AAA6] opacity-50">Configure your campaign</p>
+                </div>
+             )}
+          </div>
         </div>
 
       </div>

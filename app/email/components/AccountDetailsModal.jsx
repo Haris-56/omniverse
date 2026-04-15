@@ -7,142 +7,152 @@ import {
   PlayCircle, 
   PauseCircle, 
   ShieldCheck, 
-  BarChart3, 
   Zap,
   ChevronRight,
-  User,
   ExternalLink,
   Send,
-  CheckCircle2
+  Inbox,
+  Hexagon,
+  BarChart3
 } from "lucide-react";
 
 export default function AccountDetailsModal({ account, isOpen, onClose }) {
   if (!isOpen || !account) return null;
 
-  // Mock Campaigns Data (Enhanced)
+  // Mock Campaigns Data
   const campaigns = [
-    { id: 1, name: "Cold Email Outreach", status: "Running", progress: 45, sent: 890, target: 2000 },
-    { id: 2, name: "Newsletter Follow-up", status: "Paused", progress: 12, sent: 45, target: 400 },
+    { id: 1, name: "Cold Email Sequence A", status: "Running", progress: 54, sent: 1240, target: 2000 },
+    { id: 2, name: "Follow-up Automation", status: "Paused", progress: 12, sent: 156, target: 800 },
   ];
 
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
   return (
-    <div className="fixed inset-0 bg-gray-900/60 flex items-center justify-center z-[100] p-4 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden border border-white animate-in zoom-in duration-300">
+    <div className="fixed inset-0 flex items-center justify-center z-[9999] p-4 lg:p-20 animate-in fade-in duration-500">
+      <div className="absolute inset-0 bg-[#3E3A39]/20 backdrop-blur-[60px]" onClick={handleBackdropClick} />
+      
+      <div className="bg-white rounded-[4rem] shadow-[0_50px_100px_rgba(183,141,125,0.15)] w-full max-w-7xl h-full overflow-hidden border border-[#B78D7D]/15 relative z-10 animate-in zoom-in-95 duration-500">
         
+        {/* Decorative Texture */}
+        <div className="absolute inset-0 opacity-[0.015] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+
         {/* Modal Header */}
-        <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-indigo-50/30">
-          <div className="flex items-center gap-4">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all ${account.status === "Connected" ? 'bg-indigo-600 text-white shadow-indigo-500/20' : 'bg-red-50 text-red-400'}`}>
+        <div className="p-10 border-b border-[#B78D7D]/10 flex justify-between items-center bg-[#F8F4F2]/50 relative z-10">
+          <div className="flex items-center gap-8">
+            <div className={`w-14 h-14 rounded-[1.5rem] flex items-center justify-center shadow-inner transition-all border border-[#B78D7D]/15 ${account.status === "Connected" ? 'bg-[#B78D7D] text-white' : 'bg-[#F8F4F2] text-rose-500'}`}>
               <Mail size={28} />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-xl font-black text-gray-900 tracking-tight lowercase">{account.email}</h2>
-                <ExternalLink size={14} className="text-gray-300" />
+              <div className="flex items-center gap-4 mb-2">
+                <h2 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase">{account.email}</h2>
+                <span className="px-3 py-1 bg-white border border-[#B78D7D]/10 rounded-lg text-[9px] font-black text-[#B2AAA6] font-mono tracking-widest uppercase shadow-sm">
+                  SMTP_NODE
+                </span>
               </div>
-              <div className="flex items-center gap-2">
-                 <div className={`w-2 h-2 rounded-full animate-pulse ${account.status === "Connected" ? "bg-indigo-500" : "bg-red-500"}`} />
-                 <p className={`text-[10px] font-black uppercase tracking-widest ${account.status === "Connected" ? "text-indigo-600" : "text-red-500"}`}>
-                   Relay: {account.status}
+              <div className="flex items-center gap-3">
+                 <div className={`w-2.5 h-2.5 rounded-full ${account.status === "Connected" ? "bg-emerald-500" : "bg-rose-500"} shadow-sm`} />
+                 <p className={`text-[10px] font-black uppercase tracking-[0.3em] font-mono ${account.status === "Connected" ? "text-emerald-600" : "text-rose-500"}`}>
+                   Node_Status:: {account.status?.toUpperCase()}
                  </p>
               </div>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white rounded-xl transition-all border border-transparent hover:border-gray-100 text-gray-400 hover:text-gray-900">
-            <X size={20} />
+          <button onClick={onClose} className="p-4 bg-white hover:bg-[#F8F4F2] rounded-2xl transition-all border border-[#B78D7D]/10 text-[#B2AAA6] hover:text-[#B78D7D] active:scale-90 shadow-sm">
+            <X size={24} />
           </button>
         </div>
 
-        <div className="p-8 md:p-10">
+        <div className="p-10 md:p-14 custom-scrollbar max-h-[70vh] overflow-y-auto relative z-10 space-y-16">
           {/* Quick Metrics */}
-          <div className="grid grid-cols-3 gap-4 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
              {[
-               { label: 'SMTP nodes', val: '02', icon: Send },
-               { label: 'Units routed', val: '935', icon: BarChart3 },
-               { label: 'Relay health', val: '100%', icon: CheckCircle2 },
+               { label: 'Sent Units', val: '1.24k', icon: Send, color: 'text-[#B78D7D]' },
+               { label: 'Inbox Health', val: 'Active', icon: Inbox, color: 'text-emerald-500' },
+               { label: 'Node Sync', val: 'Stable', icon: ShieldCheck, color: 'text-[#B78D7D]' },
              ].map((m, i) => (
-               <div key={i} className="bg-gray-50/50 rounded-3xl p-5 border border-gray-50 hover:bg-white hover:shadow-sm transition-all">
-                  <div className="text-indigo-600 mb-2 bg-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm border border-gray-100">
-                     <m.icon size={16} />
+               <div key={i} className="bg-[#F8F4F2]/50 rounded-[2.5rem] p-8 border border-[#B78D7D]/10 hover:border-[#B78D7D]/30 transition-all group shadow-inner">
+                  <div className={`${m.color} mb-6 bg-white w-12 h-12 rounded-2xl flex items-center justify-center border border-[#B78D7D]/15 shadow-sm group-hover:rotate-12 transition-transform`}>
+                     <m.icon size={22} />
                   </div>
-                  <p className="text-sm font-black text-gray-900">{m.val}</p>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{m.label}</p>
+                  <p className="text-3xl font-black text-[#3E3A39] mb-1.5 tracking-tighter leading-none">{m.val}</p>
+                  <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono">{m.label}</p>
                </div>
              ))}
           </div>
 
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-              <Activity size={14} className="text-indigo-600" />
-              Active sequence stream monitoring
-            </h3>
-            <span className="text-[9px] font-black px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded">ROUTING</span>
+          <div className="space-y-8">
+             <div className="flex items-center justify-between px-4">
+                <h3 className="text-[11px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] flex items-center gap-4 font-mono">
+                  <Activity size={18} className="text-[#B78D7D] animate-pulse" />
+                  Cluster_Broadcasting_Telemetry
+                </h3>
+             </div>
+
+             {account.status !== "Connected" ? (
+               <div className="text-center py-24 bg-[#F8F4F2]/30 rounded-[3.5rem] border border-dashed border-rose-500/20 text-rose-500">
+                 <ShieldCheck size={56} className="mx-auto mb-8 opacity-20" />
+                 <p className="text-sm font-black uppercase tracking-[0.4em] font-mono italic">Neural_Link_Severed</p>
+                 <p className="text-xs mt-4 opacity-60 max-w-xs mx-auto font-bold">Re-calibrate SMTP handshake to restore automated outreach sequence.</p>
+               </div>
+             ) : campaigns.length > 0 ? (
+               <div className="grid grid-cols-1 gap-6">
+                 {campaigns.map((camp) => (
+                   <div key={camp.id} className="group relative bg-white rounded-[3rem] border border-[#B78D7D]/10 p-10 hover:border-[#B78D7D]/30 hover:shadow-xl transition-all duration-700">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10">
+                         <div className="flex items-center gap-6">
+                           <div className={`w-16 h-16 rounded-[1.75rem] flex items-center justify-center border border-[#B78D7D]/10 shadow-inner ${camp.status === 'Running' ? 'bg-[#B78D7D]/10 text-[#B78D7D]' : 'bg-[#F8F4F2] text-[#B2AAA6]'}`}>
+                              {camp.status === 'Running' ? <PlayCircle size={32} /> : <PauseCircle size={32} />}
+                           </div>
+                           <div>
+                              <p className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">{camp.name}</p>
+                              <p className={`text-[10px] font-black uppercase tracking-[0.3em] mt-3 font-mono italic ${camp.status === 'Running' ? 'text-emerald-600' : 'text-amber-600'}`}>{camp.status === 'Running' ? 'ACTIVE_BROADCAST' : 'SYSTEM_PAUSE'}</p>
+                           </div>
+                         </div>
+                         <div className="text-left md:text-right">
+                            <p className="text-4xl font-black text-[#3E3A39] tracking-tighter leading-none">{camp.sent}</p>
+                            <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] mt-2 font-mono italic">Units_Dispatched</p>
+                         </div>
+                      </div>
+
+                      <div className="space-y-4">
+                         <div className="flex justify-between text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] px-2 font-mono italic">
+                            <span>Saturation_Index</span>
+                            <span className="text-[#B78D7D]">{camp.progress}%</span>
+                         </div>
+                         <div className="h-4 w-full bg-[#F8F4F2] rounded-full overflow-hidden border border-[#B78D7D]/10 p-1 shadow-inner">
+                            <div 
+                              className={`h-full transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] rounded-full ${camp.status === 'Running' ? 'bg-[#B78D7D] shadow-[0_0_15px_rgba(183,141,125,0.4)]' : 'bg-[#B2AAA6]'}`}
+                              style={{ width: `${camp.progress}%` }}
+                            />
+                         </div>
+                      </div>
+
+                      <button className="absolute top-10 right-10 text-[#B2AAA6] hover:text-[#B78D7D] transition-colors active:scale-90">
+                         <ExternalLink size={22} />
+                      </button>
+                   </div>
+                 ))}
+               </div>
+             ) : (
+               <div className="text-center py-24 bg-[#F8F4F2]/30 rounded-[3.5rem] border border-dashed border-[#B78D7D]/20 text-[#B2AAA6]">
+                 <Zap size={56} className="mx-auto mb-8 opacity-20" />
+                 <p className="text-sm font-black uppercase tracking-[0.4em] font-mono italic">Empty_Cluster_Registry</p>
+                 <p className="text-xs mt-4 opacity-60 max-w-xs mx-auto font-bold">Initiate a new neural sequence to activate real-time telemetry tracking.</p>
+               </div>
+             )}
           </div>
-
-          {account.status !== "Connected" ? (
-            <div className="text-center py-16 bg-red-50/30 rounded-[2rem] border border-dashed border-red-100 text-red-500">
-              <ShieldCheck size={40} className="mx-auto mb-4 opacity-20" />
-              <p className="text-xs font-black uppercase tracking-widest">Relay Link Severed</p>
-              <p className="text-[10px] mt-1 opacity-60">Restore SMTP connection to access routing streams.</p>
-            </div>
-          ) : campaigns.length > 0 ? (
-            <div className="space-y-4">
-              {campaigns.map((camp) => (
-                <div key={camp.id} className="group relative bg-white rounded-[2rem] border border-gray-100 p-6 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 overflow-hidden">
-                   <div className="absolute top-0 left-0 w-1 h-full bg-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                   
-                   <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border border-gray-50 ${camp.status === 'Running' ? 'bg-indigo-50 text-indigo-600' : 'bg-amber-50 text-amber-500'}`}>
-                           {camp.status === 'Running' ? <PlayCircle size={20} /> : <PauseCircle size={20} />}
-                        </div>
-                        <div>
-                           <p className="text-sm font-black text-gray-900 lowercase tracking-tight">{camp.name}</p>
-                           <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1">Status: {camp.status}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                         <p className="text-lg font-black text-gray-900">{camp.sent}</p>
-                         <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Sent units</p>
-                      </div>
-                   </div>
-
-                   <div className="space-y-2">
-                      <div className="flex justify-between text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">
-                         <span>Stream Progress</span>
-                         <span className="text-indigo-600">{camp.progress}%</span>
-                      </div>
-                      <div className="h-2 w-full bg-gray-50 rounded-full overflow-hidden border border-gray-50 shadow-inner">
-                         <div 
-                           className={`h-full transition-all duration-1000 ease-out rounded-full ${camp.status === 'Running' ? 'bg-indigo-600' : 'bg-amber-400'}`}
-                           style={{ width: `${camp.progress}%` }}
-                         />
-                      </div>
-                   </div>
-
-                   <button className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-all text-indigo-600 hover:opacity-70">
-                      <ChevronRight size={20} />
-                   </button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 bg-gray-50/50 rounded-[2rem] border border-dashed border-gray-100 text-gray-400">
-              <Zap size={40} className="mx-auto mb-4 opacity-10" />
-              <p className="text-xs font-black uppercase tracking-widest">No Active Streams</p>
-              <p className="text-[10px] mt-1">Initialize a new email sequence to start monitoring results.</p>
-            </div>
-          )}
         </div>
 
-        {/* Footer */}
-        <div className="p-8 bg-gray-50/30 border-t border-gray-50 flex items-center justify-between">
-           <div className="flex items-center gap-2">
-              <User size={14} className="text-gray-400" />
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Relay Node Ownership Verified</span>
+        {/* Modal Footer */}
+        <div className="p-10 bg-[#F8F4F2]/50 border-t border-[#B78D7D]/10 flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+           <div className="flex items-center gap-4">
+              <ShieldCheck size={24} className="text-emerald-500" />
+              <span className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] font-mono italic">Node_Identity_Verified :: Protocol_L4_Secure</span>
            </div>
-           <button onClick={onClose} className="px-6 py-3 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-600 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all shadow-sm">
-              Dismiss Panel
+           <button onClick={onClose} className="w-full md:w-auto px-12 py-5 bg-[#B78D7D] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.4em] transition-all font-mono hover:bg-[#A37B6D] shadow-lg active:scale-95 border border-white/10">
+              Deactivate_Console
            </button>
         </div>
       </div>

@@ -1,204 +1,174 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { useState } from "react";
+import { X, User, Mail, Globe, MapPin, Briefcase, Plus, Loader2, Sparkles, Activity, ShieldCheck, Hexagon } from "lucide-react";
 
-export default function AddContactModal({ isOpen, onClose, onContactAdded }) {
+export default function AddContactModal({ isOpen, onClose, onAdd }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
-    linkedin: "",
-    twitter: "",
-    segments: [],
+    website: "",
+    location: "",
+    company: "",
+    position: ""
   });
-  const [availableSegments, setAvailableSegments] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchSegments();
-    }
-  }, [isOpen]);
-
-  const fetchSegments = async () => {
-    try {
-      const res = await fetch("/api/segments");
-      if (res.ok) {
-        const data = await res.json();
-        setAvailableSegments(data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch segments", error);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSegmentChange = (e) => {
-    const value = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setFormData((prev) => ({ ...prev, segments: value }));
-  };
+  if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    try {
-      const res = await fetch("/api/contacts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (res.ok) {
-        onContactAdded();
-        onClose();
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          linkedin: "",
-          twitter: "",
-          segments: [],
-        });
-      } else {
-        alert("Failed to add contact");
-      }
-    } catch (error) {
-      console.error("Error adding contact:", error);
-      alert("Error adding contact");
-    } finally {
-      setLoading(false);
-    }
+    await onAdd(formData);
+    setLoading(false);
+    onClose();
+    setFormData({ name: "", email: "", website: "", location: "", company: "", position: "" });
   };
 
-  if (!isOpen) return null;
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative animate-in fade-in zoom-in duration-200">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-        >
-          <X size={20} />
-        </button>
+    <div className="fixed inset-0 flex items-center justify-center z-[1000] p-6 lg:p-12 animate-in fade-in duration-500 overflow-y-auto custom-scrollbar">
+      <div className="fixed inset-0 bg-[#3E3A39]/10 backdrop-blur-2xl" onClick={handleBackdropClick} />
+      
+      <div className="bg-[#F8F4F2] rounded-[4rem] shadow-[0_50px_100px_rgba(183,141,125,0.15)] w-full max-w-2xl overflow-hidden border border-[#B78D7D]/15 relative z-10 animate-in zoom-in-95 duration-500 my-auto group/modal">
+        
+        {/* Header */}
+        <div className="p-10 border-b border-[#B78D7D]/10 flex justify-between items-center bg-white/40">
+           <div className="flex items-center gap-6">
+              <div className="w-16 h-16 bg-white text-[#B78D7D] rounded-[1.75rem] flex items-center justify-center shadow-lg border border-[#B78D7D]/10 group-hover/modal:rotate-12 transition-transform duration-700">
+                 <Plus size={32} />
+              </div>
+              <div>
+                 <h2 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">Provision_Node</h2>
+                 <p className="text-[10px] font-black text-[#B78D7D] uppercase tracking-[0.4em] mt-2 font-mono italic leading-none">Inject_Into_Global_Registry</p>
+              </div>
+           </div>
+           <button onClick={onClose} className="p-4 bg-white hover:bg-[#B78D7D] group/close rounded-2xl transition-all border border-[#B78D7D]/10 text-[#B2AAA6] hover:text-white shadow-sm active:scale-90">
+             <X size={28} className="group-hover/close:rotate-90 transition-transform duration-500" />
+           </button>
+        </div>
 
-        <h2 className="text-xl font-semibold mb-6">Add New Contact</h2>
+        <div className="p-12 custom-scrollbar max-h-[70vh] overflow-y-auto">
+          <form onSubmit={handleSubmit} className="space-y-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono italic">Full_Identity</label>
+                  <div className="relative group/input">
+                     <User size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/input:text-[#B78D7D] transition-colors" />
+                     <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        className="w-full bg-white border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl pl-16 pr-8 py-5 text-sm font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] transition-all shadow-inner italic"
+                        placeholder="e.g., John_Doe"
+                     />
+                  </div>
+               </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#6B4EFF] outline-none"
-              placeholder="John Doe"
-            />
-          </div>
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono italic">Endpoint_Email</label>
+                  <div className="relative group/input">
+                     <Mail size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/input:text-[#B78D7D] transition-colors" />
+                     <input
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        className="w-full bg-white border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl pl-16 pr-8 py-5 text-sm font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] transition-all shadow-inner italic"
+                        placeholder="john@prospect.cluster"
+                     />
+                  </div>
+               </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#6B4EFF] outline-none"
-              placeholder="john@example.com"
-            />
-          </div>
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono italic">Organization_Fabric</label>
+                  <div className="relative group/input">
+                     <Briefcase size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/input:text-[#B78D7D] transition-colors" />
+                     <input
+                        type="text"
+                        value={formData.company}
+                        onChange={(e) => setFormData({...formData, company: e.target.value})}
+                        className="w-full bg-white border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl pl-16 pr-8 py-5 text-sm font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] transition-all shadow-inner italic"
+                        placeholder="Neural_Systems_v4"
+                     />
+                  </div>
+               </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#6B4EFF] outline-none"
-              placeholder="+1 234 567 890"
-            />
-          </div>
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono italic">Operational_Directive</label>
+                  <div className="relative group/input">
+                     <Sparkles size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/input:text-[#B78D7D] transition-colors" />
+                     <input
+                        type="text"
+                        value={formData.position}
+                        onChange={(e) => setFormData({...formData, position: e.target.value})}
+                        className="w-full bg-white border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl pl-16 pr-8 py-5 text-sm font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] transition-all shadow-inner italic"
+                        placeholder="Managing_Director"
+                     />
+                  </div>
+               </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                LinkedIn
-              </label>
-              <input
-                type="text"
-                name="linkedin"
-                value={formData.linkedin}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#6B4EFF] outline-none"
-                placeholder="Profile URL"
-              />
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono italic">Digital_Domain_URI</label>
+                  <div className="relative group/input">
+                     <Globe size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/input:text-[#B78D7D] transition-colors" />
+                     <input
+                        type="text"
+                        value={formData.website}
+                        onChange={(e) => setFormData({...formData, website: e.target.value})}
+                        className="w-full bg-white border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl pl-16 pr-8 py-5 text-sm font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] transition-all shadow-inner italic"
+                        placeholder="https://prospect.ai"
+                     />
+                  </div>
+               </div>
+
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono italic">Physical_Geospatial_Sector</label>
+                  <div className="relative group/input">
+                     <MapPin size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/input:text-[#B78D7D] transition-colors" />
+                     <input
+                        type="text"
+                        value={formData.location}
+                        onChange={(e) => setFormData({...formData, location: e.target.value})}
+                        className="w-full bg-white border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl pl-16 pr-8 py-5 text-sm font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] transition-all shadow-inner italic"
+                        placeholder="London_Orbital"
+                     />
+                  </div>
+               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Twitter
-              </label>
-              <input
-                type="text"
-                name="twitter"
-                value={formData.twitter}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#6B4EFF] outline-none"
-                placeholder="@handle"
-              />
-            </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Segments
-            </label>
-            <select
-              multiple
-              name="segments"
-              value={formData.segments}
-              onChange={handleSegmentChange}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#6B4EFF] outline-none h-24"
-            >
-              {availableSegments.map((segment) => (
-                <option key={segment} value={segment}>
-                  {segment}
-                </option>
-              ))}
-            </select>
-            <p className="text-xs text-gray-500 mt-1">
-              Hold Ctrl/Cmd to select multiple
-            </p>
-          </div>
-
-          <div className="pt-4">
             <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#6B4EFF] text-white py-2.5 rounded-lg font-medium hover:bg-[#5a3ee0] transition disabled:opacity-70"
+               type="submit"
+               disabled={loading}
+               className="w-full py-7 bg-[#B78D7D] text-white font-black text-xl rounded-[2.5rem] shadow-[0_30px_60px_rgba(183,141,125,0.3)] hover:bg-[#A37B6D] transition-all disabled:opacity-50 flex items-center justify-center gap-6 active:scale-[0.98] border border-white/10 mt-10 font-mono uppercase tracking-[0.4em] text-[12px] group/btn"
             >
-              {loading ? "Adding..." : "Add Contact"}
+               {loading ? (
+                  <Loader2 size={32} className="animate-spin opacity-80" />
+               ) : (
+                  <>
+                    <span>INTEGRATE_PROSPECT</span>
+                    <Plus size={32} className="group-hover/btn:rotate-90 transition-transform duration-500" />
+                  </>
+               )}
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
+
+        {/* Footer info */}
+        <div className="p-10 bg-[#F8F4F2]/50 border-t border-[#B78D7D]/10 flex items-center justify-center gap-6 relative overflow-hidden">
+           <Activity size={24} className="text-[#B78D7D] animate-pulse" />
+           <span className="text-[10px] font-black uppercase tracking-[0.6em] text-[#B2AAA6] font-mono italic leading-none">REGISTRY_SECURE_::SHA-256_VALIDATED</span>
+           <div className="absolute inset-0 opacity-[0.01] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+        </div>
+
+        {/* Branding Decoration */}
+        <div className="absolute top-1/2 left-10 -translate-y-1/2 opacity-[0.03] pointer-events-none -z-10 grayscale group-hover/modal:opacity-[0.06] transition-opacity duration-1000">
+           <Hexagon size={240} strokeWidth={1} className="text-[#B78D7D] animate-spin-slow" />
+        </div>
       </div>
     </div>
   );

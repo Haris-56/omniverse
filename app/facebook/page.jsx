@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Facebook, Trash2, AlertCircle, CheckCircle, ShieldCheck, ExternalLink, Camera, RefreshCw } from "lucide-react";
+import { Plus, Facebook, Trash2, AlertCircle, CheckCircle, ShieldCheck, ExternalLink, Camera, RefreshCw, Activity, Calendar, Globe, Database, Target, Cpu, Hexagon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ConnectAccountModal from "./components/ConnectAccountModal";
 import AccountDetailsModal from "./components/AccountDetailsModal";
@@ -58,153 +58,152 @@ export default function FacebookPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50/50 p-4 md:p-8 animate-in fade-in duration-500">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+    <div className="w-full font-sans pb-32 p-6 md:p-10 lg:p-12 bg-[#F8F4F2]/30 min-h-screen">
+      <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
+      <div className="max-w-[1400px] mx-auto space-y-12">
+        
+        {/* Header Sector */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#B78D7D]/15 pb-8">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-                <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full border border-blue-100 flex items-center gap-1">
-                 <ShieldCheck size={12} fill="currentColor" className="opacity-80" />
-                 Safe Mode Active
+            <div className="flex items-center gap-3 mb-4">
+                 <span className="px-4 py-1.5 bg-[#B78D7D]/10 text-[#B78D7D] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#B78D7D]/20 flex items-center gap-2 font-mono">
+                 <ShieldCheck size={14} className="opacity-80" />
+                 Verified
                </span>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              Facebook Management
-            </h1>
-            <p className="text-gray-500 mt-2 max-w-lg font-medium">Manage your Facebook accounts and automated outreach campaigns.</p>
+            <h1 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">Facebook</h1>
+            <p className="text-[#8E7A70] mt-3 text-lg font-medium max-w-2xl leading-relaxed">Connect and manage your Facebook accounts safely.</p>
           </div>
           <button
             onClick={() => {
                 setSelectedAccount(null);
                 setIsConnectModalOpen(true);
             }}
-            className="group px-6 py-3.5 bg-[#1877F2] text-white text-sm font-bold rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
+            className="group px-10 py-5 bg-[#B78D7D] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#A37B6D] transition-all shadow-[0_15px_30px_rgba(183,141,125,0.2)] flex items-center justify-center gap-3 active:scale-95 border border-white/10 font-mono"
           >
-            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" />
             Connect Account
           </button>
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 space-y-4 text-center">
-             <div className="animate-spin w-10 h-10 border-4 border-[#1877F2] border-t-transparent rounded-full" />
-             <p className="text-gray-400 font-medium text-xs uppercase tracking-wide">Loading Accounts...</p>
+          <div className="flex flex-col items-center justify-center py-40 space-y-8 text-center">
+             <div className="relative">
+                <div className="animate-spin w-12 h-12 border-[4px] border-[#B78D7D]/10 border-t-[#B78D7D] rounded-full shadow-sm" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                   <Globe size={20} className="text-[#B78D7D] animate-pulse" />
+                </div>
+             </div>
+             <p className="text-[#B2AAA6] font-black uppercase tracking-[0.3em] font-mono text-[9px]">Syncing accounts...</p>
           </div>
         ) : accounts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2.5rem] border border-dashed border-gray-200 text-center shadow-sm p-10 max-w-2xl mx-auto">
-            <div className="w-24 h-24 bg-[#1877F2] text-white rounded-3xl flex items-center justify-center mb-6 rotate-3 shadow-lg">
-              <Facebook size={48} fill="currentColor" />
+          <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2.5rem] border border-dashed border-[#B78D7D]/20 text-center shadow-sm p-12 max-w-3xl mx-auto relative overflow-hidden group">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#B78D7D]/5 rounded-full blur-3xl group-hover:bg-[#B78D7D]/10 transition-colors" />
+            <div className="w-20 h-20 bg-[#F8F4F2] text-[#B78D7D] rounded-3xl flex items-center justify-center mb-8 shadow-inner">
+               <Facebook size={40} />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">No Accounts Connected</h3>
-            <p className="text-gray-500 font-medium mb-8">
-              Connect a Facebook account to start creating automated campaigns.
-            </p>
-            <button
-              onClick={() => {
-                setSelectedAccount(null);
-                setIsConnectModalOpen(true);
-              }}
-              className="px-8 py-4 bg-white border border-gray-200 text-gray-900 font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-sm flex items-center gap-2"
+            <h2 className="text-2xl font-black text-[#3E3A39] uppercase tracking-tighter">No Accounts Found</h2>
+            <p className="text-[#8E7A70] mt-4 max-w-md mx-auto leading-relaxed">Connect your first Facebook account to start managing your presence and automation.</p>
+            <button 
+              onClick={() => setIsConnectModalOpen(true)}
+              className="mt-10 px-10 py-4 bg-[#B78D7D]/10 text-[#B78D7D] rounded-xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-[#B78D7D] hover:text-white transition-all border border-[#B78D7D]/20"
             >
-              <Plus size={20} />
-              Connect Account
+              Get Started Now
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {accounts.map((account) => (
-              <div
+              <div 
                 key={account._id}
-                onClick={() => router.push(`/facebook/${account._id}/campaigns`)}
-                className="bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group overflow-hidden flex flex-col cursor-pointer"
+                onClick={() => setSelectedAccount(account)}
+                className="group bg-white rounded-[2rem] border border-[#B78D7D]/10 shadow-sm hover:shadow-[0_20px_40px_rgba(183,141,125,0.08)] transition-all cursor-pointer relative overflow-hidden flex flex-col p-8"
               >
-                <div className={`h-1.5 w-full ${account.status === "Connected" ? "bg-green-500" : "bg-red-500"}`} />
-                
-                <div className="p-8 pb-6 flex-1">
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="w-14 h-14 bg-[#1877F2] text-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                      <Facebook size={28} fill="currentColor" />
+                 <div className="flex items-start justify-between mb-8">
+                    <div className="relative">
+                        <div className="w-16 h-16 rounded-[1.25rem] overflow-hidden border-4 border-[#F8F4F2] shadow-md group-hover:scale-110 transition-transform duration-500">
+                           <img 
+                             src={account.profilePicture || `https://ui-avatars.com/api/?name=${account.name}&background=B78D7D&color=fff`} 
+                             alt={account.name}
+                             className="w-full h-full object-cover"
+                           />
+                        </div>
+                        <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#1877F2] text-white rounded-lg flex items-center justify-center border-2 border-white shadow-sm scale-90">
+                           <Facebook size={14} fill="currentColor" />
+                        </div>
                     </div>
-                    <button
-                      onClick={(e) => handleDelete(e, account._id)}
-                      className="text-gray-300 hover:text-red-500 transition-all p-3 hover:bg-red-50 rounded-xl opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </div>
+                    <div className="flex gap-2">
+                       <button
+                         onClick={(e) => handleReconnect(e, account)}
+                         className="p-3 bg-[#F8F4F2] text-[#B2AAA6] hover:text-[#B78D7D] rounded-xl hover:bg-[#B78D7D]/10 transition-all border border-[#B78D7D]/5 active:scale-90"
+                         title="Reconnect"
+                       >
+                         <RefreshCw size={16} />
+                       </button>
+                       <button
+                         onClick={(e) => handleDelete(e, account._id)}
+                         className="p-3 bg-[#F8F4F2] text-[#B2AAA6] hover:text-red-500 rounded-xl hover:bg-red-50 transition-all border border-[#B78D7D]/5 active:scale-90"
+                         title="Remove Account"
+                       >
+                         <Trash2 size={16} />
+                       </button>
+                    </div>
+                 </div>
 
-                  <h3 className="font-bold text-xl text-gray-900 mb-1 truncate">{account.email}</h3>
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Facebook Account</p>
-                  
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      {account.status === "Connected" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-bold border border-green-100">
-                          <CheckCircle size={12} />
-                          Connected
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-700 text-xs font-bold border border-red-100">
-                          <AlertCircle size={12} />
-                          {account.status || "Disconnected"}
-                        </span>
-                      )}
+                 <div className="space-y-1">
+                    <h3 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight group-hover:text-[#B78D7D] transition-colors line-clamp-1">{account.name}</h3>
+                    <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono">UID: {account.facebookId?.substring(0, 12)}...</p>
+                 </div>
+
+                 <div className="grid grid-cols-2 gap-3 mt-8">
+                    <div className="bg-[#F8F4F2]/50 p-4 rounded-2xl border border-[#B78D7D]/5 group-hover:bg-[#F8F4F2] transition-colors">
+                       <p className="text-[8px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Status</p>
+                       <div className="flex items-center gap-2">
+                          <div className={`w-1.5 h-1.5 rounded-full ${account.status === "ACTIVE" ? "bg-emerald-500" : "bg-amber-500"} shadow-sm`} />
+                          <span className="text-[9px] font-black text-[#3E3A39] uppercase tracking-widest font-mono">{account.status}</span>
+                       </div>
                     </div>
-                    
-                    {account.status !== "Connected" && (
-                        <button 
-                            onClick={(e) => handleReconnect(e, account)}
-                            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all"
-                        >
-                            <RefreshCw size={12} />
-                            Reconnect
-                        </button>
+                    {account.lastUsed && (
+                       <div className="bg-[#F8F4F2]/50 p-4 rounded-2xl border border-[#B78D7D]/5 group-hover:bg-[#F8F4F2] transition-colors">
+                          <p className="text-[8px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Last Sync</p>
+                          <div className="flex items-center gap-2">
+                             <Calendar size={10} className="text-[#B78D7D]" />
+                             <span className="text-[9px] font-black text-[#3E3A39] uppercase tracking-widest font-mono">{new Date(account.lastUsed).toLocaleDateString()}</span>
+                          </div>
+                       </div>
                     )}
-                  </div>
-                  
-                  <div className="mb-4 text-xs font-medium text-gray-400">
-                    Added {new Date(account.createdAt).toLocaleDateString()}
-                  </div>
+                 </div>
 
-                  <div className="grid grid-cols-2 gap-3 p-4 bg-gray-50 rounded-[1.5rem] border border-gray-100 group-hover:bg-white group-hover:border-blue-100 transition-all">
-                    <div className="text-center">
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Sent</p>
-                      <p className="font-bold text-gray-900 text-lg">--</p>
+                 <div className="mt-8 pt-6 border-t border-[#B78D7D]/10 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                       <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[8px] font-black uppercase tracking-widest border border-emerald-100">
+                          <Activity size={10} /> Active
+                       </span>
                     </div>
-                    <div className="text-center border-l border-gray-200">
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Replies</p>
-                      <p className="font-bold text-gray-900 text-lg">--</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="px-8 py-5 bg-gray-50/50 border-t border-gray-50 flex justify-between items-center group-hover:bg-white transition-colors">
-                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-2">
-                    <CheckCircle size={12} className="text-[#1877F2]" />
-                    Ready
-                  </span>
-                  <span className="text-xs font-bold text-[#1877F2] flex items-center gap-2 group-hover:gap-3 transition-all">
-                    View Campaigns <ExternalLink size={14} />
-                  </span>
-                </div>
+                    <button className="text-[9px] font-black text-[#B78D7D] uppercase tracking-widest font-mono flex items-center gap-2 group/btn">
+                       Enter Dashboard <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                 </div>
               </div>
             ))}
           </div>
         )}
+      </div>
       </div>
 
       <ConnectAccountModal
         isOpen={isConnectModalOpen}
         onClose={() => setIsConnectModalOpen(false)}
         onAccountConnected={fetchAccounts}
-        initialEmail={selectedAccount?.email}
+        editAccount={selectedAccount}
       />
-
-      <AccountDetailsModal
-        account={selectedAccount}
-        isOpen={!!selectedAccount && !isConnectModalOpen}
-        onClose={() => setSelectedAccount(null)}
-      />
+      
+      {selectedAccount && !isConnectModalOpen && (
+        <AccountDetailsModal
+          account={selectedAccount}
+          onClose={() => setSelectedAccount(null)}
+        />
+      )}
     </div>
   );
 }

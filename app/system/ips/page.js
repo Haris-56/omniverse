@@ -7,7 +7,8 @@ import {
   Tag, Shield, Server,
   AlertTriangle, CheckCircle2,
   MoreHorizontal, Loader2,
-  Activity, Globe, Zap, Settings
+  Activity, Globe, Zap, Settings,
+  Database, ShieldCheck, Hexagon
 } from "lucide-react";
 
 export default function IPManagement() {
@@ -80,263 +81,326 @@ export default function IPManagement() {
   );
 
   return (
-    <div className="space-y-10 pb-20 animate-in fade-in duration-700">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-             <Globe className="text-indigo-600 animate-pulse" size={40} />
-             Network Operations Center
-          </h1>
-          <p className="text-slate-500 font-medium mt-2 text-lg">Managing {ips.length} active infrastructure nodes across global clusters.</p>
+    <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 font-sans p-4 lg:p-0 pb-32">
+      <div className="max-w-full mx-auto space-y-20">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 border-b border-[#B78D7D]/10 pb-16">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+                 <span className="px-5 py-2 bg-[#B78D7D]/10 text-[#B78D7D] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#B78D7D]/20 flex items-center gap-3 font-mono">
+                 <Hexagon size={16} className="opacity-80" />
+                 Network_Grid::Authorized
+               </span>
+            </div>
+            <h1 className="text-7xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">
+              IP <span className="text-[#B78D7D]">Registry</span>
+            </h1>
+            <p className="text-[#8E7A70] text-2xl font-medium max-w-3xl leading-relaxed italic">Administer secure inbound proxy clusters and modulate geo-location distribution.</p>
+          </div>
+          <div className="flex items-center gap-6">
+            <button 
+              onClick={fetchIPs}
+              className="px-10 py-6 bg-white text-[#3E3A39] font-black uppercase text-[11px] tracking-[0.3em] rounded-[1.75rem] flex items-center justify-center gap-5 transition-all shadow-sm hover:bg-[#F8F4F2] active:scale-95 font-mono border border-[#B78D7D]/10"
+            >
+              <RefreshCw size={22} className={loading ? "animate-spin" : ""} /> Sync_Grid
+            </button>
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="px-12 py-6 bg-[#B78D7D] text-white font-black uppercase text-[11px] tracking-[0.4em] rounded-[2rem] flex items-center justify-center gap-5 transition-all shadow-xl hover:bg-[#A37B6D] active:scale-95 font-mono border border-white/10"
+            >
+              <Plus size={24} /> Provision_Node
+            </button>
+          </div>
         </div>
-        <div className="flex gap-4">
-          <button 
-            onClick={fetchIPs}
-            className="px-6 py-4 bg-white border border-slate-200 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-2"
-          >
-            <RefreshCw size={18} className={loading ? "animate-spin" : ""} /> Sync Grid
-          </button>
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all flex items-center gap-2 active:scale-95"
-          >
-            <Plus size={18} /> Provision Node
-          </button>
+
+        {/* Metrics Bar */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <MetricCard icon={Server} label="Grid_Clusters" value={ips.length} accent="#B78D7D" sub="Active Nodes" />
+          <MetricCard icon={Shield} label="Safe_Residency" value={ips.filter(i => i.type === 'residential').length} accent="#B78D7D" sub="Verified Residential" />
+          <MetricCard icon={Activity} label="Pulse_Sync" value="98.4%" accent="#B78D7D" sub="Health Multiplier" />
+          <MetricCard icon={Zap} label="Load_Balance" value={`${ips.reduce((a,b) => a + (b.usage?.today || 0), 0)}`} accent="#B78D7D" sub="Daily Requests" />
         </div>
+
+        {/* Search Matrix */}
+        <div className="bg-white p-12 rounded-[4rem] border border-[#B78D7D]/15 shadow-sm relative overflow-hidden group">
+          <div className="relative z-10 flex flex-col md:flex-row gap-8">
+            <div className="flex-1 relative">
+              <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-[#B2AAA6]" size={28} />
+              <input 
+                type="text" 
+                placeholder="Locate node by host signature, protocol, or tag..." 
+                className="w-full pl-20 pr-8 py-7 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-[2.5rem] outline-none focus:border-[#B78D7D] font-bold text-[#3E3A39] transition-all shadow-sm italic placeholder:text-[#B2AAA6]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-6">
+               <div className="relative">
+                 <select className="px-10 py-5 bg-white border border-[#B78D7D]/15 rounded-[1.75rem] outline-none font-black text-[#8E7A70] text-[11px] uppercase tracking-widest font-mono appearance-none min-w-[240px] hover:border-[#B78D7D]/30 transition-all cursor-pointer shadow-sm">
+                   <option>Filter::All_Nodes</option>
+                   <option>Filter::Residential</option>
+                   <option>Filter::Datacenter</option>
+                 </select>
+                 <Settings size={18} className="absolute right-8 top-1/2 -translate-y-1/2 text-[#B2AAA6] pointer-events-none" />
+               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* IP Nodes Hub */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-48 space-y-10 animate-pulse text-center">
+             <div className="w-24 h-24 border-8 border-[#F8F4F2] border-t-[#B78D7D] rounded-full animate-spin shadow-inner" />
+             <p className="text-[11px] font-black text-[#B2AAA6] uppercase tracking-[0.6em] font-mono">Verifying_Optical_Links...</p>
+          </div>
+        ) : (
+          <div className="bg-white rounded-[4rem] overflow-hidden relative border border-[#B78D7D]/10 shadow-sm">
+             <div className="absolute inset-x-0 bottom-0 h-[3px] bg-gradient-to-r from-transparent via-[#B78D7D]/30 to-transparent" />
+            <div className="overflow-x-auto custom-scrollbar">
+              <table className="w-full text-left">
+                <thead className="bg-[#F8F4F2]/50 text-[11px] font-black uppercase text-[#B2AAA6] tracking-[0.4em] font-mono border-b border-[#B78D7D]/10">
+                  <tr>
+                    <th className="p-12">Endpoint_Protocol</th>
+                    <th className="p-12">Classification</th>
+                    <th className="p-12">Type</th>
+                    <th className="p-12">Usage_Load</th>
+                    <th className="p-12 text-right">Integrity</th>
+                    <th className="p-12 text-right px-16">Operations</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#B78D7D]/5">
+                  {filteredIPs.map((ip) => (
+                    <tr key={ip._id} className="hover:bg-[#F8F4F2]/30 transition-all group cursor-default">
+                      <td className="p-12">
+                        <div className="flex items-center gap-8">
+                          <div className="p-5 bg-[#F8F4F2] border border-[#B78D7D]/10 rounded-2xl text-[#B2AAA6] group-hover:text-[#B78D7D] group-hover:border-[#B78D7D]/30 transition-all font-mono shadow-sm">
+                            <MapPin size={26}/>
+                          </div>
+                          <div>
+                            <span className="font-black text-[#3E3A39] text-2xl font-mono tracking-tighter leading-none">{ip.host}</span>
+                            <span className="text-[#B2AAA6] font-mono text-2xl"> : {ip.port}</span>
+                            {ip.auth && <p className="text-[10px] font-black text-[#B78D7D] uppercase tracking-widest mt-2 font-mono flex items-center gap-3">
+                               <Shield size={12} /> Secure_Handshake_Enabled
+                            </p>}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-12">
+                        <span className={`px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] font-mono border ${
+                          ip.type === 'residential' 
+                            ? 'bg-[#B78D7D]/10 text-[#B78D7D] border-[#B78D7D]/20' 
+                            : 'bg-white text-[#8E7A70] border-[#B78D7D]/10'
+                        } shadow-sm`}>
+                          {ip.type}
+                        </span>
+                      </td>
+                      <td className="p-12">
+                        <div className="flex items-center gap-4">
+                           <Shield size={16} className="text-[#B2AAA6]" />
+                           <span className="font-black text-[#8E7A70] text-[12px] uppercase tracking-widest font-mono">{ip.protocol}</span>
+                        </div>
+                      </td>
+                      <td className="p-12">
+                        <div className="flex items-center gap-8">
+                           <div className="flex-1 h-3.5 w-40 bg-[#F8F4F2] rounded-full overflow-hidden border border-[#B78D7D]/10 shadow-inner">
+                              <div 
+                                className="h-full bg-[#B78D7D] rounded-full transition-all duration-1000" 
+                                style={{ width: `${Math.min(100, ((ip.usage?.today || 0) / (ip.limits?.daily || 1000)) * 100)}%` }} 
+                              />
+                           </div>
+                           <span className="text-[12px] font-black font-mono text-[#3E3A39] tracking-widest">{ip.usage?.today || 0} U</span>
+                        </div>
+                      </td>
+                      <td className="p-12 text-right">
+                        <span className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#F8F4F2] text-[#B78D7D] text-[11px] font-black uppercase tracking-widest border border-[#B78D7D]/10 shadow-sm font-mono">
+                          <CheckCircle2 size={16} /> Synchronized
+                        </span>
+                      </td>
+                      <td className="p-12 text-right px-16">
+                        <button 
+                          onClick={() => removeIP(ip._id)} 
+                          className="px-6 py-3 bg-[#F8F4F2] text-[#B2AAA6] hover:text-white hover:bg-rose-500 rounded-2xl border border-[#B78D7D]/10 hover:border-rose-600 transition-all opacity-0 group-hover:opacity-100 uppercase text-[10px] font-black font-mono tracking-widest"
+                        >
+                          <Trash2 size={24} className="mx-auto" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredIPs.length === 0 && (
+                    <tr>
+                       <td colSpan="6" className="py-48 text-center opacity-30">
+                          <div className="flex flex-col items-center gap-8 max-w-sm mx-auto">
+                            <Globe size={80} className="text-[#B2AAA6]" />
+                            <p className="text-[12px] font-black text-[#B2AAA6] uppercase tracking-[0.6em] font-mono italic">Void_Cluster_Identified</p>
+                          </div>
+                       </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Metrics Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <MetricCard icon={Server} label="Total Nodes" value={ips.length} color="indigo" />
-        <MetricCard icon={Shield} label="Verified Residential" value={ips.filter(i => i.type === 'residential').length} color="emerald" />
-        <MetricCard icon={Activity} label="Health Multiplier" value="98.4%" color="purple" />
-        <MetricCard icon={Zap} label="Daily Throughput" value={`${ips.reduce((a,b) => a + (b.usage?.today || 0), 0)}`} color="amber" />
-      </div>
-
-      {/* Search & Action Bar */}
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-          <input 
-            type="text" 
-            placeholder="Search by IP address, host, or protocol..." 
-            className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500/20 font-medium text-slate-900 transition-all"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="flex gap-3">
-           <select className="px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold text-slate-600 text-sm appearance-none min-w-[160px]">
-             <option>All Platforms</option>
-             <option>Residential</option>
-             <option>Datacenter</option>
-           </select>
-           <button className="px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-400 hover:text-indigo-600 transition-all">
-             <Settings size={20} />
-           </button>
-        </div>
-      </div>
-
-      {/* IP Table */}
-      {loading ? (
-        <div className="py-40 flex flex-col items-center justify-center space-y-4">
-           <Loader2 className="animate-spin text-indigo-600" size={48} />
-           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Scanning Network Clusters...</p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100 transition-colors">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Network Endpoint</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Classification</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Protocol</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Daily Load</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Node Security</th>
-                <th className="px-8 py-5"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredIPs.map((ip) => (
-                <tr key={ip._id} className="hover:bg-slate-50/50 transition-all group">
-                  <td className="px-8 py-7">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-slate-100 rounded-2xl text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all"><MapPin size={18}/></div>
-                      <div>
-                        <span className="font-black text-slate-900 text-lg font-mono tracking-tight">{ip.host}:{ip.port}</span>
-                        {ip.auth && <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.1em] mt-0.5">Encrypted Tunnel Active</p>}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-7">
-                    <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider border ${
-                      ip.type === 'residential' 
-                        ? 'bg-indigo-50 text-indigo-600 border-indigo-100' 
-                        : 'bg-blue-50 text-blue-600 border-blue-100'
-                    }`}>
-                      {ip.type}
-                    </span>
-                  </td>
-                  <td className="px-8 py-7">
-                    <div className="flex items-center gap-2">
-                       <Shield size={14} className="text-slate-300" />
-                       <span className="font-black text-slate-700 text-sm uppercase">{ip.protocol}</span>
-                    </div>
-                  </td>
-                  <td className="px-8 py-7">
-                    <div className="flex items-center gap-4">
-                       <div className="flex-1 h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-indigo-600 rounded-full" 
-                            style={{ width: `${Math.min(100, ((ip.usage?.today || 0) / (ip.limits?.daily || 1000)) * 100)}%` }} 
-                          />
-                       </div>
-                       <span className="text-xs font-black text-slate-900">{ip.usage?.today || 0} reqs</span>
-                    </div>
-                  </td>
-                  <td className="px-8 py-7 text-right">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-100">
-                      <CheckCircle2 size={12} /> Optimal
-                    </span>
-                  </td>
-                  <td className="px-8 py-7 text-right">
-                    <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-all">
-                      <button 
-                        onClick={() => removeIP(ip._id)} 
-                        className="p-3 bg-white text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-2xl border border-slate-100 shadow-sm transition-all"
-                      >
-                        <Trash2 size={18}/>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {filteredIPs.length === 0 && (
-                <tr>
-                   <td colSpan="6" className="py-24 text-center">
-                      <p className="text-slate-400 font-bold italic">No nodes matching search criteria found in current perimeter.</p>
-                   </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Register Node Modal */}
+      {/* Provisioning Manifest (Modal) */}
       {showAddModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl animate-in fade-in duration-300" onClick={() => setShowAddModal(false)} />
-          <div className="bg-white w-full max-w-xl rounded-[3.5rem] shadow-2xl relative overflow-hidden p-12 border border-slate-100 animate-in zoom-in-95 duration-300">
-            <div className="mb-10 text-center">
-               <div className="w-20 h-20 bg-indigo-600 text-white rounded-[2.25rem] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-indigo-200 ring-8 ring-indigo-50">
+        <div className="fixed inset-0 z-[600] flex items-center justify-center p-6 lg:p-20 overflow-y-auto custom-scrollbar">
+          <div className="fixed inset-0 bg-[#3E3A39]/60 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setShowAddModal(false)} />
+          <div className="bg-white w-full max-w-2xl rounded-3xl shadow-xl border border-[#B78D7D]/10 relative z-10 overflow-hidden p-10 animate-in zoom-in-95 duration-500 my-auto text-center font-sans">
+             <div className="absolute inset-x-0 bottom-0 h-1.5 bg-gradient-to-r from-transparent via-[#B78D7D]/40 to-transparent" />
+            
+            <div className="mb-10 relative z-10">
+               <div className="w-16 h-16 bg-[#F8F4F2] text-[#B78D7D] rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-sm border border-[#B78D7D]/10">
                  <Server size={32} />
                </div>
-               <h2 className="text-3xl font-black text-slate-900 tracking-tight">Provision Grid Node</h2>
-               <p className="text-slate-400 font-bold text-sm mt-2">Introduce new infrastructure to the system fabric.</p>
+               <h2 className="text-3xl font-bold text-[#3E3A39] tracking-tight uppercase leading-none">Provision Grid Node</h2>
+               <p className="text-[#8E7A70] font-bold text-xs uppercase tracking-wider mt-4">Identify and bridge new infrastructure fabric.</p>
             </div>
 
-            <form onSubmit={handleRegister} className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                 <div className="space-y-2">
-                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Node Type</label>
-                   <select 
-                     value={form.type} 
-                     onChange={e => setForm({...form, type: e.target.value})}
-                     className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.25rem] font-black text-slate-900 outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all appearance-none"
-                   >
-                     <option value="residential">Residential</option>
-                     <option value="shared">Datacenter</option>
-                   </select>
-                 </div>
-                 <div className="space-y-2">
-                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Protocol</label>
-                   <select 
-                     value={form.protocol} 
-                     onChange={e => setForm({...form, protocol: e.target.value})}
-                     className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.25rem] font-black text-slate-900 outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all appearance-none"
-                   >
-                     <option value="socks5">SOCKS5</option>
-                     <option value="http">HTTP/HTTPS</option>
-                   </select>
-                 </div>
+            <form onSubmit={handleRegister} className="space-y-8 relative z-10 text-left">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <FormGroup label="Node Classification">
+                   <div className="relative group">
+                     <select 
+                       value={form.type} 
+                       onChange={e => setForm({...form, type: e.target.value})}
+                       className="w-full p-4 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-xl text-sm font-bold text-[#3E3A39] outline-none focus:border-[#B78D7D] transition-all appearance-none cursor-pointer tracking-wider uppercase shadow-sm"
+                     >
+                       <option value="residential">Residential Trust</option>
+                       <option value="shared">Datacenter Bulk</option>
+                     </select>
+                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#B2AAA6]">
+                        <Settings size={18} />
+                     </div>
+                   </div>
+                 </FormGroup>
+                 <FormGroup label="Handshake Protocol">
+                    <div className="relative group">
+                     <select 
+                       value={form.protocol} 
+                       onChange={e => setForm({...form, protocol: e.target.value})}
+                       className="w-full p-4 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-xl text-sm font-bold text-[#3E3A39] outline-none focus:border-[#B78D7D] transition-all appearance-none cursor-pointer tracking-wider uppercase shadow-sm"
+                     >
+                       <option value="socks5">SOCKS5</option>
+                       <option value="http">HTTP SECURE</option>
+                     </select>
+                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#B2AAA6]">
+                        <Settings size={18} />
+                     </div>
+                   </div>
+                 </FormGroup>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2 space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Host Identity / IP</label>
-                  <input 
-                    required 
-                    placeholder="e.g. 45.16.8.201" 
-                    value={form.host}
-                    onChange={e => setForm({...form, host: e.target.value})}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.25rem] font-black font-mono text-slate-900 outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all" 
-                  />
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="md:col-span-3">
+                  <FormGroup label="Access_Endpoint / Host">
+                    <input 
+                      required 
+                      placeholder="e.g. 0.0.0.0" 
+                      value={form.host}
+                      onChange={e => setForm({...form, host: e.target.value})}
+                      className="form-input" 
+                    />
+                  </FormGroup>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Port</label>
-                  <input 
-                    required 
-                    placeholder="1080" 
-                    value={form.port}
-                    onChange={e => setForm({...form, port: e.target.value})}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.25rem] font-black font-mono text-slate-900 outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all" 
-                  />
+                <div>
+                  <FormGroup label="Port">
+                    <input 
+                      required 
+                      placeholder="1080" 
+                      value={form.port}
+                      onChange={e => setForm({...form, port: e.target.value})}
+                      className="form-input text-center" 
+                    />
+                  </FormGroup>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Username (Optional)</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <FormGroup label="Operator Identity">
                   <input 
-                    placeholder="admin" 
+                    placeholder="Admin ID" 
                     value={form.username}
                     onChange={e => setForm({...form, username: e.target.value})}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.25rem] font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all" 
+                    className="form-input text-sm px-4 py-3 rounded-xl" 
                   />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Secret Key (Optional)</label>
+                </FormGroup>
+                <FormGroup label="Security Key">
                   <input 
                     type="password" 
-                    placeholder="••••••••" 
+                    placeholder="••••••••••••" 
                     value={form.password}
                     onChange={e => setForm({...form, password: e.target.value})}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[1.25rem] font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all" 
+                    className="form-input text-sm px-4 py-3 rounded-xl" 
                   />
-                </div>
+                </FormGroup>
               </div>
 
-              <div className="pt-8 flex gap-4">
-                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 py-5 bg-slate-50 text-slate-400 font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-slate-100 transition-all">Abort</button>
-                <button type="submit" className="flex-[2] py-5 bg-indigo-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-200 active:scale-95">Finalize Provisioning</button>
+              <div className="pt-8 flex flex-col md:flex-row gap-4">
+                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 py-4 bg-[#F8F4F2] text-[#B2AAA6] font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#EBE4E0] transition-all border border-[#B78D7D]/10 shadow-sm">Cancel</button>
+                <button type="submit" className="flex-[2] py-4 bg-[#B78D7D] text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#A37B6D] transition-all shadow-md active:scale-95 border border-white/10">Execute Provisioning</button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {/* Global CSS for Form Inputs */}
+      <style jsx>{`
+        .form-input {
+          width: 100%;
+          padding: 1.5rem 2rem;
+          background-color: rgba(248, 244, 242, 0.5);
+          border: 1px solid rgba(183, 141, 125, 0.2);
+          border-radius: 2rem;
+          font-weight: 800;
+          color: #3E3A39;
+          outline: none;
+          transition: all 0.3s;
+          font-family: monospace;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          font-size: 0.9rem;
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .form-input:focus {
+          border-color: #B78D7D;
+          background-color: #ffffff;
+          box-shadow: 0 4px 20px rgba(183, 141, 125, 0.1);
+        }
+        .form-input::placeholder {
+            color: #B2AAA6;
+        }
+      `}</style>
     </div>
   );
 }
 
-function MetricCard({ icon: Icon, label, value, color }) {
-  const colors = {
-    indigo: "bg-indigo-50 text-indigo-600 border-indigo-100",
-    emerald: "bg-emerald-50 text-emerald-600 border-emerald-100",
-    purple: "bg-purple-50 text-purple-600 border-purple-100",
-    amber: "bg-amber-50 text-amber-600 border-amber-100"
-  };
-
+function MetricCard({ icon: Icon, label, value, accent, sub }) {
   return (
-    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 flex items-center gap-6 shadow-sm hover:shadow-md transition-shadow">
-      <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center shrink-0 ${colors[color]}`}>
-        <Icon size={28} />
+    <div className="bg-white p-12 rounded-[4rem] relative overflow-hidden group border border-[#B78D7D]/10 shadow-sm transition-all duration-700 hover:-translate-y-2">
+      <div className="flex items-center gap-8 relative z-10">
+        <div className="w-20 h-20 rounded-[2rem] flex items-center justify-center shrink-0 border border-[#B78D7D]/10 bg-[#F8F4F2] text-[#B78D7D] shadow-inner transition-all duration-700 group-hover:scale-110 group-hover:rotate-6">
+          <Icon size={32} />
+        </div>
+        <div>
+          <p className="text-[11px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] mb-3 font-mono leading-none">{label}</p>
+          <p className="text-4xl font-black text-[#3E3A39] tracking-tighter leading-none">{value}</p>
+          <p className="text-[10px] font-black text-[#8E7A70] uppercase tracking-widest mt-4 font-mono leading-none italic">{sub}</p>
+        </div>
       </div>
-      <div>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{label}</p>
-        <p className="text-2xl font-black text-slate-900 tracking-tight">{value}</p>
-      </div>
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+    </div>
+  );
+}
+
+function FormGroup({ label, children }) {
+  return (
+    <div className="space-y-2">
+      <label className="text-xs font-bold text-[#B2AAA6] uppercase tracking-wider ml-1">{label}</label>
+      {children}
     </div>
   );
 }

@@ -16,7 +16,14 @@ import {
   List as ListIcon,
   Filter,
   MoreVertical,
-  ExternalLink
+  ExternalLink,
+  Activity,
+  Database,
+  ShieldCheck,
+  Globe,
+  Loader2,
+  Hexagon,
+  ChevronLeft
 } from "lucide-react";
 import AddContactModal from "./components/AddContactModal";
 import UploadContactsModal from "./components/UploadContactsModal";
@@ -30,7 +37,7 @@ export default function ContactsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [displayStyle, setDisplayStyle] = useState("table"); // 'table' | 'cards' for desktop, always cards for mobile
+  const [displayStyle, setDisplayStyle] = useState("table"); 
 
   useEffect(() => {
     if (viewMode === "lists") {
@@ -76,7 +83,7 @@ export default function ContactsPage() {
 
   const handleDeleteList = async (e, listId, listName) => {
     e.stopPropagation();
-    if (!confirm(`Are you sure you want to delete the list '${listName}' and all its contacts?`)) return;
+    if (!confirm(`Are you sure you want to delete the list '${listName}'?`)) return;
 
     try {
       const res = await fetch(`/api/lists?id=${listId}`, {
@@ -94,7 +101,7 @@ export default function ContactsPage() {
   };
 
   const handleDeleteContact = async (id) => {
-    if (!confirm("Are you sure you want to delete this contact?")) return;
+    if (!confirm("Are you sure you want to delete this person?")) return;
 
     try {
       const res = await fetch(`/api/contacts/${id}`, {
@@ -116,344 +123,366 @@ export default function ContactsPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50/50 p-4 md:p-8 animate-in fade-in duration-500">
-      <div className="max-w-7xl mx-auto">
-        
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <div className="flex items-center gap-4">
-            {viewMode === "contacts" && (
-              <button 
-                onClick={() => {
-                  setViewMode("lists");
-                  setSelectedList(null);
-                  setSearchQuery("");
-                }}
-                className="p-3 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md hover:bg-gray-50 transition-all text-gray-500"
-              >
-                <ArrowLeft size={20} />
-              </button>
-            )}
-            <div>
-              <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-                {viewMode === "lists" ? "Contact Lists" : selectedList?.name}
-              </h1>
-              <p className="text-gray-500 mt-1 text-sm font-medium">
-                {viewMode === "lists" 
-                  ? `${lists.length} lists total` 
-                  : `${contacts.length} contacts found`}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsUploadModalOpen(true)}
-              className="flex-1 md:flex-none px-5 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-sm flex items-center justify-center gap-2"
+    <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 font-sans pb-32">
+      
+      {/* Header Section */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 mb-16 border-b border-[#B78D7D]/10 pb-12">
+        <div className="flex items-center gap-8">
+          {viewMode === "contacts" && (
+            <button 
+              onClick={() => {
+                setViewMode("lists");
+                setSelectedList(null);
+                setSearchQuery("");
+              }}
+              className="p-5 bg-white border border-[#B78D7D]/15 rounded-2xl text-[#B2AAA6] hover:text-[#B78D7D] shadow-sm transition-all active:scale-90 group"
             >
-              <Upload size={18} className="text-indigo-600" />
-              <span>Import CSV</span>
+              <ChevronLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
             </button>
-            {viewMode === "contacts" ? (
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="flex-1 md:flex-none px-6 py-3 bg-indigo-600 text-white text-sm font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-2"
-              >
-                <Plus size={20} />
-                <span>Add Contact</span>
-              </button>
-            ) : (
-               <div className="hidden md:flex items-center bg-white border border-gray-200 p-1 rounded-2xl shadow-sm">
-                  <button 
-                    onClick={() => setDisplayStyle("table")}
-                    className={`p-2 rounded-xl transition-all ${displayStyle === 'table' ? 'bg-indigo-50 text-indigo-600 shadow-inner' : 'text-gray-400 hover:bg-gray-50'}`}
-                  >
-                    <ListIcon size={18} />
-                  </button>
-                  <button 
-                    onClick={() => setDisplayStyle("cards")}
-                    className={`p-2 rounded-xl transition-all ${displayStyle === 'cards' ? 'bg-indigo-50 text-indigo-600 shadow-inner' : 'text-gray-400 hover:bg-gray-50'}`}
-                  >
-                    <LayoutGrid size={18} />
-                  </button>
-               </div>
-            )}
+          )}
+          <div>
+            <div className="flex items-center gap-4 mb-4">
+               <span className="px-5 py-2 bg-[#B78D7D]/10 text-[#B78D7D] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#B78D7D]/20 flex items-center gap-2 font-mono shadow-sm">
+                 <ShieldCheck size={14} className="opacity-80" />
+                 Safe & Working
+               </span>
+            </div>
+            <h1 className="text-5xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">
+              My <span className="text-[#B78D7D]">People</span>
+            </h1>
+            <p className="text-[#8E7A70] mt-4 text-xl font-medium leading-relaxed">
+              {viewMode === "lists" 
+                ? `This is a list of everyone you want to talk to.` 
+                : `Showing people in your list: [${selectedList?.name}].`}
+            </p>
           </div>
         </div>
 
-        {/* Toolbar Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-           <div className="relative flex-1 max-w-md group">
-              <input
-                placeholder={viewMode === "lists" ? "Search lists..." : "Search contacts in list..."}
-                value={searchQuery}
-                onInput={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-[1.25rem] py-3.5 px-12 text-sm font-medium outline-none shadow-sm group-focus-within:ring-4 group-focus-within:ring-indigo-500/10 group-focus-within:border-indigo-500/30 transition-all"
-              />
-              <Search size={20} className="absolute left-4 top-3.5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
-           </div>
-           
-           <div className="flex items-center gap-2">
-              <button className="px-4 py-3 bg-white border border-gray-100 rounded-2xl text-gray-500 text-sm font-bold flex items-center gap-2 hover:bg-gray-50 transition-all shadow-sm">
-                <Filter size={18} />
-                <span>Filter</span>
-              </button>
-           </div>
-        </div>
-
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-40">
-             <div className="relative">
-                <div className="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
-                      <Plus size={16} className="text-indigo-600" />
-                   </div>
-                </div>
+        <div className="flex items-center gap-6">
+          <button
+            onClick={() => setIsUploadModalOpen(true)}
+            className="px-10 py-5 bg-white border border-[#B78D7D]/15 text-[#8E7A70] text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.75rem] hover:text-[#B78D7D] hover:bg-[#F8F4F2] transition-all shadow-sm flex items-center justify-center gap-4 group font-mono"
+          >
+            <Upload size={20} className="text-[#B78D7D] group-hover:-translate-y-1 transition-transform" />
+            Upload List
+          </button>
+          
+          {viewMode === "contacts" ? (
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="px-12 py-5 bg-[#B78D7D] text-white text-[11px] font-black rounded-[1.75rem] hover:bg-[#A37B6D] transition-all shadow-[0_20px_40px_rgba(183,141,125,0.3)] flex items-center justify-center gap-4 active:scale-95 border border-white/10 font-mono uppercase tracking-[0.4em]"
+            >
+              <Plus size={24} />
+              Add a Person
+            </button>
+          ) : (
+             <div className="hidden md:flex items-center bg-white border border-[#B78D7D]/10 p-2 rounded-2xl shadow-sm">
+                <button 
+                  onClick={() => setDisplayStyle("table")}
+                  className={`p-3 rounded-xl transition-all ${displayStyle === 'table' ? 'bg-[#B78D7D] text-white shadow-lg' : 'text-[#B2AAA6] hover:text-[#B78D7D]'}`}
+                >
+                  <ListIcon size={20} />
+                </button>
+                <button 
+                  onClick={() => setDisplayStyle("cards")}
+                  className={`p-3 rounded-xl transition-all ${displayStyle === 'cards' ? 'bg-[#B78D7D] text-white shadow-lg' : 'text-[#B2AAA6] hover:text-[#B78D7D]'}`}
+                >
+                  <LayoutGrid size={20} />
+                </button>
              </div>
-             <p className="mt-6 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Loading...</p>
-          </div>
-        ) : (
-          <>
-            {viewMode === "lists" ? (
-              /* Lists View */
-              displayStyle === "table" ? (
-                <div className="bg-white rounded-[2rem] shadow-xl shadow-gray-200/40 overflow-hidden border border-gray-100">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="text-left text-gray-400 border-b border-gray-50 bg-gray-50/20 uppercase text-[10px] font-black tracking-[0.1em]">
-                          <th className="p-6">List Name</th>
-                          <th className="p-6">Type / Tag</th>
-                          <th className="p-6">Creation Date</th>
-                          <th className="p-6 text-center">Contacts</th>
-                          <th className="p-6 text-right">Actions</th>
+          )}
+        </div>
+      </div>
+
+      {/* Toolbar Sector */}
+      <div className="bg-white p-10 rounded-[3.5rem] border border-[#B78D7D]/10 shadow-sm relative overflow-hidden group mb-16">
+         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
+            <div className="relative flex-1 max-w-2xl group/search">
+               <input
+                 placeholder={viewMode === "lists" ? "SEARCH YOUR LISTS..." : "SEARCH FOR PEOPLE..."}
+                 value={searchQuery}
+                 onInput={(e) => setSearchQuery(e.target.value)}
+                 className="w-full bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-3xl py-6 px-16 text-[12px] font-black text-[#3E3A39] outline-none shadow-inner focus:border-[#B78D7D]/40 transition-all placeholder:text-[#B2AAA6] font-mono tracking-widest uppercase"
+               />
+               <Search size={24} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/search:text-[#B78D7D] transition-colors" />
+            </div>
+            
+            <button className="px-12 py-5 bg-white border border-[#B78D7D]/15 rounded-2xl text-[#8E7A70] text-[10px] font-black uppercase tracking-[0.4em] flex items-center gap-4 hover:border-[#B78D7D]/40 hover:text-[#B78D7D] transition-all font-mono">
+              <Filter size={20} className="group-hover:rotate-12 transition-transform" />
+              Filters
+            </button>
+         </div>
+         <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#B78D7D]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+      </div>
+
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-56 space-y-12">
+           <div className="relative">
+              <div className="w-24 h-24 border-[5px] border-[#B78D7D]/10 border-t-[#B78D7D] rounded-full animate-spin shadow-sm"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                 <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-[#B78D7D]/5">
+                    <Database size={24} className="text-[#B78D7D] animate-pulse" />
+                 </div>
+              </div>
+           </div>
+           <p className="text-[11px] font-black text-[#B2AAA6] uppercase tracking-[0.6em] font-mono">Loading data...</p>
+        </div>
+      ) : (
+        <div className="animate-in fade-in duration-700">
+          {viewMode === "lists" ? (
+            /* Lists Portfolio */
+            displayStyle === "table" ? (
+              <div className="bg-white rounded-[4rem] shadow-sm border border-[#B78D7D]/10 overflow-hidden relative group/table">
+                <div className="overflow-x-auto custom-scrollbar">
+                  <table className="w-full text-left">
+                    <thead className="bg-[#F8F4F2]/50 text-[10px] font-black uppercase text-[#B2AAA6] tracking-[0.4em] font-mono border-b border-[#B78D7D]/10">
+                      <tr>
+                        <th className="p-10 pl-14">List Name</th>
+                        <th className="p-10">Category</th>
+                        <th className="p-10 text-center">People Count</th>
+                        <th className="p-10">Created On</th>
+                        <th className="p-10 pr-14 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#B78D7D]/5">
+                      {lists.length === 0 ? (
+                        <tr><td colSpan="5" className="p-40 text-center text-[#B2AAA6] text-xl font-medium opacity-60">You haven't uploaded any lists yet.</td></tr>
+                      ) : (
+                        lists.map((list) => (
+                          <tr 
+                            key={list._id} 
+                            onClick={() => {
+                              setSelectedList(list);
+                              setViewMode("contacts");
+                            }}
+                            className="group hover:bg-[#F8F4F2]/30 transition-all cursor-default"
+                          >
+                            <td className="p-10 pl-14 relative">
+                              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#B78D7D] opacity-0 group-hover:opacity-100 transition-opacity" />
+                              <div className="flex items-center gap-8">
+                                <div className="w-16 h-16 bg-[#F8F4F2] border border-[#B78D7D]/10 text-[#B2AAA6] rounded-[1.75rem] flex items-center justify-center group-hover:bg-[#B78D7D] group-hover:text-white group-hover:scale-110 transition-all duration-700 shadow-inner">
+                                  <Folder size={28} />
+                                </div>
+                                <div>
+                                  <p className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none group-hover:text-[#B78D7D] transition-colors">{list.name}</p>
+                                  <p className="text-[10px] text-[#B2AAA6] font-black uppercase tracking-[0.3em] mt-3 font-mono">ID: {list._id.slice(-8).toUpperCase()}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-10">
+                              <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white border border-[#B78D7D]/10 text-[#B2AAA6] text-[10px] font-black uppercase tracking-[0.3em] group-hover:border-[#B78D7D]/30 group-hover:text-[#B78D7D] transition-all font-mono shadow-sm">
+                                <Tag size={14} />
+                                {list.segment || 'General'}
+                              </div>
+                            </td>
+                            <td className="p-10 text-center">
+                              <span className="text-3xl font-black text-[#3E3A39] tracking-tighter font-sans group-hover:text-[#B78D7D] transition-colors leading-none">{list.count || 0}</span>
+                            </td>
+                            <td className="p-10">
+                              <div className="flex items-center gap-4 text-[#B2AAA6] font-black font-mono text-[10px] uppercase tracking-widest">
+                                <Calendar size={16} className="text-[#B78D7D]/40" />
+                                <span>{new Date(list.createdAt).toLocaleDateString().toUpperCase()}</span>
+                              </div>
+                            </td>
+                            <td className="p-10 pr-14 text-right">
+                              <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                                <button
+                                  onClick={(e) => handleDeleteList(e, list._id, list.name)}
+                                  className="p-4 text-rose-500 bg-rose-500/5 hover:bg-rose-500 hover:text-white border border-rose-500/10 rounded-xl transition-all active:scale-90"
+                                >
+                                  <Trash2 size={20} />
+                                </button>
+                                <div className="p-4 text-[#B2AAA6] group-hover:text-[#B78D7D] group-hover:translate-x-1 transition-all">
+                                  <ChevronRight size={24} />
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="absolute inset-0 opacity-[0.01] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+              </div>
+            ) : (
+              /* Card View */
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                {lists.map((list) => (
+                  <div
+                    key={list._id}
+                    onClick={() => {
+                      setSelectedList(list);
+                      setViewMode("contacts");
+                    }}
+                    className="group bg-white rounded-[4rem] p-12 cursor-pointer relative overflow-hidden border border-[#B78D7D]/10 transition-all duration-700 hover:shadow-[0_45px_90px_rgba(183,141,125,0.08)] hover:-translate-y-3"
+                  >
+                    <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-[#B78D7D]/10 rounded-full blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                    
+                    <div className="flex justify-between items-start mb-12 relative z-10">
+                       <div className="w-20 h-20 bg-[#F8F4F2] border border-[#B78D7D]/15 text-[#B2AAA6] rounded-[2rem] flex items-center justify-center shadow-inner group-hover:rotate-12 group-hover:scale-110 group-hover:bg-white group-hover:text-[#B78D7D] transition-all duration-700">
+                         <Folder size={40} />
+                       </div>
+                       <div className="px-6 py-2 bg-white border border-[#B78D7D]/10 text-[10px] font-black uppercase text-[#B2AAA6] tracking-[0.4em] rounded-full font-mono shadow-sm">
+                         {list.segment || 'General'}
+                       </div>
+                    </div>
+
+                    <h3 className="text-3xl font-black text-[#3E3A39] mb-4 truncate group-hover:text-[#B78D7D] transition-colors tracking-tighter uppercase leading-tight font-sans">{list.name}</h3>
+                    
+                    <div className="flex items-center gap-10 mt-12 pt-12 border-t border-[#B78D7D]/10 relative z-10">
+                      <div className="flex-1">
+                        <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] mb-3 font-mono">People</p>
+                        <p className="text-4xl font-black text-[#3E3A39] leading-none tracking-tighter">{list.count || 0}</p>
+                      </div>
+                      <div className="flex-1 border-l border-[#B78D7D]/10 pl-10">
+                        <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] mb-3 font-mono">Status</p>
+                        <p className="text-[11px] font-black text-[#B78D7D] uppercase tracking-[0.3em] font-mono leading-none">All Good</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-12 flex justify-end relative z-10">
+                       <div className="w-16 h-16 bg-[#F8F4F2] rounded-[1.75rem] border border-[#B78D7D]/10 flex items-center justify-center text-[#B2AAA6] group-hover:bg-[#B78D7D] group-hover:text-white group-hover:translate-x-1 transition-all shadow-md group-hover:shadow-[0_15px_30px_rgba(183,141,125,0.2)]">
+                          <ChevronRight size={32} />
+                       </div>
+                    </div>
+
+                    <div className="absolute inset-0 opacity-[0.015] pointer-events-none group-hover:opacity-[0.03] transition-opacity bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+                  </div>
+                ))}
+              </div>
+            )
+          ) : (
+            /* Contacts View */
+            <div className="space-y-12 animate-in fade-in slide-in-from-right-8 duration-700">
+               <div className="p-8 bg-white border border-[#B78D7D]/15 rounded-[3rem] shadow-sm flex flex-col md:flex-row items-center justify-between gap-10">
+                   <div className="flex items-center gap-8 pl-4">
+                      <div className="w-16 h-16 bg-[#B78D7D]/10 rounded-2xl flex items-center justify-center text-[#B78D7D] shadow-inner">
+                         <Activity size={32} />
+                      </div>
+                      <div>
+                         <p className="text-[11px] font-black text-[#3E3A39] uppercase tracking-[0.4em] font-mono leading-none">List Active</p>
+                         <p className="text-[9px] text-[#B2AAA6] font-black uppercase tracking-[0.2em] font-mono mt-3 leading-relaxed">Everything is ready and looking good.</p>
+                      </div>
+                   </div>
+                   <div className="flex gap-4 pr-4">
+                      <div className="px-8 py-4 bg-[#F8F4F2] border border-[#B78D7D]/10 rounded-2xl text-[10px] font-black text-[#B2AAA6] font-mono uppercase tracking-widest text-center">
+                         Current List: <span className="text-[#3E3A39]">{selectedList?.name.toUpperCase()}</span>
+                      </div>
+                   </div>
+               </div>
+
+               <div className="bg-white rounded-[4.5rem] border border-[#B78D7D]/10 shadow-sm overflow-hidden relative group/records">
+                  <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left hidden lg:table">
+                      <thead className="bg-[#F8F4F2]/50 text-[10px] font-black uppercase text-[#B2AAA6] tracking-[0.4em] font-mono border-b border-[#B78D7D]/10">
+                        <tr className="border-b border-[#B78D7D]/5">
+                          {contacts.length > 0 &&
+                            Object.keys(contacts[0])
+                              .filter((key) => !["_id", "listId", "createdAt", "updatedAt", "__v"].includes(key))
+                              .map((key) => (
+                                <th key={key} className="p-10 whitespace-nowrap">
+                                  {key.replace(/_/g, " ").toUpperCase()}
+                                </th>
+                              ))}
+                          <th className="p-10">Added On</th>
+                          <th className="p-10 text-right pr-14">Action</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-50">
-                        {lists.length === 0 ? (
-                          <tr><td colSpan="5" className="p-20 text-center text-gray-400 font-medium italic">No contact lists found. Import CSV to get started.</td></tr>
+
+                      <tbody className="divide-y divide-[#B78D7D]/5">
+                        {contacts.length === 0 ? (
+                           <tr><td colSpan="100%" className="p-48 text-center text-[#B2AAA6] text-2xl font-medium opacity-60">You haven't added anyone to this list yet.</td></tr>
                         ) : (
-                          lists.map((list) => (
-                            <tr 
-                              key={list._id} 
-                              onClick={() => {
-                                setSelectedList(list);
-                                setViewMode("contacts");
-                              }}
-                              className="group hover:bg-gray-50/80 transition-all cursor-pointer"
+                          contacts.map((contact) => (
+                            <tr
+                              key={contact._id}
+                              className="group hover:bg-[#F8F4F2]/30 transition-all cursor-default"
                             >
-                              <td className="p-6">
-                                <div className="flex items-center gap-4">
-                                  <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                                    <Folder size={22} />
-                                  </div>
-                                  <div>
-                                    <p className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{list.name}</p>
-                                    <p className="text-[10px] text-gray-400 font-black uppercase tracking-wider mt-0.5">Contact List</p>
-                                  </div>
-                                </div>
+                              {Object.keys(contacts[0] || {})
+                                .filter((key) => !["_id", "listId", "createdAt", "updatedAt", "__v"].includes(key))
+                                .map((key) => (
+                                  <td key={key} className="p-10 text-[#3E3A39] font-black max-w-[300px] font-sans" title={contact[key]}>
+                                    {typeof contact[key] === "string" && (contact[key].startsWith("http") || contact[key].startsWith("www")) ? (
+                                      <a
+                                        href={contact[key].startsWith("http") ? contact[key] : `https://${contact[key]}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-[#B78D7D] hover:underline flex items-center gap-3 transition-colors font-bold group-hover:translate-x-1 duration-500"
+                                      >
+                                        <span className="truncate tracking-tight">{truncate(contact[key])}</span>
+                                        <ExternalLink size={16} className="opacity-0 group-hover:opacity-60 transition-opacity" />
+                                      </a>
+                                    ) : (
+                                      <span className="truncate block text-[#3E3A39]/80 group-hover:text-[#3E3A39] transition-all tracking-tight font-bold">{truncate(String(contact[key] || "-"), 60)}</span>
+                                    )}
+                                  </td>
+                                ))}
+
+                              <td className="p-10 text-[#B2AAA6] font-black whitespace-nowrap font-mono text-[10px] uppercase tracking-widest group-hover:text-[#3E3A39] transition-colors">
+                                {contact.createdAt ? new Date(contact.createdAt).toLocaleDateString() : "-"}
                               </td>
-                              <td className="p-6">
-                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-100 text-gray-600 text-[10px] font-black uppercase tracking-widest border border-transparent group-hover:border-indigo-100 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all">
-                                  <Tag size={12} />
-                                  {list.segment || 'General'}
-                                </div>
-                              </td>
-                              <td className="p-6">
-                                <div className="flex items-center gap-2 text-gray-500 font-medium">
-                                  <Calendar size={14} />
-                                  {new Date(list.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                                </div>
-                              </td>
-                              <td className="p-6 text-center">
-                                <span className="font-black text-gray-900 bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">{list.count || 0}</span>
-                              </td>
-                              <td className="p-6 text-right">
-                                <div className="flex items-center justify-end gap-2">
-                                  <button
-                                    onClick={(e) => handleDeleteList(e, list._id, list.name)}
-                                    className="p-2.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
-                                  >
-                                    <Trash2 size={18} />
-                                  </button>
-                                  <div className="p-2.5 text-gray-300 group-hover:text-indigo-400 transition-all">
-                                    <ChevronRight size={18} />
-                                  </div>
-                                </div>
+
+                              <td className="p-10 text-right pr-14">
+                                <button
+                                  onClick={() => handleDeleteContact(contact._id)}
+                                  className="p-4 text-[#B2AAA6] hover:text-rose-500 bg-transparent hover:bg-rose-500/5 border border-transparent hover:border-rose-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100 active:scale-90"
+                                >
+                                  <Trash2 size={22} />
+                                </button>
                               </td>
                             </tr>
                           ))
                         )}
                       </tbody>
                     </table>
+
+                    <div className="lg:hidden p-8 space-y-10">
+                      {contacts.map((contact) => (
+                        <div key={contact._id} className="p-10 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-[3.5rem] space-y-8 relative overflow-hidden group hover:shadow-lg transition-all duration-700">
+                           <button
+                              onClick={() => handleDeleteContact(contact._id)}
+                              className="absolute top-8 right-8 p-4 text-[#B2AAA6] hover:text-rose-500 hover:bg-rose-500/5 rounded-2xl transition-all border border-[#B78D7D]/10 shadow-sm"
+                            >
+                              <Trash2 size={20} />
+                            </button>
+                           <div className="flex items-center gap-6 relative z-10">
+                              <div className="w-16 h-16 bg-white border border-[#B78D7D]/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:rotate-12 transition-all duration-700">
+                                 <UserCircle2 size={36} className="text-[#B78D7D]/60 group-hover:text-[#B78D7D] transition-colors" />
+                              </div>
+                              <div>
+                                 <p className="font-black text-[#3E3A39] text-xl tracking-tighter uppercase leading-none">{contact.full_name || contact.name || "Unknown Person"}</p>
+                                 <p className="text-[10px] font-black uppercase tracking-widest text-[#B2AAA6] font-mono mt-3">{new Date(contact.createdAt).toLocaleDateString()}</p>
+                              </div>
+                           </div>
+                           
+                           <div className="grid grid-cols-1 gap-6 pt-10 border-t border-[#B78D7D]/10 relative z-10">
+                              {Object.keys(contact)
+                                .filter(k => !["_id", "listId", "createdAt", "updatedAt", "__v", "full_name", "name"].includes(k))
+                                .map(k => (
+                                  <div key={k} className="flex flex-col gap-2">
+                                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#B2AAA6] font-mono">{k.replace(/_/g, ' ')}</span>
+                                     <span className="text-base font-bold text-[#3E3A39] truncate font-sans leading-relaxed">
+                                        {typeof contact[k] === 'string' && contact[k].startsWith('http') ? (
+                                           <a href={contact[k]} target="_blank" className="text-[#B78D7D] underline decoration-[#B78D7D]/30">Visit Link</a>
+                                        ) : String(contact[k] || 'N/A')}
+                                     </span>
+                                  </div>
+                                ))
+                              }
+                           </div>
+
+                           <div className="absolute inset-0 opacity-[0.01] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                /* Card View for Lists */
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {lists.map((list) => (
-                    <div
-                      key={list._id}
-                      onClick={() => {
-                        setSelectedList(list);
-                        setViewMode("contacts");
-                      }}
-                      className="group bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer relative overflow-hidden"
-                    >
-                      <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-indigo-50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                      
-                      <div className="flex justify-between items-start mb-8 relative z-10">
-                         <div className="p-4 bg-indigo-50 text-indigo-600 rounded-3xl shadow-inner group-hover:rotate-6 transition-transform duration-500">
-                           <Folder size={32} />
-                         </div>
-                         <div className="px-3 py-1.5 bg-gray-50 text-[10px] font-black uppercase text-gray-400 tracking-[0.15em] rounded-full border border-gray-100">
-                           {list.segment || 'General'}
-                         </div>
-                      </div>
-
-                      <h3 className="text-xl font-black text-gray-900 mb-2 truncate group-hover:text-indigo-600 transition-colors">{list.name}</h3>
-                      
-                      <div className="flex items-center gap-4 mt-6 pt-6 border-t border-gray-50">
-                        <div className="flex-1">
-                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Entries</p>
-                          <p className="text-lg font-black text-gray-900">{list.count || 0}</p>
-                        </div>
-                        <div className="flex-1 border-l border-gray-50 pl-4">
-                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Created</p>
-                          <p className="text-sm font-bold text-gray-700">{new Date(list.createdAt).toLocaleDateString()}</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-8 flex justify-end">
-                         <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
-                            <ChevronRight size={20} />
-                         </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )
-            ) : (
-              /* Contacts View (Record List) */
-              <div className="space-y-6">
-                 {/* Mobile view info */}
-                 <div className="lg:hidden p-4 bg-amber-50 rounded-2xl border border-amber-100 text-[10px] font-bold text-amber-700 uppercase tracking-widest flex items-center gap-2 mb-4">
-                    <LayoutGrid size={14} />
-                    Mobile Optimized Card View Active
-                 </div>
-
-                 <div className="bg-white rounded-[2rem] shadow-xl shadow-gray-200/30 overflow-hidden border border-gray-100">
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm hidden lg:table">
-                        <thead>
-                          <tr className="text-left text-gray-400 border-b border-gray-50 bg-gray-50/20 uppercase text-[10px] font-black tracking-[0.1em]">
-                            {contacts.length > 0 &&
-                              Object.keys(contacts[0])
-                                .filter((key) => !["_id", "listId", "createdAt"].includes(key))
-                                .map((key) => (
-                                  <th key={key} className="p-6 whitespace-nowrap">
-                                    {key.replace(/_/g, " ")}
-                                  </th>
-                                ))}
-                            <th className="p-6">Date Synchronized</th>
-                            <th className="p-6 text-right">Action</th>
-                          </tr>
-                        </thead>
-
-                        <tbody className="divide-y divide-gray-50">
-                          {contacts.length === 0 ? (
-                             <tr><td colSpan="100%" className="p-20 text-center text-gray-400 font-medium italic">No contacts found in this list.</td></tr>
-                          ) : (
-                            contacts.map((contact) => (
-                              <tr
-                                key={contact._id}
-                                className="hover:bg-gray-50 transition-all group"
-                              >
-                                {Object.keys(contacts[0] || {})
-                                  .filter((key) => !["_id", "listId", "createdAt"].includes(key))
-                                  .map((key) => (
-                                    <td key={key} className="p-6 text-gray-900 font-medium max-w-[250px]" title={contact[key]}>
-                                      {typeof contact[key] === "string" && (contact[key].startsWith("http") || contact[key].startsWith("www")) ? (
-                                        <a
-                                          href={contact[key].startsWith("http") ? contact[key] : `https://${contact[key]}`}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="text-indigo-600 hover:underline flex items-center gap-1.5"
-                                        >
-                                          {truncate(contact[key])}
-                                          <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        </a>
-                                      ) : (
-                                        <span className="truncate block">{truncate(String(contact[key] || "-"), 40)}</span>
-                                      )}
-                                    </td>
-                                  ))}
-
-                                <td className="p-6 text-gray-500 font-medium whitespace-nowrap">
-                                  {contact.createdAt ? new Date(contact.createdAt).toLocaleDateString() : "-"}
-                                </td>
-
-                                <td className="p-6 text-right">
-                                  <button
-                                    onClick={() => handleDeleteContact(contact._id)}
-                                    className="p-2.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
-                                  >
-                                    <Trash2 size={18} />
-                                  </button>
-                                </td>
-                              </tr>
-                            ))
-                          )}
-                        </tbody>
-                      </table>
-
-                      {/* Mobile Card View (shown below lg breakpoint) */}
-                      <div className="lg:hidden p-4 space-y-4">
-                        {contacts.map((contact) => (
-                          <div key={contact._id} className="p-6 bg-gray-50/50 rounded-3xl border border-gray-100 space-y-4 relative">
-                             <button
-                                onClick={() => handleDeleteContact(contact._id)}
-                                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-red-600"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                                   <UserCircle2 size={24} className="text-indigo-400" />
-                                </div>
-                                <div>
-                                   <p className="font-bold text-gray-900">{contact.full_name || contact.name || "Unknown Contact"}</p>
-                                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{new Date(contact.createdAt).toLocaleDateString()}</p>
-                                </div>
-                             </div>
-                             
-                             <div className="grid grid-cols-1 gap-3 pt-4 border-t border-gray-100">
-                                {Object.keys(contact)
-                                  .filter(k => !["_id", "listId", "createdAt", "full_name", "name"].includes(k))
-                                  .map(k => (
-                                    <div key={k} className="flex flex-col">
-                                       <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 mb-0.5">{k.replace(/_/g, ' ')}</span>
-                                       <span className="text-xs font-bold text-gray-700 truncate">
-                                          {typeof contact[k] === 'string' && contact[k].startsWith('http') ? (
-                                             <a href={contact[k]} target="_blank" className="text-indigo-600 underline">Link</a>
-                                          ) : String(contact[k] || '-')}
-                                       </span>
-                                    </div>
-                                  ))
-                                }
-                             </div>
-                          </div>
-                        ))}
-                        {contacts.length === 0 && <p className="text-center py-10 text-gray-400 italic">No records to display.</p>}
-                      </div>
-                    </div>
-                 </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+                  <div className="absolute inset-x-0 bottom-0 h-1 bg-[#B78D7D]/20 opacity-0 group-hover/records:opacity-100 transition-opacity" />
+               </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <AddContactModal
         isOpen={isAddModalOpen}

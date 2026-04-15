@@ -13,136 +13,143 @@ import {
   User,
   ExternalLink,
   Camera,
-  Heart
+  Users,
+  Globe
 } from "lucide-react";
 
 export default function AccountDetailsModal({ account, isOpen, onClose }) {
   if (!isOpen || !account) return null;
 
-  // Mock Campaigns Data (Enhanced)
+  // Mock Campaigns Data
   const campaigns = [
-    { id: 1, name: "DM Outreach - Influencers", status: "Running", progress: 60, sent: 342, target: 500 },
-    { id: 2, name: "Story Replies", status: "Paused", progress: 25, sent: 102, target: 400 },
+    { id: 1, name: "Luxury Brand Outreach", status: "Running", progress: 68, sent: 412, target: 800 },
+    { id: 2, name: "Engagement Automation", status: "Paused", progress: 24, sent: 98, target: 400 },
   ];
 
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
   return (
-    <div className="fixed inset-0 bg-gray-900/60 flex items-center justify-center z-[100] p-4 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden border border-white animate-in zoom-in duration-300">
+    <div className="fixed inset-0 flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
+      <div className="absolute inset-0 bg-[#050505]/80 backdrop-blur-xl" onClick={handleBackdropClick} />
+      
+      <div className="bg-[#0A0A0B] rounded-[3rem] shadow-[0_0_100px_rgba(0,0,0,1)] w-full max-w-3xl overflow-hidden border border-white/10 relative z-10 animate-in zoom-in-95 duration-300">
         
         {/* Modal Header */}
-        <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-pink-50/30">
-          <div className="flex items-center gap-4">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all ${account.status === "Connected" ? 'bg-gradient-to-tr from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white shadow-pink-500/20' : 'bg-red-50 text-red-400'}`}>
-              <Instagram size={28} />
+        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+          <div className="flex items-center gap-6">
+            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl transition-all border border-white/10 ${account.status === "Connected" ? 'bg-gradient-to-tr from-amber-500 to-rose-500 text-white' : 'bg-rose-500/10 text-rose-500'}`}>
+              <Instagram size={32} />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-xl font-black text-gray-900 tracking-tight lowercase">{account.email}</h2>
-                <ExternalLink size={14} className="text-gray-300" />
+              <div className="flex items-center gap-3 mb-1.5">
+                <h2 className="text-2xl font-black text-white tracking-tight lowercase">@{account.email.split('@')[0]}</h2>
+                <div className="p-1 px-2 rounded-md bg-white/5 border border-white/5">
+                  <ExternalLink size={14} className="text-slate-500" />
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                 <div className={`w-2 h-2 rounded-full animate-pulse ${account.status === "Connected" ? "bg-[#E1306C]" : "bg-red-500"}`} />
-                 <p className={`text-[10px] font-black uppercase tracking-widest ${account.status === "Connected" ? "text-[#E1306C]" : "text-red-500"}`}>
+              <div className="flex items-center gap-3">
+                 <div className={`w-2.5 h-2.5 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)] ${account.status === "Connected" ? "bg-emerald-500 animate-pulse" : "bg-rose-500"}`} />
+                 <p className={`text-[10px] font-black uppercase tracking-[0.2em] font-mono ${account.status === "Connected" ? "text-emerald-400" : "text-rose-500"}`}>
                    Node: {account.status}
                  </p>
               </div>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white rounded-xl transition-all border border-transparent hover:border-gray-100 text-gray-400 hover:text-gray-900">
-            <X size={20} />
+          <button onClick={onClose} className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all border border-white/5 text-slate-500 hover:text-white">
+            <X size={24} />
           </button>
         </div>
 
-        <div className="p-8 md:p-10">
+        <div className="p-10 custom-scrollbar max-h-[75vh] overflow-y-auto">
           {/* Quick Metrics */}
-          <div className="grid grid-cols-3 gap-4 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
              {[
-               { label: 'Active nodes', val: '02', icon: Zap },
-               { label: 'Total engagement', val: '444', icon: Heart },
-               { label: 'Pulse rate', val: '98%', icon: ShieldCheck },
+               { label: 'Content Clusters', val: '04', icon: Camera, color: 'text-rose-400' },
+               { label: 'Follower Reach', val: '850', icon: Users, color: 'text-emerald-400' },
+               { label: 'Uplink Health', val: '100%', icon: ShieldCheck, color: 'text-amber-400' },
              ].map((m, i) => (
-               <div key={i} className="bg-gray-50/50 rounded-3xl p-5 border border-gray-50 hover:bg-white hover:shadow-sm transition-all">
-                  <div className="text-[#E1306C] mb-2 bg-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm border border-gray-100">
-                     <m.icon size={16} />
+               <div key={i} className="bg-white/[0.03] rounded-[2rem] p-6 border border-white/5 hover:border-white/10 transition-all group">
+                  <div className={`${m.color} mb-4 bg-white/5 w-10 h-10 rounded-xl flex items-center justify-center border border-white/5`}>
+                     <m.icon size={20} />
                   </div>
-                  <p className="text-sm font-black text-gray-900">{m.val}</p>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{m.label}</p>
+                  <p className="text-2xl font-black text-white mb-0.5 tracking-tight">{m.val}</p>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">{m.label}</p>
                </div>
              ))}
           </div>
 
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-              <Camera size={14} className="text-[#E1306C]" />
-              Engagement stream monitoring
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] flex items-center gap-3 font-mono">
+              <Activity size={16} className="text-rose-400" />
+              Visual Node Telemetry
             </h3>
-            <span className="text-[9px] font-black px-2 py-0.5 bg-pink-50 text-[#E1306C] rounded">STREAMING</span>
+            <span className="text-[10px] font-black px-3 py-1 bg-rose-500/10 text-rose-400 rounded-full border border-rose-500/20 font-mono">B2C_FLOW_ACTIVE</span>
           </div>
 
           {account.status !== "Connected" ? (
-            <div className="text-center py-16 bg-red-50/30 rounded-[2rem] border border-dashed border-red-100 text-red-500">
-              <ShieldCheck size={40} className="mx-auto mb-4 opacity-20" />
-              <p className="text-xs font-black uppercase tracking-widest">Visual Link Severed</p>
-              <p className="text-[10px] mt-1 opacity-60">Restore connection to access engagement nodes.</p>
+            <div className="text-center py-20 bg-rose-500/5 rounded-[3rem] border border-dashed border-rose-500/20 text-rose-500">
+              <ShieldCheck size={48} className="mx-auto mb-6 opacity-30" />
+              <p className="text-sm font-black uppercase tracking-[0.3em] font-mono">Sequence Diverged</p>
+              <p className="text-xs mt-2 opacity-60 max-w-xs mx-auto text-rose-400/80">Re-initialize visual handshake to restore cluster telemetry.</p>
             </div>
           ) : campaigns.length > 0 ? (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-5">
               {campaigns.map((camp) => (
-                <div key={camp.id} className="group relative bg-white rounded-[2rem] border border-gray-100 p-6 hover:shadow-xl hover:shadow-[#E1306C]/5 transition-all duration-300 overflow-hidden">
-                   <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#833AB4] to-[#FD1D1D] opacity-0 group-hover:opacity-100 transition-opacity" />
-                   
-                   <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border border-gray-50 ${camp.status === 'Running' ? 'bg-pink-50 text-[#E1306C]' : 'bg-amber-50 text-amber-500'}`}>
-                           {camp.status === 'Running' ? <PlayCircle size={20} /> : <PauseCircle size={20} />}
+                <div key={camp.id} className="group relative bg-white/[0.02] rounded-[2.5rem] border border-white/5 p-8 hover:border-white/15 hover:bg-white/[0.04] transition-all duration-500">
+                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                      <div className="flex items-center gap-5">
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border border-white/5 shadow-xl ${camp.status === 'Running' ? 'bg-rose-500/10 text-rose-400' : 'bg-amber-500/10 text-amber-500'}`}>
+                           {camp.status === 'Running' ? <PlayCircle size={28} /> : <PauseCircle size={28} />}
                         </div>
                         <div>
-                           <p className="text-sm font-black text-gray-900 lowercase tracking-tight">{camp.name}</p>
-                           <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1">Status: {camp.status}</p>
+                           <p className="text-lg font-black text-white tracking-tight lowercase">{camp.name}</p>
+                           <p className={`text-[10px] font-black uppercase tracking-[0.2em] mt-1 font-mono ${camp.status === 'Running' ? 'text-emerald-400' : 'text-amber-400'}`}>{camp.status}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                         <p className="text-lg font-black text-gray-900">{camp.sent}</p>
-                         <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Units impacts</p>
+                      <div className="text-left md:text-right">
+                         <p className="text-3xl font-black text-white tracking-tighter">{camp.sent}</p>
+                         <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">Visual Impressions</p>
                       </div>
                    </div>
 
-                   <div className="space-y-2">
-                      <div className="flex justify-between text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">
-                         <span>Stream Progress</span>
-                         <span className="text-[#E1306C]">{camp.progress}%</span>
+                   <div className="space-y-3">
+                      <div className="flex justify-between text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 font-mono">
+                         <span>Saturation Matrix</span>
+                         <span className="text-rose-400">{camp.progress}%</span>
                       </div>
-                      <div className="h-2 w-full bg-gray-50 rounded-full overflow-hidden border border-gray-50 shadow-inner">
+                      <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
                          <div 
-                           className={`h-full transition-all duration-1000 ease-out rounded-full ${camp.status === 'Running' ? 'bg-gradient-to-r from-[#833AB4] to-[#FD1D1D]' : 'bg-amber-400'}`}
+                           className={`h-full transition-all duration-1000 ease-out rounded-full shadow-[0_0_15px_rgba(244,63,94,0.3)] ${camp.status === 'Running' ? 'bg-rose-500' : 'bg-amber-500'}`}
                            style={{ width: `${camp.progress}%` }}
                          />
                       </div>
                    </div>
 
-                   <button className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-all text-[#E1306C] hover:opacity-70">
-                      <ChevronRight size={20} />
+                   <button className="absolute top-8 right-8 text-slate-600 hover:text-white transition-colors">
+                      <ExternalLink size={20} />
                    </button>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-gray-50/50 rounded-[2rem] border border-dashed border-gray-100 text-gray-400">
-              <Zap size={40} className="mx-auto mb-4 opacity-10" />
-              <p className="text-xs font-black uppercase tracking-widest">No Active Nodes</p>
-              <p className="text-[10px] mt-1">Initialize a new engagement to start monitoring results.</p>
+            <div className="text-center py-20 bg-white/[0.01] rounded-[3rem] border border-dashed border-white/5 text-slate-600">
+              <Zap size={48} className="mx-auto mb-6 opacity-20" />
+              <p className="text-sm font-black uppercase tracking-[0.3em] font-mono">No Active Clusters</p>
+              <p className="text-xs mt-2">Initialize a new visual sequence to begin monitoring impressions.</p>
             </div>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="p-8 bg-gray-50/30 border-t border-gray-50 flex items-center justify-between">
-           <div className="flex items-center gap-2">
-              <User size={14} className="text-gray-400" />
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Visual Node Ownership Verified</span>
+        {/* Modal Footer */}
+        <div className="p-8 bg-white/[0.02] border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+           <div className="flex items-center gap-3">
+              <ShieldCheck size={20} className="text-emerald-500" />
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest font-mono">Node Ownership Verified : Visual Cluster Validated</span>
            </div>
-           <button onClick={onClose} className="px-6 py-3 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-600 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all shadow-sm">
-              Dismiss Panel
+           <button onClick={onClose} className="w-full md:w-auto px-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-300 transition-all font-mono active:scale-95">
+              Terminate Panel
            </button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { CheckCircle, XCircle, Database, Server, Smartphone, Monitor } from "lucide-react";
+import { CheckCircle, XCircle, Database, Server, Smartphone, Monitor, Hexagon, Activity, Zap, Cpu } from "lucide-react";
 
 export default function ModuleTestingPage() {
   const tests = [
@@ -10,80 +10,91 @@ export default function ModuleTestingPage() {
   ];
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      <div className="border-b border-white/10 pb-8 relative">
-        <div className="absolute -left-8 top-2 w-1 h-12 bg-purple-500 rounded-r-lg shadow-[0_0_15px_rgba(168,85,247,0.6)]"></div>
-        <h1 className="text-4xl font-extrabold text-white tracking-tight">Module Testing</h1>
-        <p className="text-slate-400 mt-3 text-lg leading-relaxed max-w-2xl">Domain-level validation determining functional soundness of independent engines without the entire backend context running.</p>
+    <div className="space-y-16 animate-in fade-in slide-in-from-bottom-5 duration-1000 pb-32 font-sans">
+      
+      {/* Header Sector */}
+      <div className="border-b border-[#B78D7D]/15 pb-12 relative">
+        <div className="absolute -left-8 top-1.5 w-1.5 h-12 bg-[#B78D7D] rounded-full shadow-sm"></div>
+        <h1 className="text-5xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">Module_<span className="text-[#B78D7D]">Testing</span></h1>
+        <p className="text-[#8E7A70] mt-4 text-xl font-bold leading-relaxed max-w-3xl italic">
+          Domain-level validation determining functional soundness of independent engines without the entire backend context running.
+        </p>
       </div>
 
-      <div className="bg-gradient-to-br from-[#121214] to-[#18181b] rounded-3xl border border-white/5 p-8 lg:p-12 shadow-2xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-purple-900/10 via-transparent to-transparent"></div>
-        <h2 className="text-xl font-bold text-white mb-10 tracking-wide relative z-10 flex items-center gap-3">
-          <Database size={24} className="text-purple-400" /> Mock Environment Architecture
+      <div className="bg-white rounded-[4rem] border border-[#B78D7D]/10 p-10 lg:p-16 shadow-lg relative overflow-hidden group">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#B78D7D]/20 to-transparent" />
+        
+        <h2 className="text-2xl font-black text-[#3E3A39] mb-12 tracking-tight relative z-10 flex items-center gap-4 uppercase leading-none">
+          <Database size={32} className="text-[#B78D7D]" /> Mock_Environment_Architecture
         </h2>
         
-        <div className="flex flex-wrap items-center justify-center gap-8 relative z-10">
+        <div className="flex flex-wrap items-center justify-center gap-10 lg:gap-14 relative z-10 py-6">
            {/* Mock Data Entry */}
-           <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-700/50 flex flex-col items-center gap-3 w-48 shadow-lg">
-             <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center border border-slate-600">
-               <Database className="text-slate-300" />
-             </div>
-             <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Mock Data (Sinon)</span>
+           <div className="p-8 rounded-[2.5rem] bg-[#F8F4F2]/50 border border-[#B78D7D]/15 flex flex-col items-center gap-5 w-56 shadow-inner group/card hover:bg-white transition-all duration-500">
+              <div className="w-16 h-16 rounded-3xl bg-white flex items-center justify-center border border-[#B78D7D]/10 shadow-sm group-hover/card:rotate-12 transition-transform">
+                <Database className="text-[#B78D7D]" size={28} />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B2AAA6] font-mono italic">Mock_Data::Sinon</span>
            </div>
            
-           <div className="w-12 h-0.5 bg-dashed border-b-2 border-white/20 border-dashed"></div>
+           <div className="w-16 h-0.5 bg-gradient-to-r from-[#B78D7D]/30 to-transparent border-t border-dashed border-[#B78D7D]/30 hidden lg:block"></div>
 
            {/* Core Execution Module */}
-           <div className="p-8 rounded-3xl bg-purple-500/10 border border-purple-500/30 flex flex-col items-center gap-4 shadow-[0_0_40px_rgba(168,85,247,0.15)] relative">
-               <div className="absolute inset-x-0 -top-px h-px w-full bg-gradient-to-r from-transparent via-purple-500 to-transparent"></div>
-               <Server size={32} className="text-purple-400" />
-               <span className="text-sm font-bold text-purple-100 uppercase tracking-widest text-center">Engine Instance<br/><span className="text-[10px] text-purple-300/60 font-mono">(LinkedIn, Facebook)</span></span>
+           <div className="p-10 rounded-[3rem] bg-white border border-[#B78D7D]/20 flex flex-col items-center gap-6 shadow-xl relative group/engine hover:-translate-y-2 transition-all duration-700">
+               <div className="absolute inset-x-0 -top-px h-[2px] w-full bg-gradient-to-r from-transparent via-[#B78D7D] to-transparent"></div>
+               <div className="p-6 rounded-full bg-[#B78D7D] text-white shadow-lg shadow-[#B78D7D]/20">
+                  <Server size={40} />
+               </div>
+               <span className="text-lg font-black text-[#3E3A39] uppercase tracking-tighter text-center leading-tight font-sans italic">Engine_Instance<br/><span className="text-[10px] text-[#B2AAA6] font-mono tracking-[0.3em] font-black opacity-60 not-italic">(LNKD_NODE, FB_PROTOCOL)</span></span>
            </div>
 
-           <div className="w-12 h-0.5 bg-dashed border-b-2 border-white/20 border-dashed"></div>
+           <div className="w-16 h-0.5 bg-gradient-to-l from-[#B78D7D]/30 to-transparent border-t border-dashed border-[#B78D7D]/30 hidden lg:block"></div>
            
-           <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                 <CheckCircle size={16} className="text-emerald-400" /> <span className="text-xs font-mono text-emerald-300">expect(calls).toBe(20)</span>
+           <div className="flex flex-col gap-5">
+              <div className="flex items-center gap-4 p-5 rounded-2xl bg-[#F8F4F2] border border-[#B78D7D]/10 shadow-sm">
+                 <CheckCircle size={20} className="text-emerald-500" /> <span className="text-[11px] font-black font-mono text-[#5E5A59] tracking-widest leading-none">EXPECT(CALLS).TOBE(20)</span>
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                 <CheckCircle size={16} className="text-emerald-400" /> <span className="text-xs font-mono text-emerald-300">expect(error).toBeNull()</span>
+              <div className="flex items-center gap-4 p-5 rounded-2xl bg-[#F8F4F2] border border-[#B78D7D]/10 shadow-sm">
+                 <CheckCircle size={20} className="text-emerald-500" /> <span className="text-[11px] font-black font-mono text-[#5E5A59] tracking-widest leading-none">EXPECT(ERROR).TOBE_NULL()</span>
               </div>
            </div>
         </div>
+
+        <div className="absolute inset-0 opacity-[0.01] pointer-events-none group-hover:opacity-[0.02] transition-opacity bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
       </div>
 
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-white tracking-tight">Execution Matrix</h2>
-        <div className="overflow-x-auto rounded-3xl border border-white/5 bg-[#0e0e10] shadow-[0_4px_40px_rgba(0,0,0,0.5)]">
-          <table className="w-full text-left text-sm text-slate-300">
-            <thead className="bg-[#121214] text-[10px] uppercase text-slate-500 tracking-widest border-b border-white/5">
+      <div className="space-y-10">
+        <h2 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none flex items-center gap-4">
+           <Zap size={28} className="text-[#B78D7D]" /> Execution_Matrix
+        </h2>
+        <div className="overflow-hidden rounded-[3.5rem] border border-[#B78D7D]/15 bg-white shadow-xl relative group">
+          <table className="w-full text-left text-sm text-[#3E3A39]">
+            <thead className="bg-[#F8F4F2]/50 text-[10px] uppercase text-[#B2AAA6] tracking-[0.5em] border-b border-[#B78D7D]/10 font-mono">
               <tr>
-                <th className="px-6 py-5 font-semibold">Test ID</th>
-                <th className="px-6 py-5 font-semibold">Target Module</th>
-                <th className="px-6 py-5 font-semibold">Description</th>
-                <th className="px-6 py-5 font-semibold">Expected Result</th>
-                <th className="px-6 py-5 font-semibold w-32">Status</th>
+                <th className="px-8 py-8 font-black">Test_ID</th>
+                <th className="px-8 py-8 font-black">Target_Module</th>
+                <th className="px-8 py-8 font-black">Architecture_Description</th>
+                <th className="px-8 py-8 font-black">Expected_Resonance</th>
+                <th className="px-8 py-8 font-black w-40">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#B78D7D]/5 relative z-10">
               {tests.map((t, i) => (
-                <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="px-6 py-5 whitespace-nowrap font-bold text-purple-400 font-mono text-xs">{t.id}</td>
-                  <td className="px-6 py-5">
-                      <span className="font-mono text-xs text-purple-300/80 bg-purple-500/10 border border-purple-500/20 rounded px-2.5 py-1 whitespace-nowrap">{t.component}</span>
+                <tr key={i} className="hover:bg-[#F8F4F2]/30 transition-all group/row duration-500">
+                  <td className="px-8 py-8 whitespace-nowrap font-black text-[#B78D7D] font-mono text-[12px] group-hover/row:translate-x-1 transition-transform">{t.id}</td>
+                  <td className="px-8 py-8">
+                      <span className="font-black font-mono text-[10px] text-[#B78D7D] bg-[#F8F4F2] border border-[#B78D7D]/15 rounded-xl px-4 py-2 uppercase tracking-widest shadow-inner leading-none">{t.component}</span>
                   </td>
-                  <td className="px-6 py-5 text-slate-300">{t.desc}</td>
-                  <td className="px-6 py-5 text-slate-400 text-xs">{t.expected}</td>
-                  <td className="px-6 py-5">
+                  <td className="px-8 py-8 text-[#5E5A59] font-bold leading-relaxed italic">{t.desc}</td>
+                  <td className="px-8 py-8 text-[#B2AAA6] font-black text-[10px] leading-relaxed font-mono tracking-widest uppercase">{t.expected}</td>
+                  <td className="px-8 py-8">
                     {t.status === "Pass" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                        <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm font-mono leading-none transition-all group-hover/row:bg-emerald-500 group-hover/row:text-white">
                             <CheckCircle size={14} /> Pass
                         </span>
                     ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-slate-500/10 text-slate-400 border border-slate-500/20">
-                            <span className="h-2 w-2 rounded-full bg-slate-400" /> Wait
+                        <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-[#F8F4F2] text-[#B2AAA6] border border-[#B78D7D]/10 shadow-sm font-mono leading-none">
+                            <Activity size={14} className="animate-pulse" /> Wait
                         </span>
                     )}
                   </td>
@@ -91,7 +102,19 @@ export default function ModuleTestingPage() {
               ))}
             </tbody>
           </table>
+          <div className="absolute inset-0 opacity-[0.01] pointer-events-none group-hover:opacity-[0.02] transition-opacity bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
         </div>
+      </div>
+
+       {/* Global Branding Watermark */}
+       <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03] select-none z-[-1] grayscale">
+         <div className="flex flex-col items-end gap-10">
+            <h1 className="text-[14rem] font-black font-sans tracking-tighter uppercase leading-none text-[#B78D7D]">MODULE</h1>
+            <div className="flex items-center gap-10">
+               <Hexagon size={80} strokeWidth={2} className="text-[#B78D7D]" />
+               <p className="text-4xl font-black uppercase tracking-[1em] text-[#B78D7D] font-mono">STANDALONE_OPS</p>
+            </div>
+         </div>
       </div>
     </div>
   );

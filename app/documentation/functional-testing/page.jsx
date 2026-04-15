@@ -1,4 +1,4 @@
-import { CheckCircle, XCircle, MousePointerClick, ChevronRight } from "lucide-react";
+import { CheckCircle, XCircle, MousePointerClick, ChevronRight, Hexagon, Activity, Zap, Monitor, Globe } from "lucide-react";
 
 export default function FunctionalTestingPage() {
   const tests = [
@@ -10,77 +10,88 @@ export default function FunctionalTestingPage() {
   ];
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      <div className="border-b border-white/10 pb-8 relative">
-        <div className="absolute -left-8 top-2 w-1 h-12 bg-amber-500 rounded-r-lg shadow-[0_0_15px_rgba(245,158,11,0.6)]"></div>
-        <h1 className="text-4xl font-extrabold text-white tracking-tight">Functional Testing</h1>
-        <p className="text-slate-400 mt-3 text-lg leading-relaxed max-w-2xl">End-to-End operations ensuring complex UI combinations and features work cohesively.</p>
+    <div className="space-y-16 animate-in fade-in slide-in-from-bottom-5 duration-1000 pb-32 font-sans">
+      
+      {/* Header Sector */}
+      <div className="border-b border-[#B78D7D]/15 pb-12 relative">
+        <div className="absolute -left-8 top-1.5 w-1.5 h-12 bg-[#B78D7D] rounded-full shadow-sm"></div>
+        <h1 className="text-5xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">Functional_<span className="text-[#B78D7D]">Testing</span></h1>
+        <p className="text-[#8E7A70] mt-4 text-xl font-bold leading-relaxed max-w-3xl italic">
+          End-to-End operations ensuring complex UI combinations and features work cohesively within the Omniverse ecosystem.
+        </p>
       </div>
 
-      <div className="bg-gradient-to-tr from-[#141006] to-[#1a1508] rounded-3xl border border-white/5 p-8 lg:p-12 shadow-2xl overflow-hidden relative">
-        <h2 className="text-xl font-bold text-white mb-8 tracking-wide relative z-10 flex items-center gap-3">
-          <MousePointerClick size={24} className="text-amber-400" /> Playwright Emulation Path 
+      {/* Emulation Path Sector */}
+      <div className="bg-white rounded-[4rem] border border-[#B78D7D]/10 p-10 lg:p-16 shadow-lg overflow-hidden relative group">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#B78D7D]/30 to-transparent" />
+        
+        <h2 className="text-2xl font-black text-[#3E3A39] mb-12 tracking-tight relative z-10 flex items-center gap-4 uppercase leading-none">
+          <MousePointerClick size={32} className="text-[#B78D7D]" /> Playwright_Emulation_Path 
         </h2>
         
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 relative z-10 w-full max-w-3xl mx-auto">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10 w-full max-w-5xl mx-auto py-8">
             {/* Step 1 */}
-            <div className="bg-black/50 p-5 rounded-2xl border border-amber-500/20 backdrop-blur text-center flex-1 w-full max-w-[200px]">
-               <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/50 flex items-center justify-center font-bold text-amber-500 mx-auto mb-3 shadow-[0_0_15px_rgba(245,158,11,0.3)]">1</div>
-               <div className="text-sm font-bold text-white mb-1">Launch Config</div>
-               <div className="text-[10px] text-slate-400 uppercase tracking-widest">Chrome Headless</div>
+            <div className="bg-[#F8F4F2] p-8 rounded-[2.5rem] border border-[#B78D7D]/10 shadow-inner text-center flex-1 w-full group/step hover:bg-white transition-all duration-500">
+               <div className="w-12 h-12 rounded-full bg-white border border-[#B78D7D]/20 flex items-center justify-center font-black text-[#B78D7D] mx-auto mb-6 shadow-sm group-hover/step:scale-110 transition-transform font-mono text-xl">1</div>
+               <div className="text-lg font-black text-[#3E3A39] mb-2 uppercase leading-none">Launch_Config</div>
+               <div className="text-[10px] text-[#B2AAA6] uppercase tracking-[0.3em] font-mono italic">CHROME_HEADLESS</div>
             </div>
 
-            <ChevronRight className="text-amber-500/50 w-8 h-8 hidden md:block" />
+            <ChevronRight className="text-[#B78D7D]/30 w-10 h-10 hidden md:block" />
 
             {/* Step 2 */}
-            <div className="bg-black/50 p-5 rounded-2xl border border-amber-500/20 backdrop-blur text-center flex-1 w-full max-w-[200px]">
-               <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/50 flex items-center justify-center font-bold text-amber-500 mx-auto mb-3">2</div>
-               <div className="text-sm font-bold text-white mb-1">Navigate & Click</div>
-               <div className="text-[10px] text-slate-400 uppercase tracking-widest">E.g. Builder Node</div>
+            <div className="bg-[#F8F4F2] p-8 rounded-[2.5rem] border border-[#B78D7D]/10 shadow-inner text-center flex-1 w-full group/step hover:bg-white transition-all duration-500">
+               <div className="w-12 h-12 rounded-full bg-white border border-[#B78D7D]/20 flex items-center justify-center font-black text-[#B78D7D] mx-auto mb-6 shadow-sm group-hover/step:scale-110 transition-transform font-mono text-xl">2</div>
+               <div className="text-lg font-black text-[#3E3A39] mb-2 uppercase leading-none">Navigate_Click</div>
+               <div className="text-[10px] text-[#B2AAA6] uppercase tracking-[0.3em] font-mono italic">SEQ_BUILDER_NODE</div>
             </div>
 
-            <ChevronRight className="text-amber-500/50 w-8 h-8 hidden md:block" />
+            <ChevronRight className="text-[#B78D7D]/30 w-10 h-10 hidden md:block" />
 
             {/* Step 3 */}
-            <div className="bg-amber-500/10 p-5 rounded-2xl border border-amber-500/40 backdrop-blur text-center flex-1 w-full max-w-[200px] shadow-[0_0_30px_rgba(245,158,11,0.15)] relative">
-               <div className="absolute inset-x-0 -top-px h-px w-full bg-gradient-to-r from-transparent via-amber-500 to-transparent"></div>
-               <div className="w-10 h-10 rounded-full bg-amber-500 border border-amber-400 flex items-center justify-center font-bold text-black mx-auto mb-3 border-2">3</div>
-               <div className="text-sm font-bold text-white mb-1">Expect(visible)</div>
-               <div className="text-[10px] text-amber-200 uppercase tracking-widest">DOM Validation</div>
+            <div className="bg-white p-8 rounded-[2.5rem] border-2 border-[#B78D7D] shadow-xl text-center flex-1 w-full group/step relative group/active">
+               <div className="absolute inset-0 bg-[#B78D7D]/5 opacity-50" />
+               <div className="w-12 h-12 rounded-full bg-[#B78D7D] border-2 border-white flex items-center justify-center font-black text-white mx-auto mb-6 shadow-lg relative z-10 font-mono text-xl">3</div>
+               <div className="text-lg font-black text-[#3E3A39] mb-2 uppercase leading-none relative z-10">Expect_Visible</div>
+               <div className="text-[10px] text-[#B78D7D] uppercase tracking-[0.3em] font-mono italic relative z-10">DOM_VALIDATION</div>
             </div>
         </div>
+
+        <div className="absolute inset-0 opacity-[0.01] pointer-events-none group-hover:opacity-[0.02] transition-opacity bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
       </div>
 
-      <div className="space-y-6 mt-10">
-        <h2 className="text-2xl font-bold text-white tracking-tight">Execution Matrix</h2>
-        <div className="overflow-x-auto rounded-3xl border border-white/5 bg-[#0e0e10] shadow-[0_4px_40px_rgba(0,0,0,0.5)]">
-          <table className="w-full text-left text-sm text-slate-300">
-            <thead className="bg-[#121214] text-[10px] uppercase text-slate-500 tracking-widest border-b border-white/5">
+      <div className="space-y-10">
+        <h2 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none flex items-center gap-4">
+           <Zap size={28} className="text-[#B78D7D]" /> Execution_Matrix
+        </h2>
+        <div className="overflow-hidden rounded-[3.5rem] border border-[#B78D7D]/15 bg-white shadow-xl relative group">
+          <table className="w-full text-left text-sm text-[#3E3A39]">
+            <thead className="bg-[#F8F4F2]/50 text-[10px] uppercase text-[#B2AAA6] tracking-[0.5em] border-b border-[#B78D7D]/10 font-mono">
               <tr>
-                <th className="px-6 py-5 font-semibold">Test ID</th>
-                <th className="px-6 py-5 font-semibold">Playwright Scope</th>
-                <th className="px-6 py-5 font-semibold">Description</th>
-                <th className="px-6 py-5 font-semibold">Expected DOM Impact</th>
-                <th className="px-6 py-5 font-semibold w-32">Status</th>
+                <th className="px-8 py-8 font-black">Test_ID</th>
+                <th className="px-8 py-8 font-black">Playwright_Scope</th>
+                <th className="px-8 py-8 font-black">Architecture_Description</th>
+                <th className="px-8 py-8 font-black">Expected_DOM_Impact</th>
+                <th className="px-8 py-8 font-black w-40">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#B78D7D]/5 relative z-10">
               {tests.map((t, i) => (
-                <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="px-6 py-5 whitespace-nowrap font-bold text-amber-400 font-mono text-xs">{t.id}</td>
-                  <td className="px-6 py-5">
-                      <span className="font-mono text-xs text-amber-300/80 bg-amber-500/10 border border-amber-500/20 rounded px-2.5 py-1 whitespace-nowrap">{t.component}</span>
+                <tr key={i} className="hover:bg-[#F8F4F2]/30 transition-all group/row duration-500">
+                  <td className="px-8 py-8 whitespace-nowrap font-black text-[#B78D7D] font-mono text-[12px] group-hover/row:translate-x-1 transition-transform">{t.id}</td>
+                  <td className="px-8 py-8">
+                      <span className="font-black font-mono text-[10px] text-[#B78D7D] bg-[#F8F4F2] border border-[#B78D7D]/15 rounded-xl px-4 py-2 uppercase tracking-[0.2em] shadow-inner leading-none">{t.component}</span>
                   </td>
-                  <td className="px-6 py-5 text-slate-300">{t.desc}</td>
-                  <td className="px-6 py-5 text-slate-400 text-xs">{t.expected}</td>
-                  <td className="px-6 py-5">
+                  <td className="px-8 py-8 text-[#5E5A59] font-bold leading-relaxed italic">{t.desc}</td>
+                  <td className="px-8 py-8 text-[#B2AAA6] font-black text-[10px] leading-relaxed font-mono tracking-widest uppercase">{t.expected}</td>
+                  <td className="px-8 py-8">
                     {t.status === "Pass" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm font-mono leading-none transition-all group-hover/row:bg-emerald-500 group-hover/row:text-white">
                             <CheckCircle size={14} /> Pass
                         </span>
                     ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-slate-500/10 text-slate-400 border border-slate-500/20">
-                            <span className="h-2 w-2 rounded-full bg-slate-400" /> Wait
+                        <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-[#F8F4F2] text-[#B2AAA6] border border-[#B78D7D]/10 shadow-sm font-mono leading-none transition-all">
+                            <Activity size={14} className="animate-pulse" /> Wait
                         </span>
                     )}
                   </td>
@@ -88,7 +99,19 @@ export default function FunctionalTestingPage() {
               ))}
             </tbody>
           </table>
+          <div className="absolute inset-0 opacity-[0.01] pointer-events-none group-hover:opacity-[0.02] transition-opacity bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
         </div>
+      </div>
+
+       {/* Global Branding Watermark */}
+       <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03] select-none z-[-1] grayscale">
+         <div className="flex flex-col items-end gap-10">
+            <h1 className="text-[14rem] font-black font-sans tracking-tighter uppercase leading-none text-[#B78D7D]">FUNCTION</h1>
+            <div className="flex items-center gap-10">
+               <Hexagon size={80} strokeWidth={2} className="text-[#B78D7D]" />
+               <p className="text-4xl font-black uppercase tracking-[1em] text-[#B78D7D] font-mono">E2E_SYNAPSE</p>
+            </div>
+         </div>
       </div>
     </div>
   );

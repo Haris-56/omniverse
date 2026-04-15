@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Bot, Plus, Trash2, Save } from "lucide-react";
+import { X, Bot, Plus, Trash2, Save, Cpu, Sparkles, Activity, ShieldCheck, Zap, Hexagon } from "lucide-react";
 
 export default function AgentModal({ isOpen, onClose, onSave, initialData }) {
   const [formData, setFormData] = useState({
@@ -60,151 +60,178 @@ export default function AgentModal({ isOpen, onClose, onSave, initialData }) {
     onSave(formData);
   };
 
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl h-[90vh] flex flex-col animate-in fade-in zoom-in duration-200">
-        <div className="p-6 border-b flex justify-between items-center bg-purple-50">
-          <div className="flex items-center gap-2 text-purple-600">
-            <Bot size={24} />
-            <h2 className="text-xl font-semibold text-gray-900">
-              {initialData ? "Edit AI Agent" : "Create New AI Agent"}
-            </h2>
-          </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X size={20} />
-          </button>
+    <div className="fixed inset-0 flex items-center justify-center z-[9999] p-4 lg:p-8 animate-in fade-in duration-700 overflow-y-auto custom-scrollbar">
+      <div className="fixed inset-0 bg-[#3E3A39]/20 backdrop-blur-2xl" onClick={handleBackdropClick} />
+      
+      <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-3xl overflow-hidden border border-[#B78D7D]/20 relative z-10 animate-in zoom-in-95 duration-700 flex flex-col max-h-[90vh] my-auto">
+        
+        {/* Modal Header */}
+        <div className="p-8 border-b border-[#B78D7D]/10 flex justify-between items-center bg-[#F8F4F2]/30">
+           <div className="flex items-center gap-6">
+              <div className="w-16 h-16 bg-[#B78D7D] rounded-[1.75rem] flex items-center justify-center text-white shadow-lg shadow-[#B78D7D]/20">
+                 <Cpu size={32} />
+              </div>
+              <div>
+                 <h2 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">
+                    AI Helper
+                 </h2>
+                 <p className="text-[10px] font-black text-[#B78D7D] uppercase tracking-[0.4em] mt-3 font-mono leading-none">This helps you finish the talk and get the sale.</p>
+              </div>
+           </div>
+           <button onClick={onClose} className="p-4 bg-white hover:bg-[#F8F4F2] rounded-2xl transition-all border border-[#B78D7D]/15 text-[#B2AAA6] hover:text-[#3E3A39] shadow-sm">
+             <X size={24} />
+           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6">
-          <form id="agent-form" onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Agent Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500/20 outline-none bg-gray-50 text-gray-900 placeholder:text-gray-500"
-                  placeholder="e.g., Sales Assistant"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Platform</label>
-                <select
-                  name="platform"
-                  value={formData.platform}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500/20 outline-none bg-gray-50 text-gray-900"
-                >
-                  <option value="LinkedIn">LinkedIn</option>
-                  <option value="Instagram">Instagram</option>
-                  <option value="Facebook">Facebook</option>
-                  <option value="Email">Email</option>
-                </select>
-              </div>
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          <form id="agent-form" onSubmit={handleSubmit} className="space-y-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono">AI Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-[#F8F4F2]/50 border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl px-8 py-5 text-base font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] focus:bg-white transition-all shadow-inner"
+                    placeholder="e.g., Prospector_Alpha"
+                  />
+               </div>
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] ml-2 font-mono">App to Connect</label>
+                  <div className="relative">
+                    <select
+                      name="platform"
+                      value={formData.platform}
+                      onChange={handleChange}
+                      className="w-full bg-[#F8F4F2]/50 border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl px-8 py-5 text-base font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] focus:bg-white transition-all appearance-none cursor-pointer shadow-inner pr-12"
+                    >
+                      <option value="LinkedIn">LinkedIn</option>
+                      <option value="Instagram">Instagram</option>
+                      <option value="Facebook">Facebook</option>
+                      <option value="Email">Email</option>
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-[#B78D7D]">
+                       <Hexagon size={18} className="animate-spin-slow opacity-50" />
+                    </div>
+                  </div>
+               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tone</label>
-                <select
-                  name="tone"
-                  value={formData.tone}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500/20 outline-none bg-gray-50 text-gray-900"
-                >
-                  <option value="Professional">Professional</option>
-                  <option value="Casual">Casual</option>
-                  <option value="Friendly">Friendly</option>
-                  <option value="Urgent">Urgent</option>
-                  <option value="Witty">Witty</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Style</label>
-                <select
-                  name="style"
-                  value={formData.style}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500/20 outline-none bg-gray-50 text-gray-900"
-                >
-                  <option value="Concise">Concise</option>
-                  <option value="Detailed">Detailed</option>
-                  <option value="Persuasive">Persuasive</option>
-                  <option value="Empathetic">Empathetic</option>
-                </select>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] ml-2 font-mono">Tone of Voice</label>
+                  <select
+                    name="tone"
+                    value={formData.tone}
+                    onChange={handleChange}
+                    className="w-full bg-[#F8F4F2]/50 border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl px-8 py-5 text-base font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] focus:bg-white transition-all appearance-none cursor-pointer shadow-inner pr-12"
+                  >
+                    <option value="Professional">Professional</option>
+                    <option value="Casual">Casual</option>
+                    <option value="Friendly">Friendly</option>
+                    <option value="Urgent">Urgent</option>
+                    <option value="Witty">Witty</option>
+                  </select>
+               </div>
+               <div className="space-y-4">
+                  <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] ml-2 font-mono">Style</label>
+                  <select
+                    name="style"
+                    value={formData.style}
+                    onChange={handleChange}
+                    className="w-full bg-[#F8F4F2]/50 border-2 border-transparent border-b-[#B78D7D]/10 rounded-2xl px-8 py-5 text-base font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] focus:bg-white transition-all appearance-none cursor-pointer shadow-inner pr-12"
+                  >
+                    <option value="Concise">Concise Byte</option>
+                    <option value="Detailed">Detailed Data</option>
+                    <option value="Persuasive">Persuasive</option>
+                    <option value="Empathetic">Friendly</option>
+                  </select>
+               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Behavior / Personality</label>
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] ml-2 font-mono">Instructions</label>
               <textarea
                 name="behavior"
                 value={formData.behavior}
                 onChange={handleChange}
-                rows={3}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500/20 outline-none resize-none bg-gray-50 text-gray-900 placeholder:text-gray-500"
-                placeholder="Describe how the agent should act (e.g., 'You are a helpful support agent who prioritizes customer satisfaction...')"
+                rows={4}
+                className="w-full bg-[#F8F4F2]/50 border-2 border-transparent border-b-[#B78D7D]/10 rounded-[2rem] px-8 py-6 text-base font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] focus:bg-white transition-all resize-none shadow-inner"
+                placeholder="Describe how the AI should respond..."
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Goal</label>
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] ml-2 font-mono">Main Goal</label>
               <textarea
                 name="goal"
                 value={formData.goal}
                 onChange={handleChange}
                 rows={2}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500/20 outline-none resize-none bg-gray-50 text-gray-900 placeholder:text-gray-500"
-                placeholder="What is the primary objective? (e.g., 'Book a meeting', 'Resolve issue')"
+                className="w-full bg-[#F8F4F2]/50 border-2 border-transparent border-b-[#B78D7D]/10 rounded-[2rem] px-8 py-6 text-base font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] focus:bg-white transition-all resize-none shadow-inner"
+                placeholder="Example: Book a meeting or get their email."
               />
             </div>
 
-            <div className="border-t pt-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-semibold text-gray-900">Dynamic Triggers</h3>
+            <div className="pt-10 border-t border-[#B78D7D]/10">
+              <div className="flex justify-between items-center mb-10">
+                <div className="flex items-center gap-4">
+                   <Zap size={24} className="text-[#B78D7D] animate-pulse" />
+                   <h3 className="text-xl font-black text-[#3E3A39] uppercase tracking-tighter leading-none">Auto Replies</h3>
+                </div>
                 <button
                   type="button"
                   onClick={addTrigger}
-                  className="text-xs flex items-center gap-1 text-purple-600 hover:text-purple-700 font-medium"
+                  className="px-8 py-4 bg-[#F8F4F2] text-[#B78D7D] border border-[#B78D7D]/20 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#B78D7D] hover:text-white transition-all flex items-center gap-3 font-mono shadow-sm active:scale-95"
                 >
-                  <Plus size={14} />
-                  Add Trigger
+                  <Plus size={16} />
+                  Inject Keyword
                 </button>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-6">
                 {formData.triggers.length === 0 && (
-                  <p className="text-sm text-gray-500 italic text-center py-4 bg-gray-50 rounded-lg">
-                    No triggers defined. Add one to automate responses based on keywords.
-                  </p>
+                  <div className="text-center py-16 bg-[#F8F4F2]/30 rounded-[3rem] border-2 border-dashed border-[#B78D7D]/15 group">
+                     <p className="text-[11px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono group-hover:text-[#B78D7D] transition-colors">No rules set.</p>
+                  </div>
                 )}
                 {formData.triggers.map((trigger, index) => (
-                  <div key={index} className="flex gap-3 items-start bg-gray-50 p-3 rounded-lg group">
-                    <div className="flex-1 space-y-2">
-                      <input
-                        type="text"
-                        value={trigger.keyword}
-                        onChange={(e) => updateTrigger(index, "keyword", e.target.value)}
-                        placeholder="If user says (keyword)..."
-                        className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:ring-1 focus:ring-purple-500 outline-none bg-gray-50 text-gray-900 placeholder:text-gray-500"
-                      />
-                      <input
-                        type="text"
-                        value={trigger.response}
-                        onChange={(e) => updateTrigger(index, "response", e.target.value)}
-                        placeholder="Reply with / Send link..."
-                        className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:ring-1 focus:ring-purple-500 outline-none bg-gray-50 text-gray-900 placeholder:text-gray-500"
-                      />
+                  <div key={index} className="flex gap-6 items-start bg-[#F8F4F2]/40 p-8 rounded-[2.5rem] border border-[#B78D7D]/10 group relative transition-all hover:bg-white hover:border-[#B78D7D]/30 shadow-sm animate-in slide-in-from-right-4 duration-500">
+                    <div className="flex-1 space-y-6">
+                      <div className="space-y-3">
+                         <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono ml-2">If they say...</label>
+                         <input
+                           type="text"
+                           value={trigger.keyword}
+                           onChange={(e) => updateTrigger(index, "keyword", e.target.value)}
+                           placeholder="e.g. pricing"
+                           className="w-full bg-white border border-[#B78D7D]/10 rounded-xl px-6 py-4 text-sm font-bold text-[#3E3A39] outline-none focus:border-[#B78D7D] shadow-sm"
+                         />
+                      </div>
+                      <div className="space-y-3">
+                         <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono ml-2">Then reply with...</label>
+                         <input
+                           type="text"
+                           value={trigger.response}
+                           onChange={(e) => updateTrigger(index, "response", e.target.value)}
+                           placeholder="e.g. It costs $99."
+                           className="w-full bg-white border border-[#B78D7D]/10 rounded-xl px-6 py-4 text-sm font-bold text-[#3E3A39] outline-none focus:border-[#B78D7D] shadow-sm"
+                         />
+                      </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => removeTrigger(index)}
-                      className="text-gray-400 hover:text-red-500 p-1"
+                      className="text-[#B2AAA6] hover:text-rose-500 transition-colors p-4 bg-white rounded-2xl border border-[#B78D7D]/10 shadow-sm active:scale-90 mt-6"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={20} />
                     </button>
                   </div>
                 ))}
@@ -213,21 +240,29 @@ export default function AgentModal({ isOpen, onClose, onSave, initialData }) {
           </form>
         </div>
 
-        <div className="p-6 border-t bg-gray-50 flex justify-end gap-3 rounded-b-xl">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            form="agent-form"
-            className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition flex items-center gap-2"
-          >
-            <Save size={16} />
-            Save Agent
-          </button>
+        {/* Modal Footer */}
+        <div className="p-8 bg-[#F8F4F2]/50 border-t border-[#B78D7D]/10 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+           <div className="absolute inset-0 opacity-[0.01] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+           <div className="flex items-center gap-4 relative z-10">
+              <ShieldCheck size={24} className="text-emerald-500" />
+              <span className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono">Ready to Go</span>
+           </div>
+           <div className="flex items-center gap-6 w-full md:w-auto relative z-10">
+              <button
+                onClick={onClose}
+                className="flex-1 md:flex-none px-8 py-4 bg-white text-[#B2AAA6] font-black text-[10px] uppercase tracking-[0.2em] rounded-[1rem] hover:bg-rose-50 hover:text-rose-500 transition-all font-mono active:scale-95 border border-[#B78D7D]/15 shadow-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="agent-form"
+                className="flex-1 md:flex-none px-10 py-4 bg-[#B78D7D] text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-[1rem] shadow-lg hover:bg-[#A37B6D] transition-all flex items-center justify-center gap-3 border border-white/10 font-mono active:scale-95"
+              >
+                <Save size={18} />
+                <span>Save AI Helper</span>
+              </button>
+           </div>
         </div>
       </div>
     </div>

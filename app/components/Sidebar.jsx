@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import {
   LayoutDashboard,
   Users,
@@ -16,13 +16,17 @@ import {
   HelpCircle,
   X,
   Globe,
-  Settings2,
   ChevronRight,
-  Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  Activity,
+  ChevronLeft,
+  ChevronDown,
+  Cpu,
+  Zap,
+  Hexagon
 } from "lucide-react";
 
-export default function Sidebar({ onClose }) {
+export default function Sidebar({ onClose, isSidebarOpen }) {
   const pathname = usePathname();
   const [active, setActive] = useState("/");
 
@@ -34,87 +38,84 @@ export default function Sidebar({ onClose }) {
     {
       group: "Main",
       items: [
-        { label: "Dashboard", icon: <LayoutDashboard size={20} />, route: "/" },
-        { label: "Contacts", icon: <Users size={20} />, route: "/contact-list" },
-        { label: "Campaigns", icon: <Wrench size={20} />, route: "/campaign-builder" },
+        { label: "Dashboard", icon: <LayoutDashboard size={18} />, route: "/" },
+        { label: "My People", icon: <Users size={18} />, route: "/contact-list" },
+        { label: "Make Plans", icon: <Wrench size={18} />, route: "/campaign-builder" },
       ]
     },
     {
-      group: "Channels",
+      group: "Social Media",
       items: [
-        { label: "Facebook", icon: <Facebook size={20} />, route: "/facebook" },
-        { label: "Instagram", icon: <Instagram size={20} />, route: "/instagram" },
-        { label: "LinkedIn", icon: <Linkedin size={20} />, route: "/linkedin" },
-        { label: "Email", icon: <Mail size={20} />, route: "/email" },
+        { label: "Facebook", icon: <Facebook size={18} />, route: "/facebook" },
+        { label: "Instagram", icon: <Instagram size={18} />, route: "/instagram" },
+        { label: "LinkedIn", icon: <Linkedin size={18} />, route: "/linkedin" },
+        { label: "Email", icon: <Mail size={18} />, route: "/email" },
       ]
     },
     {
-      group: "AI Tools",
+      group: "AI Writing",
       items: [
-        { label: "AI Agent", icon: <Bot size={20} />, route: "/ai-agent" },
-        { label: "Persona", icon: <PenTool size={20} />, route: "/ai-creator" },
+        { label: "AI Writer", icon: <Bot size={18} />, route: "/ai-agent" },
+        { label: "AI Helper", icon: <PenTool size={18} />, route: "/ai-creator" },
       ]
     },
     {
-       group: "System",
-       items: [
-         { label: "Support", icon: <HelpCircle size={20} />, route: "/support" },
-       ]
+      group: "Settings & Help",
+      items: [
+        { label: "Guide", icon: <ShieldCheck size={18} />, route: "/documentation" },
+        { label: "Support", icon: <HelpCircle size={18} />, route: "/support" },
+      ]
     }
   ];
 
   return (
-    <div className="h-full w-72 bg-white flex flex-col border-r border-gray-100 shadow-[20px_0_40px_-20px_rgba(0,0,0,0.02)]">
+    <div className="h-full w-full flex flex-col bg-[#B78D7D] font-sans border-r border-white/10 relative overflow-hidden text-white">
+      
+      {/* Visual Texture */}
+      <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
       
       {/* BRANDING HEADER */}
-      <div className="p-8 flex items-center justify-between">
-        <div className="flex items-center gap-3 group cursor-pointer">
-           <div className="w-12 h-12 bg-[#6F3FF5] rounded-[1.25rem] flex items-center justify-center text-white shadow-xl shadow-purple-200 group-hover:rotate-12 transition-transform duration-500">
-             <Globe size={26} />
+      <div className="p-6 pb-8 flex flex-col gap-4 relative z-10 text-center items-center">
+        <div className="w-full flex justify-end xl:hidden">
+          <button onClick={onClose} className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all text-white">
+            <X size={16} />
+          </button>
+        </div>
+        <Link href="/" className="group cursor-pointer">
+           <div className="w-12 h-12 bg-white border-2 border-white/20 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-500">
+             <Hexagon size={24} strokeWidth={2.5} className="text-[#B78D7D] group-hover:rotate-12 transition-transform duration-700" />
            </div>
-           <div>
-             <h2 className="text-xl font-bold text-gray-900 tracking-tight">Omniverse</h2>
-             <p className="text-xs font-semibold text-indigo-500 opacity-70">Admin Panel</p>
+        </Link>
+        <div className="space-y-1">
+          <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/70">Omniverse</h2>
         </div>
-        </div>
-        <button 
-          onClick={onClose}
-          className="p-3 bg-gray-50 hover:bg-white border border-transparent hover:border-gray-100 rounded-2xl lg:hidden text-gray-400 hover:text-red-500 transition-all shadow-sm"
-        >
-          <X size={20} />
-        </button>
       </div>
 
       {/* NAVIGATION SECTIONS */}
-      <nav className="flex-1 overflow-y-auto px-6 py-4 space-y-10 custom-scrollbar">
+      <nav className="flex-1 overflow-y-auto px-4 py-2 space-y-8 custom-scrollbar relative z-10">
         {menu.map((section, sIdx) => (
           <div key={sIdx} className="space-y-3">
-             <h3 className="px-5 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+             <h3 className="text-[8px] font-black text-white/40 uppercase tracking-[0.4em] px-4 font-mono">
                {section.group}
              </h3>
-             <div className="space-y-1.5">
+             <div className="space-y-0.5">
                {section.items.map((item) => {
-                 const isActive = active === item.route;
+                 const isActive = active === item.route || (item.route !== '/' && active.startsWith(item.route));
                  return (
                    <Link
                      key={item.label}
                      href={item.route}
-                     onClick={() => {
-                       if (onClose) onClose();
-                     }}
-                     className={`group w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-sm font-medium transition-all duration-300 ${
+                     className={`group w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all font-mono border-2 ${
                        isActive
-                         ? "bg-[#6F3FF5] text-white shadow-xl shadow-purple-200"
-                         : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                         ? "bg-white text-[#B78D7D] border-transparent shadow-[0_10px_20px_rgba(0,0,0,0.1)]"
+                         : "text-white/70 hover:bg-white/10 hover:text-white border-transparent"
                      }`}
                    >
-                     <div className="flex items-center gap-4">
-                        <div className={`transition-all duration-300 ${isActive ? "scale-110" : "group-hover:scale-110 group-hover:text-indigo-600"}`}>
-                          {item.icon}
-                        </div>
-                        <span className="tracking-tight">{item.label}</span>
+                     <div className={`transition-all ${isActive ? "scale-110 text-[#B78D7D]" : "text-white/50 group-hover:text-white group-hover:scale-110"}`}>
+                       {item.icon}
                      </div>
-                     {isActive && <ChevronRight size={14} className="opacity-60" />}
+                     <span className="truncate">{item.label}</span>
+                     {isActive && <div className="ml-auto w-1 h-1 bg-[#B78D7D] rounded-full shadow-[0_0_5px_rgba(183,141,125,0.5)]" />}
                    </Link>
                  );
                })}
@@ -123,21 +124,12 @@ export default function Sidebar({ onClose }) {
         ))}
       </nav>
 
-      {/* BOTTOM SYSTEM CARD */}
-      <div className="p-6">
-         <div className="bg-gray-50 border border-gray-100/50 rounded-3xl p-5 relative overflow-hidden group">
-            <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-indigo-100 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="flex items-center gap-3 mb-3 relative z-10">
-               <div className="w-8 h-8 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-indigo-600 shadow-sm">
-                  <ShieldCheck size={16} />
-               </div>
-               <span className="text-xs font-bold text-gray-700">Level 4 Node</span>
-            </div>
-            <p className="text-xs text-gray-500 leading-relaxed mb-4 relative z-10">All systems operational in your sector.</p>
-            <button className="w-full py-2.5 bg-white border border-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-900 hover:text-white transition-all shadow-sm relative z-10">
-               View Logs
-            </button>
-         </div>
+      {/* FOOTER branding */}
+      <div className="p-6 mt-auto relative z-10 text-center border-t border-white/10 bg-black/5 backdrop-blur-sm">
+        <div className="flex items-center justify-center gap-3">
+           <Activity size={12} className="text-white/60 animate-pulse" />
+           <p className="text-[8px] font-black text-white/40 tracking-[0.4em] uppercase font-mono">Everything is ready</p>
+        </div>
       </div>
     </div>
   );

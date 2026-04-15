@@ -1,4 +1,4 @@
-import { Terminal, Code, Cpu, ShieldCheck, Zap } from "lucide-react";
+import { Terminal, Code, Cpu, ShieldCheck, Zap, Hexagon } from "lucide-react";
 
 export default function PseudoCodesPage() {
   const sections = [
@@ -107,50 +107,66 @@ FUNCTION AllocateProxy(account_id, platform):
   ];
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      <div className="border-b border-white/10 pb-8 relative group">
-        <div className="absolute -left-8 top-2 w-1 h-12 bg-indigo-500 rounded-r-lg shadow-[0_0_15px_rgba(99,102,241,0.6)]"></div>
-        <h1 className="text-4xl font-extrabold text-white tracking-tight flex items-center gap-4">
-          <Terminal className="text-indigo-400" size={36} />
-          Project Pseudo Codes
+    <div className="space-y-16 animate-in fade-in slide-in-from-bottom-5 duration-1000 pb-32 font-sans">
+      
+      {/* Header Sector */}
+      <div className="border-b border-[#B78D7D]/15 pb-12 relative">
+        <div className="absolute -left-8 top-1.5 w-1.5 h-12 bg-[#B78D7D] rounded-full shadow-sm"></div>
+        <h1 className="text-5xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight flex items-center gap-6">
+          <Terminal className="text-[#B78D7D]" size={48} />
+          Project_<span className="text-[#B78D7D]">Pseudo_Codes</span>
         </h1>
-        <p className="text-slate-400 mt-3 text-lg leading-relaxed max-w-2xl">
+        <p className="text-[#8E7A70] mt-4 text-xl font-bold leading-relaxed max-w-3xl italic">
           High-level algorithmic representations of the core Omniverse engines. Use these as a reference for architectural logic and workflow implementation.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-12">
+      <div className="grid grid-cols-1 gap-20">
         {sections.map((section, idx) => (
           <div key={idx} className="group relative">
-            <div className="flex items-start gap-6">
-               <div className="mt-1 p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 group-hover:bg-indigo-500/20 group-hover:border-indigo-500/40 transition-all duration-300">
-                  <section.icon size={24} />
+            <div className="flex flex-col lg:flex-row items-start gap-12">
+               <div className="mt-2 p-5 rounded-[2rem] bg-white border border-[#B78D7D]/15 text-[#B78D7D] group-hover:bg-[#B78D7D] group-hover:text-white transition-all duration-700 shadow-sm group-hover:shadow-[0_20px_40px_rgba(183,141,125,0.2)] group-hover:rotate-6">
+                  <section.icon size={36} />
                </div>
-               <div className="flex-1 space-y-4">
+               <div className="flex-1 space-y-8 w-full">
                   <div>
-                    <h2 className="text-2xl font-bold text-white tracking-tight">{section.title}</h2>
-                    <p className="text-slate-400 mt-1 leading-relaxed">{section.description}</p>
+                    <h2 className="text-3xl font-black text-[#3E3A39] tracking-tight uppercase leading-none">{section.title}</h2>
+                    <p className="text-[#8E7A70] mt-4 text-lg font-bold italic leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity whitespace-pre-wrap">"{section.description}"</p>
                   </div>
                   
-                  <div className="relative rounded-2xl border border-white/5 bg-[#050505] overflow-hidden shadow-2xl">
-                    <div className="absolute top-0 left-0 right-0 h-10 bg-white/5 flex items-center px-4 justify-between border-b border-white/5">
-                        <div className="flex gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-rose-500/40"></div>
-                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/40"></div>
-                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/40"></div>
+                  <div className="relative rounded-[3rem] border border-[#B78D7D]/15 bg-white overflow-hidden shadow-lg group-hover:shadow-2xl transition-all duration-700">
+                    <div className="absolute top-0 left-0 right-0 h-14 bg-[#F8F4F2] flex items-center px-8 justify-between border-b border-[#B78D7D]/10">
+                        <div className="flex gap-2">
+                            <div className="w-3 h-3 rounded-full bg-rose-500/20"></div>
+                            <div className="w-3 h-3 rounded-full bg-amber-500/20"></div>
+                            <div className="w-3 h-3 rounded-full bg-emerald-500/20"></div>
                         </div>
-                        <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Pseudo Code</span>
+                        <span className="text-[10px] font-black font-mono text-[#B2AAA6] uppercase tracking-[0.4em] italic">Protocol_Snippet_v4.0</span>
                     </div>
-                    <pre className="p-8 pt-14 overflow-x-auto custom-scrollbar">
-                      <code className="text-indigo-300/90 font-mono text-sm leading-relaxed block">
+                    
+                    <pre className="p-10 pt-20 overflow-x-auto custom-scrollbar bg-white">
+                      <code className="text-[#5E5A59] font-mono text-base font-bold leading-8 block selection:bg-[#B78D7D]/10">
                         {section.pseudoCode.trim()}
                       </code>
                     </pre>
+
+                    <div className="absolute inset-0 opacity-[0.01] pointer-events-none group-hover:opacity-[0.02] transition-opacity bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
                   </div>
                </div>
             </div>
           </div>
         ))}
+      </div>
+
+       {/* Global Branding Watermark */}
+       <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03] select-none z-[-1] grayscale">
+         <div className="flex flex-col items-end gap-10">
+            <h1 className="text-[14rem] font-black font-sans tracking-tighter uppercase leading-none text-[#B78D7D]">PSEUDO</h1>
+            <div className="flex items-center gap-10">
+               <Hexagon size={80} strokeWidth={2} className="text-[#B78D7D]" />
+               <p className="text-4xl font-black uppercase tracking-[1em] text-[#B78D7D] font-mono">LOGIC_MATRIX</p>
+            </div>
+         </div>
       </div>
     </div>
   );

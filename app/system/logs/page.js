@@ -5,7 +5,9 @@ import {
   Search, Calendar, Download, 
   Filter, Shield, User, 
   MapPin, CreditCard, AlertTriangle,
-  Clock, ArrowRight, CheckCircle2
+  Clock, ArrowRight, CheckCircle2,
+  Terminal, ShieldCheck, Activity,
+  Hexagon
 } from "lucide-react";
 
 const mockLogs = [
@@ -19,81 +21,99 @@ const mockLogs = [
 
 export default function AuditLogs() {
   return (
-    <div className="space-y-10 pb-20">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">System Audit Logs</h1>
-          <p className="text-slate-500 font-medium mt-2 text-lg">Immutable record of all administrative actions and system events.</p>
-        </div>
-        <button className="px-8 py-4 bg-white border border-slate-200 rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2 text-slate-600">
-          <Download size={18} /> Export CSV
-        </button>
-      </div>
-
-      {/* Filter Bar */}
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4 items-center">
-        <div className="flex-1 relative w-full">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-          <input 
-            type="text" 
-            placeholder="Search by actor, target or details..." 
-            className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-[1.5rem] outline-none font-medium text-slate-900 transition-all"
-          />
-        </div>
-        <div className="flex gap-3 w-full md:w-auto">
-          <button className="flex-1 md:flex-none px-6 py-5 bg-slate-50 border border-slate-100 rounded-[1.5rem] font-bold text-slate-600 flex items-center gap-2">
-            <Calendar size={18} /> Last 24h
-          </button>
-          <button className="flex-1 md:flex-none px-6 py-5 bg-slate-50 border border-slate-100 rounded-[1.5rem] font-bold text-slate-600 flex items-center gap-2">
-            <Filter size={18} /> All Events
-          </button>
-        </div>
-      </div>
-
-      {/* Logs Timeline */}
-      <div className="bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden">
-        <div className="p-8 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
-          <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">Activity Feed</h3>
-          <span className="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-wider">Storage Status: Encrypted</span>
-        </div>
-
-        <div className="divide-y divide-slate-50">
-          {mockLogs.map((log) => (
-            <div key={log.id} className="p-8 hover:bg-slate-50/50 transition-all group flex flex-col md:flex-row md:items-center gap-8">
-              <div className="flex-shrink-0">
-                <LogIcon type={log.type} severity={log.severity} />
-              </div>
-              
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">{log.type.replace('_', ' ')}</span>
-                  <span className="text-slate-200">•</span>
-                  <div className="flex items-center gap-1.5 text-slate-400 font-bold text-xs">
-                    <Clock size={12} />
-                    {log.timestamp}
-                  </div>
-                </div>
-                <h4 className="text-lg font-black text-slate-900 tracking-tight leading-snug">
-                  {log.actor} <span className="text-slate-400 font-bold italic mx-1 opacity-60">performed action on</span> {log.target}
-                </h4>
-                <p className="text-slate-500 font-medium text-sm mt-1">{log.details}</p>
-              </div>
-
-              <div className="flex-shrink-0 flex items-center gap-4">
-                 <button className="p-3 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all">
-                   <ArrowRight size={20} />
-                 </button>
-              </div>
+    <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 font-sans p-4 lg:p-0 pb-32">
+      <div className="max-w-full mx-auto space-y-20">
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 border-b border-[#B78D7D]/10 pb-16">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+                 <span className="px-5 py-2 bg-[#B78D7D]/10 text-[#B78D7D] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#B78D7D]/20 flex items-center gap-3 font-mono">
+                 <Terminal size={16} className="opacity-80" />
+                 Audit_Stream::Secured
+               </span>
             </div>
-          ))}
+            <h1 className="text-7xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">
+              System <span className="text-[#B78D7D]">Logs</span>
+            </h1>
+            <p className="text-[#8E7A70] text-2xl font-medium max-w-3xl leading-relaxed italic">Immutable registry of administrative handshakes and infrastructure events.</p>
+          </div>
+          <button className="group px-12 py-6 bg-white text-[#3E3A39] font-black uppercase text-[11px] tracking-[0.4em] rounded-[2rem] flex items-center justify-center gap-5 transition-all shadow-sm hover:bg-[#F8F4F2] active:scale-95 font-mono border border-[#B78D7D]/15">
+            <Download size={24} className="group-hover:translate-y-1 transition-transform" /> 
+            Export_CSV_Payload
+          </button>
         </div>
 
-        {/* Footer */}
-        <div className="p-10 text-center bg-slate-50/50">
-          <button className="text-sm font-black text-slate-400 hover:text-indigo-600 transition-all uppercase tracking-widest">
-            Load More History
-          </button>
+        {/* Filter Matrix */}
+        <div className="bg-white p-12 rounded-[4rem] border border-[#B78D7D]/15 shadow-sm relative overflow-hidden group">
+          <div className="relative z-10 flex flex-col xl:flex-row gap-8 items-center">
+            <div className="flex-1 relative w-full">
+              <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-[#B2AAA6]" size={28} />
+              <input 
+                type="text" 
+                placeholder="Identify logs by actor, node target, or metadata..." 
+                className="w-full pl-20 pr-8 py-7 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-[2.5rem] outline-none focus:border-[#B78D7D] font-bold text-[#3E3A39] transition-all shadow-sm italic placeholder:text-[#B2AAA6]"
+              />
+            </div>
+            <div className="flex gap-6 w-full xl:w-auto">
+              <button className="flex-1 xl:flex-none px-12 py-6 bg-white border border-[#B78D7D]/15 rounded-[2rem] font-black text-[11px] text-[#8E7A70] uppercase tracking-widest font-mono flex items-center gap-5 hover:border-[#B78D7D]/30 transition-all shadow-sm">
+                <Calendar size={22} /> Last_24h_Cycle
+              </button>
+              <button className="flex-1 xl:flex-none px-12 py-6 bg-white border border-[#B78D7D]/15 rounded-[2rem] font-black text-[11px] text-[#8E7A70] uppercase tracking-widest font-mono flex items-center gap-5 hover:border-[#B78D7D]/30 transition-all shadow-sm">
+                <Filter size={22} /> All_Events
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Logs Chronology */}
+        <div className="bg-white rounded-[4rem] overflow-hidden relative border border-[#B78D7D]/10 shadow-sm">
+          <div className="p-12 border-b border-[#B78D7D]/10 bg-[#F8F4F2]/50 flex items-center justify-between">
+            <div className="flex items-center gap-5">
+               <Activity size={24} className="text-[#B78D7D] animate-pulse" />
+               <h3 className="text-[11px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] font-mono">Live_Neural_Broadcasting</h3>
+            </div>
+            <span className="px-8 py-3 bg-white text-[#B78D7D] border border-[#B78D7D]/15 rounded-2xl text-[10px] font-black uppercase tracking-widest font-mono shadow-sm">Status::Encrypted_Vault</span>
+          </div>
+
+          <div className="divide-y divide-[#B78D7D]/5">
+            {mockLogs.map((log) => (
+              <div key={log.id} className="p-12 hover:bg-[#F8F4F2]/30 transition-all group flex flex-col xl:flex-row xl:items-center gap-12">
+                <div className="shrink-0">
+                  <LogIcon type={log.type} severity={log.severity} />
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-5 mb-4">
+                    <span className="text-[12px] font-black text-[#B78D7D] uppercase tracking-[0.3em] font-mono">{log.type.replace('_', ' ')}</span>
+                    <span className="text-[#B2AAA6]/20 font-black">•</span>
+                    <div className="flex items-center gap-4 text-[#B2AAA6] font-black text-[11px] font-mono tracking-widest uppercase">
+                      <Clock size={16} className="text-[#B78D7D] opacity-60" />
+                      {log.timestamp}
+                    </div>
+                  </div>
+                  <h4 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight group-hover:text-[#B78D7D] transition-colors">
+                    {log.actor} <span className="text-[#8E7A70] font-bold italic mx-3 lowercase opacity-60 tracking-normal text-2xl">executed on</span> {log.target}
+                  </h4>
+                  <p className="text-[#8E7A70] font-bold text-base mt-4 font-mono tracking-wide max-w-4xl border-l-2 border-[#B78D7D]/20 pl-6 leading-relaxed italic">{log.details}</p>
+                </div>
+
+                <div className="shrink-0 flex items-center gap-6 ml-auto">
+                   <button className="px-8 py-4 bg-[#F8F4F2] text-[#B2AAA6] hover:text-[#B78D7D] group border border-[#B78D7D]/10 hover:border-[#B78D7D]/30 rounded-2xl transition-all active:scale-95 shadow-sm">
+                     <ArrowRight size={28} className="group-hover:translate-x-1 transition-transform" />
+                   </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          <div className="p-16 text-center bg-[#F8F4F2]/20 border-t border-[#B78D7D]/10 relative">
+            <button className="px-12 py-6 bg-white text-[#B2AAA6] hover:text-[#B78D7D] rounded-[2rem] text-[11px] font-black uppercase tracking-[0.5em] font-mono transition-all border border-[#B78D7D]/15 hover:border-[#B78D7D]/40 shadow-sm">
+              Load_Historical_Registry
+            </button>
+            <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+          </div>
         </div>
       </div>
     </div>
@@ -102,21 +122,21 @@ export default function AuditLogs() {
 
 function LogIcon({ type, severity }) {
   const getStyle = () => {
-    if (severity === 'critical') return 'bg-red-100 text-red-600';
-    if (severity === 'warning') return 'bg-amber-100 text-amber-600';
-    return 'bg-indigo-50 text-indigo-600';
+    if (severity === 'critical') return 'bg-rose-50 border-rose-200 text-rose-500 shadow-sm';
+    if (severity === 'warning') return 'bg-amber-50 border-amber-200 text-amber-600 shadow-sm';
+    return 'bg-[#F8F4F2] text-[#B78D7D] border-[#B78D7D]/10 shadow-inner';
   };
 
   const getIcon = () => {
-    if (type.includes('USER')) return <User size={20} />;
-    if (type.includes('PLAN')) return <CreditCard size={20} />;
-    if (type.includes('IP')) return <MapPin size={20} />;
-    if (type.includes('LIMIT')) return <AlertTriangle size={20} />;
-    return <Shield size={20} />;
+    if (type.includes('USER')) return <User size={32} />;
+    if (type.includes('PLAN')) return <CreditCard size={32} />;
+    if (type.includes('IP')) return <MapPin size={32} />;
+    if (type.includes('LIMIT')) return <AlertTriangle size={32} />;
+    return <Shield size={32} />;
   };
 
   return (
-    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${getStyle()} shadow-sm`}>
+    <div className={`w-24 h-24 rounded-[2.5rem] flex items-center justify-center border shadow-sm transition-all duration-700 group-hover:rotate-6 group-hover:scale-105 ${getStyle()}`}>
       {getIcon()}
     </div>
   );

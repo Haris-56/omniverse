@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { 
   ShieldCheck, Lock, Mail, 
   ArrowRight, Loader2, CheckCircle2,
-  AlertCircle
+  AlertCircle, Zap, Shield, Key, Hexagon
 } from "lucide-react";
 
 export default function SystemLogin() {
@@ -22,7 +22,6 @@ export default function SystemLogin() {
     setError("");
 
     try {
-      // 1. First verify credentials via API
       const res = await fetch("/api/system/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,7 +31,6 @@ export default function SystemLogin() {
       const data = await res.json();
 
       if (res.ok) {
-        // 2. If valid, send 2FA code
         const codeRes = await fetch("/api/system/auth/send-code", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -69,7 +67,6 @@ export default function SystemLogin() {
       const data = await res.json();
 
       if (res.ok) {
-        // Redirect to dashboard
         window.location.href = "/system";
       } else {
         setError(data.error || "Invalid or expired verification code.");
@@ -82,56 +79,59 @@ export default function SystemLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
-      <div className="w-full max-w-[440px] relative">
-        {/* Glow effect */}
-        <div className="absolute -top-20 -left-20 w-64 h-64 bg-indigo-600/20 rounded-full blur-[100px]" />
-        <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-600/20 rounded-full blur-[100px]" />
+    <div className="min-h-screen bg-[#F8F4F2] flex items-center justify-center p-10 font-sans relative overflow-hidden">
+      
+      {/* Background Decorative Elements */}
+      <div className="fixed -top-64 -left-64 w-[800px] h-[800px] bg-[#B78D7D]/[0.08] rounded-full blur-[180px] pointer-events-none z-0" />
+      <div className="fixed -bottom-64 -right-64 w-[600px] h-[600px] bg-[#8E7A70]/[0.1] rounded-full blur-[150px] pointer-events-none z-0" />
 
-        <div className="bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-10 shadow-2xl relative z-10">
-          <div className="text-center mb-10">
-            <div className="w-20 h-20 bg-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-indigo-500/20">
-              <ShieldCheck size={40} className="text-white" />
+      <div className="w-full max-w-[600px] relative z-10 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+        <div className="bg-white/40 backdrop-blur-2xl rounded-[5rem] border-2 border-[#B78D7D]/15 p-16 lg:p-24 shadow-[0_50px_100px_rgba(183,141,125,0.12)] relative overflow-hidden group">
+           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.015] pointer-events-none group-hover:opacity-[0.03] transition-opacity" />
+           
+          <div className="text-center mb-16 relative z-10">
+            <div className="w-28 h-28 bg-[#F8F4F2] border-2 border-[#B78D7D]/15 rounded-[3.5rem] flex items-center justify-center mx-auto mb-10 shadow-xl transition-all duration-700 group-hover:rotate-12 group-hover:border-[#B78D7D] group-hover:scale-110">
+              <ShieldCheck size={48} className="text-[#B78D7D]" />
             </div>
-            <h1 className="text-3xl font-black text-white tracking-tight">System Access</h1>
-            <p className="text-slate-400 font-medium mt-2">Administrator verification required.</p>
+            <h1 className="text-4xl lg:text-5xl font-black text-[#3E3A39] tracking-tighter uppercase mb-6 leading-none italic">Admin_<span className="text-[#B78D7D]">Sector</span></h1>
+            <p className="text-[#B2AAA6] font-black uppercase tracking-[0.4em] text-[11px] font-mono italic opacity-60 leading-none">Infrastructure_Protection_Layer</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400 text-sm font-bold animate-in fade-in slide-in-from-top-2">
-              <AlertCircle size={18} />
-              {error}
+            <div className="mb-12 p-8 bg-rose-50 border-2 border-rose-100 rounded-[2.5rem] flex items-center gap-6 text-rose-600 text-[11px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-top-4 font-mono shadow-sm relative z-10">
+              <AlertCircle size={24} className="shrink-0" />
+              <span className="leading-relaxed">{error}</span>
             </div>
           )}
 
           {step === 1 ? (
-            <form onSubmit={handleCredentials} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Email Identifier</label>
-                <div className="relative">
-                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <form onSubmit={handleCredentials} className="space-y-12 relative z-10">
+              <div className="space-y-5">
+                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-8 font-mono italic">Authority_Identifier</label>
+                <div className="relative group/field">
+                  <Mail className="absolute left-8 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/field:text-[#B78D7D] transition-all" size={24} />
                   <input 
                     type="email" 
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@omniverse.com"
-                    className="w-full pl-14 pr-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-bold placeholder:text-slate-600 outline-none focus:ring-4 focus:ring-indigo-600/10 focus:border-indigo-600/30 transition-all"
+                    placeholder="ADMIN_NODE::SIGNATURE"
+                    className="w-full pl-22 pr-10 py-7 bg-[#F8F4F2]/50 border-2 border-transparent border-b-[#B78D7D]/15 rounded-3xl text-[#3E3A39] font-black placeholder:text-[#B2AAA6] outline-none focus:border-b-[#B78D7D] focus:bg-white transition-all font-mono text-base shadow-inner italic"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Access Protocol</label>
-                <div className="relative">
-                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+              <div className="space-y-5">
+                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-8 font-mono italic">Encryption_Secret</label>
+                <div className="relative group/field">
+                  <Key className="absolute left-8 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/field:text-[#B78D7D] transition-all" size={24} />
                   <input 
                     type="password" 
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••••••"
-                    className="w-full pl-14 pr-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-bold placeholder:text-slate-600 outline-none focus:ring-4 focus:ring-indigo-600/10 focus:border-indigo-600/30 transition-all"
+                    placeholder="••••••••••••••••"
+                    className="w-full pl-22 pr-10 py-7 bg-[#F8F4F2]/50 border-2 border-transparent border-b-[#B78D7D]/15 rounded-3xl text-[#3E3A39] font-black placeholder:text-[#B2AAA6] outline-none focus:border-b-[#B78D7D] focus:bg-white transition-all font-mono text-base shadow-inner"
                   />
                 </div>
               </div>
@@ -139,63 +139,73 @@ export default function SystemLogin() {
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full py-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-xl shadow-indigo-500/20 flex items-center justify-center gap-3 group"
+                className="w-full py-8 bg-[#B78D7D] hover:bg-[#A37B6D] text-white rounded-[2.5rem] font-black text-[11px] uppercase tracking-[0.5em] transition-all shadow-[0_25px_50px_rgba(183,141,125,0.3)] flex items-center justify-center gap-5 group font-mono active:scale-95 border border-white/10"
               >
-                {loading ? <Loader2 size={18} className="animate-spin" /> : (
+                {loading ? <Loader2 size={28} className="animate-spin" /> : (
                   <>
-                    Initialize Login
-                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    Initialize_Node_Auth
+                    <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform duration-500" />
                   </>
                 )}
               </button>
             </form>
           ) : (
-            <form onSubmit={handleVerify} className="space-y-6">
-              <div className="text-center p-6 bg-white/5 rounded-3xl border border-white/5 mb-8">
-                <CheckCircle2 size={32} className="text-emerald-500 mx-auto mb-3" />
-                <p className="text-slate-300 text-sm font-medium">
-                  A security code has been dispatched to your registered authority email.
-                </p>
-                <p className="text-indigo-400 font-black text-xs mt-2 uppercase tracking-widest">
-                  CHECK INBOX
+            <form onSubmit={handleVerify} className="space-y-12 relative z-10">
+              <div className="text-center p-10 bg-[#F8F4F2] rounded-[3.5rem] border border-[#B78D7D]/15 mb-12 shadow-inner group/sync">
+                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 border border-emerald-100 shadow-sm transition-transform duration-700 group-hover/sync:rotate-12">
+                   <Shield size={32} className="text-emerald-500" />
+                </div>
+                <p className="text-[#8E7A70] text-[11px] font-black leading-relaxed italic uppercase font-mono tracking-widest">
+                   Security cipher dispatched to master node. Synchronize 2FA registry.
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">2FA Verification Code</label>
-                <input 
-                  type="text" 
-                  required
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder="000000"
-                  maxLength={6}
-                  className="w-full px-6 py-5 bg-white/5 border border-white/10 rounded-2xl text-white text-center text-2xl font-black tracking-[0.5em] placeholder:text-slate-700 outline-none focus:ring-4 focus:ring-indigo-600/10 focus:border-indigo-600/30 transition-all"
-                />
+              <div className="space-y-6 text-center">
+                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] font-mono italic block w-full">2FA_Encrypted_Cipher</label>
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    required
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    placeholder="000 000"
+                    maxLength={6}
+                    className="w-full px-10 py-10 bg-white border-2 border-[#B78D7D]/20 rounded-[3rem] text-[#3E3A39] text-center text-6xl font-black tracking-[0.4em] placeholder:text-[#F8F4F2]/50 outline-none focus:border-[#B78D7D] transition-all font-mono shadow-xl italic"
+                  />
+                  <div className="absolute -inset-2 bg-[#B78D7D]/5 rounded-[3.5rem] -z-10 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity" />
+                </div>
               </div>
 
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-3"
+                className="w-full py-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[2.5rem] font-black text-[11px] uppercase tracking-[0.5em] transition-all shadow-[0_25px_50px_rgba(16,185,129,0.2)] flex items-center justify-center gap-5 font-mono active:scale-95 border border-white/10"
               >
-                {loading ? <Loader2 size={18} className="animate-spin" /> : "Verify Identity"}
+                {loading ? <Loader2 size={28} className="animate-spin" /> : "Verify_Identity_Node"}
               </button>
 
               <button 
                 type="button"
                 onClick={() => setStep(1)}
-                className="w-full py-3 text-slate-500 font-bold text-xs uppercase tracking-widest hover:text-white transition-colors"
+                className="w-full py-2 text-[#B2AAA6] font-black text-[10px] uppercase tracking-[0.5em] hover:text-[#B78D7D] transition-colors font-mono italic leading-none"
               >
-                Back to credentials
+                Abort_Protocol_Return
               </button>
             </form>
           )}
 
-          <div className="mt-10 pt-8 border-t border-white/5 text-center">
-             <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">Omniverse Infrastructure Group</p>
+          <div className="mt-20 pt-10 border-t border-[#F8F4F2] text-center">
+             <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.6em] font-mono opacity-60 leading-none">Omniverse_Security_Group :: SECTOR_A3_INFRA</p>
           </div>
         </div>
+      </div>
+      
+      {/* Branding Watermark */}
+      <div className="fixed bottom-12 right-12 pointer-events-none opacity-[0.03] select-none z-0">
+          <div className="flex items-center gap-8 grayscale">
+             <Hexagon size={120} strokeWidth={1} className="text-[#B78D7D] animate-spin-slow" />
+             <h1 className="text-[12rem] font-black font-sans tracking-tighter uppercase leading-none text-[#B78D7D]">LOGIN</h1>
+          </div>
       </div>
     </div>
   );

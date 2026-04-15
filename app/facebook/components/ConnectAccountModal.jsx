@@ -14,7 +14,9 @@ import {
   Info,
   Rocket,
   Lock,
-  Smartphone
+  Smartphone,
+  Activity,
+  Hexagon
 } from "lucide-react";
 
 export default function ConnectAccountModal({ isOpen, onClose, onAccountConnected, initialEmail = "" }) {
@@ -110,203 +112,180 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900/60 flex items-center justify-center z-[100] p-4 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-white animate-in zoom-in duration-300">
+    <div className="fixed inset-0 flex items-center justify-center z-[9999] p-4 lg:p-20 animate-in fade-in duration-700 overflow-y-auto custom-scrollbar">
+      <div className="fixed inset-0 bg-[#3E3A39]/20 backdrop-blur-[60px]" onClick={handleClose} />
+      
+      <div className="bg-[#F8F4F2] rounded-[4rem] shadow-[0_80px_160px_rgba(183,141,125,0.2)] w-full max-w-[1400px] overflow-hidden border border-[#B78D7D]/20 relative z-10 animate-in zoom-in-95 duration-1000 my-auto group/modal">
         
         {/* Modal Header */}
-        <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-blue-50/30">
-          <div className="flex items-center gap-4">
-             <div className="w-12 h-12 bg-[#1877F2] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                <Facebook size={24} fill="currentColor" />
+        <div className="p-10 border-b border-[#B78D7D]/10 flex justify-between items-center bg-white/40">
+          <div className="flex items-center gap-6">
+             <div className="w-20 h-20 bg-white text-[#B78D7D] rounded-[2rem] flex items-center justify-center shadow-lg border border-[#B78D7D]/10 group-hover/modal:rotate-12 transition-transform duration-700">
+                <Facebook size={36} fill="currentColor" />
              </div>
              <div>
-                <h2 className="text-xl font-bold text-gray-900 tracking-tight">Connect Facebook</h2>
-                <p className="text-xs font-medium text-[#1877F2] mt-0.5">Secure Login Assistant</p>
+                <h2 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase">Facebook</h2>
+                <p className="text-[10px] font-black text-[#B78D7D] uppercase tracking-[0.4em] mt-2 font-mono leading-none">Manage your social accounts here.</p>
              </div>
           </div>
-          <button onClick={handleClose} className="p-2 hover:bg-white rounded-xl transition-all border border-transparent hover:border-gray-100 text-gray-400 hover:text-gray-900">
-            <X size={20} />
+          <button onClick={handleClose} className="p-4 bg-white hover:bg-[#B78D7D] group/close rounded-2xl transition-all border border-[#B78D7D]/10 text-[#B2AAA6] hover:text-white shadow-sm active:scale-90">
+            <X size={28} className="group-hover/close:rotate-90 transition-transform duration-500" />
           </button>
         </div>
 
-        <div className="p-8 md:p-10">
+        <div className="p-12 custom-scrollbar max-h-[70vh] overflow-y-auto">
           {result && result.status !== "Checkpoint" && result.status !== "AppConfirmation" ? (
-            <div className="text-center py-10 animate-in slide-in-from-bottom duration-500">
+            <div className="text-center py-20 animate-in slide-in-from-bottom duration-500">
               {result.status === "Connected" ? (
                 <>
-                  <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner animate-bounce">
-                    <CheckCircle size={32} />
+                  <div className="w-32 h-32 bg-white text-emerald-500 rounded-[3rem] flex items-center justify-center mx-auto mb-10 shadow-xl border border-emerald-500/10 transition-transform duration-1000 hover:scale-110">
+                    <CheckCircle size={56} />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Connected successfully!</h3>
-                  <p className="text-gray-500 text-sm font-medium">Your Facebook account is now linked and ready for use.</p>
+                  <h3 className="text-4xl font-black text-[#3E3A39] mb-4 tracking-tighter uppercase">Node_Activated</h3>
+                  <p className="text-[#8E7A70] font-black italic text-lg uppercase tracking-widest font-mono text-[12px]">Your Facebook identity is now synchronized with terminal.</p>
                 </>
               ) : (
                 <>
-                  <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
-                    <AlertCircle size={32} />
+                  <div className="w-32 h-32 bg-rose-50 text-rose-500 rounded-[3rem] flex items-center justify-center mx-auto mb-10 shadow-inner border border-rose-500/20">
+                    <AlertCircle size={56} />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Login Failed</h3>
-                  <p className="text-red-500 font-medium mb-8 text-sm">{result.reason}</p>
+                  <h3 className="text-4xl font-black text-[#3E3A39] mb-4 tracking-tighter uppercase">Signal_Loss</h3>
+                  <p className="text-rose-500 font-black mb-12 text-md italic uppercase tracking-widest font-mono">{result.reason}</p>
                   <button 
                     onClick={() => setResult(null)}
-                    className="px-8 py-4 bg-gray-900 text-white font-bold text-xs uppercase tracking-wider rounded-2xl hover:bg-gray-800 transition-all shadow-xl"
+                    className="px-16 py-7 bg-[#B78D7D] text-white font-black rounded-3xl hover:bg-[#A37B6D] transition-all shadow-2xl text-[12px] uppercase tracking-[0.5em] font-mono border border-white/10 active:scale-95"
                   >
-                    Try Again
+                    Retry_Handshake
                   </button>
                 </>
               )}
             </div>
           ) : (
-            <form onSubmit={handleConnect} className="space-y-6">
+            <form onSubmit={handleConnect} className="space-y-12">
               {error && (
-                <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-xs font-semibold rounded-2xl flex items-center gap-3 animate-in slide-in-from-top">
-                  <AlertCircle size={16} />
+                <div className="p-8 bg-rose-50 border border-rose-500/10 text-rose-600 text-[10px] font-black rounded-[2rem] flex items-center gap-6 animate-pulse uppercase tracking-[0.3em] font-mono shadow-inner italic">
+                  <AlertCircle size={28} />
                   {error}
                 </div>
               )}
 
-              {result?.status === "Checkpoint" ? (
-                <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
-                   <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl flex gap-4 items-start">
-                      <div className="p-2 bg-white rounded-xl text-[#1877F2] shadow-sm">
-                         <Lock size={18} />
+              {(result?.status === "Checkpoint") ? (
+                <div className="space-y-12 animate-in slide-in-from-top-4 duration-500">
+                   <div className="p-10 bg-white border border-[#B78D7D]/10 rounded-[3rem] flex gap-8 items-center shadow-sm">
+                      <div className="p-6 bg-[#F8F4F2] rounded-3xl text-[#B78D7D] border border-[#B78D7D]/10 shadow-inner">
+                         <Lock size={32} />
                       </div>
                       <div>
-                         <p className="text-sm font-bold text-gray-900">Security Code Required</p>
-                         <p className="text-xs font-medium text-gray-500 mt-0.5">Please enter the security code sent to your device.</p>
+                         <p className="text-2xl font-black text-[#3E3A39] uppercase tracking-tighter leading-none">Verification_Matrix</p>
+                         <p className="text-[10px] font-black text-[#B2AAA6] mt-3 uppercase tracking-[0.4em] font-mono italic">Security code required to verify sequence protocol.</p>
                       </div>
                    </div>
 
-                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 ml-1">
-                       <ShieldCheck size={14} className="text-[#1877F2]" />
-                       <label className="text-xs font-semibold text-gray-500">Security Code</label>
-                    </div>
+                   <div className="space-y-4 text-center">
+                    <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] font-mono italic">Quantum_Passcode</label>
                     <input
                       type="text"
                       value={twoFactorCode}
                       onChange={(e) => setTwoFactorCode(e.target.value)}
-                      className="w-full bg-blue-50/30 border border-blue-100 rounded-2xl px-6 py-4 text-center text-2xl font-bold tracking-[0.5em] text-gray-900 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm"
+                      className="w-full bg-white border-2 border-transparent border-b-[#B78D7D]/20 rounded-3xl px-12 py-8 text-center text-5xl font-black tracking-[1em] text-[#3E3A39] outline-none focus:border-b-[#B78D7D] transition-all font-mono shadow-inner italic focus:bg-[#F8F4F2]/50"
                       placeholder="000000"
                     />
                   </div>
                 </div>
               ) : result?.status === "AppConfirmation" ? (
-                <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
-                   <div className="p-4 bg-[#F0F7FF] border border-blue-100 rounded-2xl flex gap-4 items-start">
-                      <div className="p-2 bg-white rounded-xl text-blue-600 shadow-sm">
-                         <Smartphone size={18} />
+                <div className="space-y-12 animate-in slide-in-from-top-4 duration-500">
+                   <div className="p-10 bg-white border border-[#B78D7D]/10 rounded-[3rem] flex gap-8 items-center shadow-sm">
+                      <div className="p-6 bg-[#F8F4F2] rounded-3xl text-[#B78D7D] border border-[#B78D7D]/10 shadow-inner">
+                         <Smartphone size={32} />
                       </div>
                       <div>
-                         <p className="text-sm font-bold text-gray-900">App Confirmation</p>
-                         <p className="text-xs font-medium text-gray-500 mt-0.5">Please open your Facebook app and approve this login request.</p>
+                         <p className="text-2xl font-black text-[#3E3A39] uppercase tracking-tighter leading-none">App_Confirmation</p>
+                         <p className="text-[10px] font-black text-[#B2AAA6] mt-3 uppercase tracking-[0.4em] font-mono italic">Open Meta Authority and approve this terminal link.</p>
                       </div>
                    </div>
                    
-                   <div className="py-2 text-center">
-                      <div className="inline-block px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-full animate-pulse">
-                         Waiting for your confirmation...
+                   <div className="py-10 text-center relative">
+                      <div className="inline-block px-12 py-6 bg-white text-[#B78D7D] text-[11px] font-black uppercase tracking-[0.6em] rounded-full border border-[#B78D7D]/15 animate-pulse font-mono shadow-md italic">
+                         WAITING_FOR_OPERATOR_AUTHORIZATION...
+                      </div>
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 opacity-10">
+                         <Activity size={240} className="text-[#B78D7D] animate-spin-slow" />
                       </div>
                    </div>
                 </div>
               ) : (
                 <>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 ml-1">
-                       <User size={14} className="text-[#1877F2]" />
-                       <label className="text-xs font-semibold text-gray-500">Email Address</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div className="space-y-4">
+                      <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono">Your account name</label>
+                      <div className="relative group/input">
+                         <User size={24} className="absolute left-8 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/input:text-[#B78D7D] transition-colors" />
+                         <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full bg-white border-2 border-[#F8F4F2] border-b-[#B78D7D]/10 rounded-[2rem] pl-20 pr-10 py-6 text-base font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] focus:bg-[#F8F4F2]/30 transition-all shadow-inner placeholder:text-[#B2AAA6]/40"
+                          placeholder="Your username"
+                        />
+                      </div>
                     </div>
-                    <input
-                      type="text"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-medium text-gray-900 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm"
-                      placeholder="user@example.com"
-                    />
+
+                    <div className="space-y-4">
+                      <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono">Your account password</label>
+                      <div className="relative group/input">
+                         <Key size={24} className="absolute left-8 top-1/2 -translate-y-1/2 text-[#B2AAA6] group-focus-within/input:text-[#B78D7D] transition-colors" />
+                         <input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full bg-white border-2 border-[#F8F4F2] border-b-[#B78D7D]/10 rounded-[2rem] pl-20 pr-10 py-6 text-base font-bold text-[#3E3A39] outline-none focus:border-b-[#B78D7D] focus:bg-[#F8F4F2]/30 transition-all shadow-inner placeholder:text-[#B2AAA6]/40"
+                          placeholder="••••••••••••"
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 ml-1">
-                       <Key size={14} className="text-[#1877F2]" />
-                       <label className="text-xs font-semibold text-gray-500">Password</label>
-                    </div>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-sm font-medium text-gray-900 outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm"
-                      placeholder="••••••••"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 ml-1">
-                       <Terminal size={14} className="text-[#1877F2]" />
-                       <label className="text-xs font-semibold text-gray-500">Optional: Cookies (JSON)</label>
-                    </div>
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] ml-2 font-mono italic">Cookie_Sequence_JSON</label>
                     <textarea
                       value={cookies}
                       onChange={(e) => setCookies(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-100 rounded-[1.5rem] px-6 py-4 text-xs font-mono text-gray-600 outline-none h-24 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/20 focus:bg-white transition-all shadow-sm resize-none"
-                      placeholder='[{"domain": ".facebook.com", ...}]'
+                      className="w-full bg-white border-2 border-[#F8F4F2] border-b-[#B78D7D]/10 rounded-[2.5rem] px-10 py-8 text-xs font-mono text-[#8E7A70] outline-none h-40 focus:border-b-[#B78D7D] focus:bg-[#F8F4F2]/30 transition-all shadow-inner resize-none custom-scrollbar italic"
+                      placeholder='Inject session binary here...'
                     />
                   </div>
-
-                   {/* Proxy Configuration */}
-                   <div className="space-y-4 pt-2 border-t border-dashed border-gray-100 mt-2">
-                    <div className="flex items-center gap-2">
-                       <input
-                          type="checkbox"
-                          id="useProxy"
-                          checked={useProxy}
-                          onChange={(e) => setUseProxy(e.target.checked)}
-                          className="w-4 h-4 rounded text-blue-500 focus:ring-blue-500/20 border-gray-300"
-                       />
-                       <label htmlFor="useProxy" className="text-xs font-semibold text-gray-700 cursor-pointer select-none">
-                          Use Custom Proxy
-                       </label>
+                  
+                   {/* Proxy Matrix */}
+                   <div className="pt-10 border-t border-[#B78D7D]/10 space-y-10">
+                    <div className="flex items-center gap-6 group cursor-pointer" onClick={() => setUseProxy(!useProxy)}>
+                       <div className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center transition-all ${useProxy ? 'bg-[#B78D7D] border-[#B78D7D] shadow-[0_0_15px_rgba(183,141,125,0.4)]' : 'border-[#B78D7D]/20 bg-white hover:border-[#B78D7D]'}`}>
+                          {useProxy && <CheckCircle size={18} className="text-white" />}
+                       </div>
+                       <span className="text-[11px] font-black text-[#8E7A70] uppercase tracking-[0.4em] font-mono group-hover:text-[#B78D7D] transition-colors italic">
+                          Enable_Proxy_Tunneling
+                       </span>
                     </div>
 
                     {useProxy && (
-                       <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-top-2 fade-in duration-300">
-                          <div className="space-y-1">
-                             <label className="text-xs font-semibold text-gray-500 pl-1">Host / IP</label>
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 animate-in slide-in-from-top-4 duration-500">
+                          <div className="space-y-3">
+                             <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-4 italic">Relay_IP_Host</label>
                              <input
                                 type="text"
                                 value={proxyHost}
                                 onChange={(e) => setProxyHost(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
-                                placeholder="192.168.1.1"
+                                className="w-full bg-white border border-[#B78D7D]/15 rounded-2xl px-8 py-5 text-sm font-black text-[#3E3A39] outline-none focus:border-[#B78D7D] shadow-inner font-mono italic"
+                                placeholder="00.00.00.00"
                              />
                           </div>
-                          <div className="space-y-1">
-                             <label className="text-xs font-semibold text-gray-500 pl-1">Port</label>
+                          <div className="space-y-3">
+                             <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-4 italic">Tunnel_Port</label>
                              <input
                                 type="text"
                                 value={proxyPort}
                                 onChange={(e) => setProxyPort(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
+                                className="w-full bg-white border border-[#B78D7D]/15 rounded-2xl px-8 py-5 text-sm font-black text-[#3E3A39] outline-none focus:border-[#B78D7D] shadow-inner font-mono italic"
                                 placeholder="8080"
-                             />
-                          </div>
-                          <div className="space-y-1">
-                             <label className="text-xs font-semibold text-gray-500 pl-1">Proxy User</label>
-                             <input
-                                type="text"
-                                value={proxyUsername}
-                                onChange={(e) => setProxyUsername(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
-                                placeholder="Optional"
-                             />
-                          </div>
-                          <div className="space-y-1">
-                             <label className="text-xs font-semibold text-gray-500 pl-1">Proxy Pass</label>
-                             <input
-                                type="password"
-                                value={proxyPassword}
-                                onChange={(e) => setProxyPassword(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 outline-none focus:bg-white transition-all"
-                                placeholder="Optional"
                              />
                           </div>
                        </div>
@@ -315,27 +294,37 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
                 </>
               )}
 
-              <div className="pt-4 flex flex-col gap-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-[#1877F2] text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-blue-500/20 hover:bg-[#166fe5] transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 size={18} className="animate-spin" />
-                      {result?.status === "Checkpoint" ? "Verifying Code..." : result?.status === "AppConfirmation" ? "Syncing..." : "Logging in..."}
-                    </>
-                  ) : (
-                    <>
-                      <Rocket size={18} />
-                      {result?.status === "Checkpoint" ? "Confirm Security Code" : result?.status === "AppConfirmation" ? "I've Approved on App" : "Connect Account"}
-                    </>
-                  )}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#B78D7D] text-white py-8 rounded-[2.5rem] font-black text-xl shadow-[0_30px_60px_rgba(183,141,125,0.3)] hover:bg-[#A37B6D] transition-all disabled:opacity-50 flex items-center justify-center gap-6 active:scale-[0.98] border border-white/10 mt-10 uppercase tracking-[0.6em] font-mono text-[12px] group/btn"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 size={32} className="animate-spin opacity-80" />
+                    <span className="animate-pulse">Handshake_Inception...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{result?.status === "Checkpoint" ? "Submit" : result?.status === "AppConfirmation" ? "Confirm" : "Connect Account"}</span>
+                    <Rocket size={32} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                  </>
+                )}
+              </button>
             </form>
           )}
+        </div>
+        
+        {/* Footer info */}
+        <div className="p-10 bg-[#F8F4F2]/60 border-t border-[#B78D7D]/10 flex items-center justify-center gap-6 relative overflow-hidden">
+           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#B78D7D]/20 to-transparent" />
+           <Activity size={24} className="text-[#B78D7D] animate-pulse" />
+           <span className="text-[10px] font-black uppercase tracking-[0.6em] text-[#B2AAA6] font-mono italic">END-TO-END_ENCRYPTION_STABLE</span>
+        </div>
+
+        {/* Branding Decoration */}
+        <div className="absolute top-1/2 left-10 -translate-y-1/2 opacity-[0.03] pointer-events-none -z-10 grayscale group-hover/modal:opacity-[0.06] transition-opacity duration-1000">
+           <Hexagon size={240} strokeWidth={1} className="text-[#B78D7D] animate-spin-slow" />
         </div>
       </div>
     </div>

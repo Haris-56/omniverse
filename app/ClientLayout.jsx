@@ -4,70 +4,121 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import UserMenu from "./components/UserMenu";
-import { Menu, X } from "lucide-react";
+import { Menu, ChevronLeft, Zap, Hexagon, Activity } from "lucide-react";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  // Close sidebar on navigation
+  // Auto-collapse sidebar on smaller screens
   useEffect(() => {
-    setIsSidebarOpen(false);
+    const handleResize = () => {
+      if (window.innerWidth < 1280) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+    handleResize(); 
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Close mobile sidebar on navigation
+  useEffect(() => {
+    if (window.innerWidth < 1280) {
+        setIsSidebarOpen(false);
+    }
   }, [pathname]);
 
-  // Define routes where Sidebar and Global Header should be hidden
   const shouldHideSidebar = 
     pathname === "/login" || 
     pathname === "/register" || 
-    pathname.includes("/edit") ||
+    pathname.includes("/new") || 
+    pathname.includes("/edit") || 
+    pathname === "/system-login" ||
     pathname.startsWith("/system") ||
     pathname.startsWith("/documentation") ||
-    pathname === "/system-login" ||
-    pathname.includes("/campaign-builder/"); // Hide for both list and editor as they are complex UIs
+    pathname.includes("/campaign-builder/"); 
 
   return (
-    <div className="flex h-screen w-full relative overflow-hidden bg-[#FAFBFF]">
+    <div className="flex h-screen w-full relative overflow-hidden bg-[#F8F4F2] text-[#3E3A39] font-sans grid-background group/main">
       {!shouldHideSidebar && (
         <>
-          {/* Mobile Overlay - Softer and more premium */}
+          {/* Mobile Overlay - High Z-Index */}
           <div 
-            className={`fixed inset-0 bg-gray-900/10 backdrop-blur-md z-40 lg:hidden transition-opacity duration-500 ${isSidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+            className={`fixed inset-0 bg-[#3E3A39]/10 backdrop-blur-2xl z-[60] xl:hidden transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             onClick={() => setIsSidebarOpen(false)}
           />
 
-          {/* Sidebar container with refined mobile transitions */}
+          {/* Sidebar container - Standard width (240px) */}
           <aside className={`
-            fixed inset-y-0 left-0 z-50 transform lg:relative lg:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
-            ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+            fixed inset-y-0 left-0 z-[70] xl:relative transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col shadow-[15px_0_40px_rgba(183,141,125,0.04)] border-r border-[#B78D7D]/15 overflow-hidden
+            ${isSidebarOpen ? "w-[240px] translate-x-0 opacity-100" : "w-0 -translate-x-full opacity-0 pointer-events-none"}
           `}>
-            <Sidebar onClose={() => setIsSidebarOpen(false)} />
+             <div className="min-w-[240px] h-full flex flex-col">
+                <Sidebar 
+                    onClose={() => setIsSidebarOpen(false)} 
+                    isSidebarOpen={isSidebarOpen}
+                />
+             </div>
           </aside>
         </>
       )}
 
-      <main className="flex-1 overflow-auto bg-[#FAFBFF] relative custom-scrollbar">
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-auto relative custom-scrollbar flex flex-col transition-all duration-700">
+        
         {!shouldHideSidebar && (
-          <header className={`fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-6 z-40 transition-all duration-500 ${isSidebarOpen ? 'lg:pl-72' : ''}`}>
-             {/* Glassmorphic Header for Mobile */}
-             <div className="absolute inset-0 bg-white/60 backdrop-blur-xl border-b border-gray-100 lg:hidden" />
+          <header className={`fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-10 z-[50] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? 'xl:pl-[240px]' : 'xl:pl-0'} print:hidden`}>
+             <div className="absolute inset-0 bg-white/40 backdrop-blur-3xl border-b border-[#B78D7D]/15 shadow-sm" />
              
-             <button 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="relative z-10 p-2.5 bg-white border border-gray-100 hover:bg-gray-50 rounded-xl lg:hidden text-gray-700 shadow-sm transition-all active:scale-90"
-            >
-              {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
+             <div className="flex items-center gap-6 relative z-10">
+                <button 
+                  onClick={() => setIsSidebarOpen(prev => !prev)}
+                  className={`p-2 bg-[#B78D7D] text-white rounded-xl shadow-lg transition-all hover:bg-[#A37B6D] active:scale-95 flex items-center justify-center group border border-white/10`}
+                  title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+                  id="sidebar-toggle-trigger"
+                >
+                  {isSidebarOpen ? (
+                    <ChevronLeft size={18} strokeWidth={3} className="group-hover:-translate-x-0.5 transition-transform duration-500" />
+                  ) : (
+                    <Menu size={18} strokeWidth={3} className="group-hover:rotate-90 transition-transform duration-500" />
+                  )}
+                </button>
+               
+                 <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/50 border border-[#B78D7D]/15 rounded-lg text-[9px] font-black uppercase tracking-widest text-[#B78D7D] font-mono leading-none">
+                    <Activity size={10} className="animate-pulse" />
+                    Live
+                 </div>
+             </div>
             
-            <div className="relative z-10 ml-auto bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
-               <UserMenu />
+            <div className={`relative z-10 flex items-center gap-6`}>
+               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#B78D7D]/10 border border-[#B78D7D]/20 rounded-lg font-mono text-[9px] text-[#B78D7D] transition-all hover:bg-[#B78D7D]/20 shadow-sm leading-none">
+                  <Zap size={10} className="animate-pulse" />
+                  Stable
+               </div>
+               <div className="p-0.5 bg-white rounded-full border border-[#B78D7D]/15 hover:border-[#B78D7D]/30 transition-all shadow-md">
+                  <UserMenu />
+               </div>
             </div>
           </header>
         )}
         
-        <div className={`transition-all duration-500 ${!shouldHideSidebar ? 'pt-20 md:pt-24' : ''}`}>
-          {children}
+        <div className={`transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] min-h-full ${!shouldHideSidebar ? 'pt-24 px-6 md:px-12 xl:px-16 pb-24' : ''}`}>
+          <div className="max-w-[1400px] mx-auto transition-all duration-700">
+            {children}
+          </div>
         </div>
       </main>
+      
+      {/* Platform Branding Watermark */}
+      <div className="fixed bottom-8 right-8 pointer-events-none opacity-[0.02] select-none z-0 hidden lg:block">
+         <div className="flex items-center gap-4 grayscale">
+            <Hexagon size={60} strokeWidth={1} className="text-[#B78D7D]" />
+            <h1 className="text-[5rem] font-black font-sans -ml-4 tracking-tighter text-[#B78D7D]">OMNIVERSE</h1>
+         </div>
+      </div>
     </div>
   );
 }

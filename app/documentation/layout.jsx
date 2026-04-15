@@ -2,13 +2,22 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Book, CheckCircle, Boxes, ArrowRightLeft, MousePointerClick, Server, Activity, ChevronLeft, Menu, Download, Terminal } from "lucide-react";
+import { 
+  Book, CheckCircle, Boxes, 
+  ArrowRightLeft, MousePointerClick, 
+  Server, Activity, ChevronLeft, 
+  Menu, Download, Terminal, 
+  ShieldCheck, Zap, Hexagon 
+} from "lucide-react";
 
 export default function DocumentationLayout({ children }) {
   const [isOpen, setIsOpen] = useState(true);
 
   const tabs = [
     { name: "Overview", href: "/documentation", icon: Book },
+    { name: "Algorithm", href: "/documentation/algorithm", icon: Activity },
+    { name: "External APIs", href: "/documentation/external-apis", icon: Zap },
+    { name: "User Interface", href: "/documentation/user-interface", icon: MousePointerClick },
     { name: "Unit Testing", href: "/documentation/unit-testing", icon: CheckCircle },
     { name: "Module Testing", href: "/documentation/module-testing", icon: Boxes },
     { name: "Integration Testing", href: "/documentation/integration-testing", icon: ArrowRightLeft },
@@ -22,75 +31,95 @@ export default function DocumentationLayout({ children }) {
   };
 
   return (
-    <div className="flex h-screen bg-[#0A0A0B] text-slate-200 overflow-hidden font-sans selection:bg-indigo-500/30">
+    <div className="flex h-screen bg-[#F8F4F2] text-[#3E3A39] overflow-hidden font-sans relative">
       
-      <div className={`transition-all duration-300 border-r border-white/5 bg-[#0f0f11] flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.5)] relative z-20 overflow-hidden print:hidden ${isOpen ? "w-72 opacity-100" : "w-0 opacity-0 border-r-0"}`}>
-        <div className="min-w-[18rem] h-full flex flex-col">
-            <div className="p-6 border-b border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                <div className="p-1.5 bg-indigo-500/20 rounded-xl border border-indigo-500/30 text-indigo-400">
-                    <Activity size={20} />
+      {/* Sidebar */}
+      <div className={`transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] border-r border-[#B78D7D]/15 bg-white flex flex-col shadow-[20px_0_50px_rgba(183,141,125,0.05)] relative z-[60] overflow-hidden print:hidden ${isOpen ? "w-[340px] opacity-100" : "w-0 opacity-0 border-r-0"}`}>
+        <div className="min-w-[340px] h-full flex flex-col">
+            <div className="p-10 border-b border-[#B78D7D]/10 flex items-center justify-between bg-[#F8F4F2]/30">
+            <div className="flex items-center gap-5">
+                <div className="p-4 bg-[#B78D7D] rounded-[1.25rem] text-white shadow-lg shadow-[#B78D7D]/20">
+                    <ShieldCheck size={28} strokeWidth={2.5} />
                 </div>
                 <div>
-                <h2 className="text-lg font-bold text-white tracking-tight">QA Hub</h2>
+                  <h2 className="text-2xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">QA Hub</h2>
+                  <p className="text-[9px] font-black text-[#B78D7D] uppercase tracking-[0.4em] mt-2 font-mono leading-none">Verification_Matrix</p>
                 </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="p-1.5 hover:bg-white/5 rounded-md text-slate-500 hover:text-white transition-colors">
-                <ChevronLeft size={20} />
+            <button onClick={() => setIsOpen(false)} className="p-3 bg-[#F8F4F2] hover:bg-[#B78D7D] group rounded-2xl text-[#B2AAA6] hover:text-white transition-all border border-[#B78D7D]/10">
+                <ChevronLeft size={24} className="group-hover:scale-110 transition-transform" />
             </button>
             </div>
             
-            <nav className="flex-1 overflow-y-auto p-4 flex flex-col gap-1.5 hidden-scrollbar">
-            <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-2 px-2 mt-2">Test Matrices</div>
-            {tabs.map((tab) => (
-                <Link key={tab.href} href={tab.href}>
-                <div className="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-white/5 text-slate-400 hover:text-white transition-all cursor-pointer relative overflow-hidden">
-                    <div className="absolute inset-y-0 left-0 w-0.5 bg-indigo-500 scale-y-0 group-hover:scale-y-100 transition-transform origin-left rounded-r-full"></div>
-                    <tab.icon size={16} className="group-hover:text-indigo-400 transition-colors" />
-                    {tab.name}
-                </div>
-                </Link>
-            ))}
+            <nav className="flex-1 overflow-y-auto p-8 flex flex-col gap-4 custom-scrollbar relative">
+               <div className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] mb-4 px-4 mt-4 font-mono">Test Matrices</div>
+               <div className="space-y-2">
+                  {tabs.map((tab) => (
+                      <Link key={tab.href} href={tab.href}>
+                      <div className="group flex items-center gap-5 px-6 py-4.5 rounded-[1.75rem] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#F8F4F2] text-[#8E7A70] hover:text-[#3E3A39] transition-all cursor-pointer relative overflow-hidden border border-transparent font-mono">
+                          <div className="absolute inset-y-0 left-0 w-1.5 bg-[#B78D7D] scale-y-0 group-hover:scale-y-100 transition-transform origin-top rounded-r-full"></div>
+                          <tab.icon size={20} className="group-hover:text-[#B78D7D] transition-colors opacity-70 group-hover:opacity-100" />
+                          <span>{tab.name}</span>
+                      </div>
+                      </Link>
+                  ))}
+               </div>
             </nav>
 
-            <div className="p-4 border-t border-white/5">
+            <div className="p-10 border-t border-[#B78D7D]/10">
                 <button 
                   onClick={handleDownloadPDF}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-bold transition-all shadow-lg shadow-indigo-500/20 active:scale-95 group"
+                  className="w-full flex items-center justify-center gap-4 px-8 py-5 rounded-[1.75rem] bg-[#B78D7D] hover:bg-[#A37B6D] text-white text-[11px] font-black uppercase tracking-[0.4em] transition-all shadow-xl active:scale-95 group border border-white/10 font-mono shadow-[#B78D7D]/20"
                 >
-                  <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
-                  Download PDF
+                  <Download size={20} className="group-hover:translate-y-1 transition-transform" />
+                  Compile PDF
                 </button>
             </div>
         </div>
+        
+        {/* Texture */}
+        <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed relative print:overflow-visible">
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto grid-background relative print:overflow-visible custom-scrollbar">
         
         {!isOpen && (
            <button 
              onClick={() => setIsOpen(true)}
-             className="absolute top-6 left-6 z-30 p-2.5 bg-white/5 border border-white/10 rounded-xl shadow-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all backdrop-blur-xl animate-in fade-in print:hidden"
+             className="fixed top-10 left-10 z-[70] p-5 bg-white border border-[#B78D7D]/15 rounded-[1.5rem] shadow-xl text-[#B78D7D] hover:bg-[#F8F4F2] transition-all animate-in fade-in slide-in-from-left-6 print:hidden active:scale-90"
            >
-             <Menu size={20} />
+             <Menu size={28} />
            </button>
         )}
 
         {!isOpen && (
           <button 
             onClick={handleDownloadPDF}
-            className="absolute top-6 right-6 z-30 p-2.5 bg-indigo-500 text-white rounded-xl shadow-xl hover:bg-indigo-600 transition-all animate-in fade-in print:hidden"
+            className="fixed top-10 right-10 z-[70] p-5 bg-[#B78D7D] text-white rounded-[1.5rem] shadow-xl hover:bg-[#A37B6D] transition-all animate-in fade-in slide-in-from-right-6 print:hidden active:scale-95 border border-white/10 shadow-[#B78D7D]/20"
             title="Download PDF"
           >
-            <Download size={20} />
+            <Download size={28} />
           </button>
         )}
         
-        <div className="min-h-full backdrop-blur-3xl bg-[#0A0A0B]/95 p-10 lg:p-14 print:p-0 print:bg-white print:text-black print:backdrop-blur-none">
-            <div className={`max-w-6xl mx-auto transition-all duration-300 print:mt-0 ${!isOpen ? 'mt-6' : ''}`}>
-              {children}
+        <div className="min-h-full p-10 lg:p-24 print:p-0 print:bg-white print:text-black">
+            <div className={`max-w-6xl mx-auto transition-all duration-700 print:mt-0 ${!isOpen ? 'mt-16' : ''}`}>
+               {children}
             </div>
         </div>
+
+        {/* Global Floating Background Accents */}
+        <div className="fixed -top-64 -right-64 w-[800px] h-[800px] bg-[#B78D7D]/[0.05] rounded-full blur-[180px] pointer-events-none z-0" />
+        <div className="fixed -bottom-64 -left-64 w-[600px] h-[600px] bg-[#8E7A70]/[0.05] rounded-full blur-[150px] pointer-events-none z-0" />
+      </div>
+
+      {/* Platform Branding Watermark */}
+      <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03] select-none z-0 hidden lg:block">
+         <div className="flex items-center gap-6 grayscale">
+            <Hexagon size={120} strokeWidth={1} className="text-[#B78D7D]" />
+            <h1 className="text-[10rem] font-black font-sans -ml-8 tracking-tighter text-[#B78D7D]">DOCS</h1>
+         </div>
       </div>
     </div>
   );

@@ -19,7 +19,12 @@ import {
   Camera,
   Heart,
   Pencil,
-  CheckCircle
+  CheckCircle,
+  Shield,
+  ShieldCheck,
+  Cpu,
+  Hexagon,
+  ChevronRight
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -82,7 +87,7 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
   };
 
   const handleDeleteCampaign = async (id) => {
-    if (!confirm("Are you sure you want to delete this campaign?")) return;
+    if (!confirm("Are you sure you want to delete this plan?")) return;
     try {
       const res = await fetch(`/api/instagram/campaigns?id=${id}`, {
         method: "DELETE"
@@ -98,169 +103,167 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
     camp.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading && campaigns.length === 0) return (
-     <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50/50 space-y-6">
-       <div className="animate-spin w-10 h-10 border-4 border-[#E1306C] border-t-transparent rounded-full" />
-       <p className="text-gray-400 font-medium text-xs uppercase tracking-wide">Loading Campaigns...</p>
-    </div>
-  );
-
   return (
-    <div className="w-full min-h-screen bg-gray-50/50 p-4 md:p-8 animate-in fade-in duration-500">
-      <div className="max-w-7xl mx-auto">
+    <div className="w-full animate-in fade-in slide-in-from-bottom-6 duration-1000 font-sans pb-32 p-6 md:p-10 lg:p-12 min-h-screen bg-[#F8F4F2]/50">
+      <div className="max-w-[1400px] mx-auto space-y-12">
         
-        {/* Breadcrumbs & Navigation */}
-        <div className="flex items-center gap-4 mb-8">
-          <Link href="/instagram" className="p-2.5 bg-white border border-gray-100 rounded-xl text-gray-400 hover:text-gray-900 transition-all shadow-sm">
-            <ChevronLeft size={18} />
+        {/* Navigation & Breadcrumbs */}
+        <div className="flex items-center gap-6">
+          <Link href="/instagram" className="p-4 bg-white border border-[#B78D7D]/10 rounded-2xl text-[#B2AAA6] hover:text-[#B78D7D] transition-all shadow-sm hover:bg-[#F8F4F2] group">
+            <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           </Link>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400">
-             <Link href="/instagram" className="hover:text-[#E1306C] transition-colors">Instagram</Link>
-             <span>/</span>
-             <span className="text-gray-900">Campaigns</span>
+          <div className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] font-mono text-[#B2AAA6]">
+             <Link href="/instagram" className="hover:text-[#B78D7D] transition-colors">Instagram Accounts</Link>
+             <span className="opacity-20">/</span>
+             <span className="text-[#B78D7D]">Sent Messages</span>
           </div>
         </div>
 
-        {/* Header Section */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+        {/* Header Sector */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#B78D7D]/10 pb-10">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-               <div className="w-10 h-10 bg-gradient-to-tr from-[#FFB75E] to-[#ED8F03] rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
-                  <Camera size={20} />
+            <div className="flex items-center gap-3 mb-4">
+               <div className="w-12 h-12 bg-[#B78D7D]/10 rounded-[1.25rem] flex items-center justify-center text-[#B78D7D] border border-[#B78D7D]/20 shadow-sm">
+                  <Instagram size={24} />
                </div>
-               <span className="px-3 py-1 bg-pink-50 text-[#E1306C] text-xs font-semibold rounded-full border border-pink-100 mb-2 inline-block">Active</span>
+               <span className="px-4 py-1.5 bg-[#B78D7D]/10 text-[#B78D7D] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#B78D7D]/20 flex items-center gap-2 font-mono">
+                 <ShieldCheck size={14} className="animate-pulse" />
+                 Verified
+               </span>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-               {account?.email || "Campaigns"}
+            <h1 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">
+               {account?.username || account?.email || "Instagram Plans"}
             </h1>
-            <p className="text-gray-500 text-sm font-medium mt-1">Managing {campaigns.length} campaigns for this account.</p>
+            <p className="text-[#8E7A70] mt-3 text-lg font-medium">You have {campaigns.length} plans running here.</p>
           </div>
           
-          <div className="flex items-center gap-3">
-             <div className="hidden md:flex items-center bg-white border border-gray-100 p-1.5 rounded-2xl shadow-sm">
+          <div className="flex items-center gap-6">
+             <div className="hidden md:flex items-center bg-white border border-[#B78D7D]/10 p-2 rounded-[1.25rem] shadow-sm">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`p-2 rounded-xl transition-all ${viewMode === "grid" ? "bg-gray-900 text-white shadow-lg" : "text-gray-400 hover:text-gray-600"}`}
+                  className={`p-3 rounded-xl transition-all ${viewMode === "grid" ? "bg-[#B78D7D] text-white shadow-lg" : "text-[#B2AAA6] hover:text-[#B78D7D]"}`}
                 >
-                  <LayoutGrid size={18} />
+                  <LayoutGrid size={20} />
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`p-2 rounded-xl transition-all ${viewMode === "list" ? "bg-gray-900 text-white shadow-lg" : "text-gray-400 hover:text-gray-600"}`}
+                  className={`p-3 rounded-xl transition-all ${viewMode === "list" ? "bg-[#B78D7D] text-white shadow-lg" : "text-[#B2AAA6] hover:text-[#B78D7D]"}`}
                 >
-                  <List size={18} />
+                  <List size={20} />
                 </button>
              </div>
              <button
                 onClick={() => router.push(`/instagram/${accountId}/campaigns/new`)}
-                className="flex-1 lg:flex-none px-8 py-4 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-xl shadow-pink-500/20 flex items-center justify-center gap-3 hover:opacity-90 active:scale-95"
+                className="px-10 py-5 bg-[#B78D7D] text-white font-black text-[10px] uppercase tracking-[0.4em] rounded-[1.5rem] transition-all shadow-[0_15px_30px_rgba(183,141,125,0.2)] flex items-center justify-center gap-4 active:scale-95 font-mono border border-white/10 hover:bg-[#A37B6D]"
               >
-                <Plus size={18} />
-                Create Campaign
+                <Plus size={20} />
+                Create New Plan
               </button>
           </div>
         </div>
 
-        {/* Toolbar */}
-        <div className="flex flex-col md:flex-row items-center gap-4 mb-8">
-           <div className="relative flex-1 w-full group">
-              <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#E1306C] transition-colors" />
+        {/* Global Search */}
+        <div className="bg-white p-6 md:p-8 rounded-[2rem] border border-[#B78D7D]/10 shadow-sm relative overflow-hidden group">
+          <div className="relative z-10 flex flex-col md:flex-row gap-6">
+            <div className="flex-1 relative">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-[#B2AAA6]" size={20} />
               <input
                 type="text"
-                placeholder="Search campaigns..."
+                placeholder="Search plans..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-[2rem] text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 focus:border-pink-500/20 transition-all shadow-sm group-hover:shadow-md"
+                className="w-full pl-14 pr-6 py-4 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-[1.25rem] text-[11px] font-black text-[#3E3A39] outline-none focus:border-[#B78D7D] transition-all shadow-inner font-mono tracking-widest uppercase"
               />
-           </div>
-           <button className="w-full md:w-auto px-6 py-4 bg-white border border-gray-100 rounded-[2rem] text-xs font-bold uppercase tracking-wide text-gray-500 flex items-center justify-center gap-2 hover:bg-gray-50 hover:text-gray-900 transition-all shadow-sm">
+            </div>
+            <button className="px-8 py-4 bg-white border border-[#B78D7D]/10 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] text-[#8E7A70] flex items-center justify-center gap-3 hover:text-[#B78D7D] hover:bg-[#F8F4F2] transition-all font-mono">
               <Filter size={16} /> Filter
-           </button>
+            </button>
+          </div>
         </div>
 
-        {campaigns.length === 0 && !loading ? (
-          <div className="bg-white rounded-[3rem] border border-dashed border-gray-200 py-32 flex flex-col items-center text-center px-6 shadow-sm">
-            <div className="w-24 h-24 bg-pink-50 text-[#E1306C] rounded-[2.5rem] flex items-center justify-center mb-8 animate-pulse shadow-inner">
-              <Heart size={40} fill="currentColor" />
+        {loading && campaigns.length === 0 ? (
+           <div className="py-40 flex flex-col items-center justify-center space-y-8 animate-pulse text-center">
+              <div className="w-12 h-12 border-4 border-[#B78D7D]/10 border-t-[#B78D7D] rounded-full animate-spin shadow-sm" />
+              <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono">Loading plans...</p>
+           </div>
+        ) : campaigns.length === 0 ? (
+          <div className="bg-white rounded-[2.5rem] border border-dashed border-[#B78D7D]/30 py-32 flex flex-col items-center text-center px-10 shadow-lg p-16 max-w-3xl mx-auto relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#B78D7D]/5 to-transparent opacity-50" />
+            <div className="relative w-24 h-24 bg-[#F8F4F2] text-[#B78D7D] rounded-[1.75rem] flex items-center justify-center mb-10 shadow-inner group-hover:rotate-6 transition-all duration-700 border border-[#B78D7D]/10">
+               <Heart size={44} strokeWidth={1} className="opacity-40" />
             </div>
-            <h3 className="text-2xl font-black text-gray-900 tracking-tight lowercase mb-3">No campaigns found</h3>
-            <p className="text-gray-500 text-sm font-medium max-w-sm mb-10 lowercase tracking-tight">
-              Create your first campaign to get started.
+            <h3 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase mb-4 leading-tight relative z-10">No plans yet</h3>
+            <p className="text-[#8E7A70] text-lg font-medium max-w-lg mb-12 relative z-10">
+              No active visual plans found for this account. Create your first one to start engaging!
             </p>
             <button
               onClick={() => router.push(`/instagram/${accountId}/campaigns/new`)}
-              className="px-10 py-5 bg-gradient-to-r from-[#833AB4] to-[#FD1D1D] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all shadow-xl shadow-pink-500/20 active:scale-95"
+              className="px-10 py-5 bg-white border border-[#B78D7D]/20 text-[#B78D7D] text-[10px] font-black uppercase tracking-[0.4em] rounded-[1.25rem] hover:bg-[#B78D7D] hover:text-white transition-all shadow-md font-mono active:scale-95 relative z-10"
             >
-              Create Campaign
+              Start Now
             </button>
           </div>
         ) : viewMode === "list" ? (
-          /* List View (Premium Table) */
-          <div className="bg-white rounded-[3rem] border border-gray-100 shadow-xl shadow-gray-200/20 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="text-left bg-gray-50/50 border-b border-gray-100">
-                    <th className="px-8 py-6 text-xs font-bold uppercase tracking-wide text-gray-400">Campaign Name</th>
-                    <th className="px-8 py-6 text-xs font-bold uppercase tracking-wide text-gray-400">Status</th>
-                    <th className="px-8 py-6 text-xs font-bold uppercase tracking-wide text-gray-400">Sent Count</th>
-                    <th className="px-8 py-6 text-xs font-bold uppercase tracking-wide text-gray-400">Timezone</th>
-                    <th className="px-8 py-6 text-right text-xs font-bold uppercase tracking-wide text-gray-400">Actions</th>
+          /* List Matrix */
+          <div className="bg-white rounded-[2rem] border border-[#B78D7D]/10 overflow-hidden shadow-sm relative">
+            <div className="overflow-x-auto custom-scrollbar">
+              <table className="w-full text-left">
+                <thead className="bg-[#F8F4F2]/50 text-[9px] font-black uppercase text-[#B2AAA6] tracking-[0.3em] font-mono border-b border-[#B78D7D]/10">
+                  <tr>
+                    <th className="p-8 pl-10">Plan Name</th>
+                    <th className="p-8">Status</th>
+                    <th className="p-8 text-center">Outcome</th>
+                    <th className="p-8 text-right pr-10">Manage</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-[#B78D7D]/5">
                   {filteredCampaigns.map((camp, idx) => (
-                    <tr key={camp._id} className="group hover:bg-gray-50/30 transition-all duration-300">
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-4">
-                           <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-[#E1306C]/60 font-bold text-xs group-hover:bg-pink-50 group-hover:text-[#E1306C] transition-all">
-                              {idx + 1}
+                    <tr key={camp._id} className="group hover:bg-[#F8F4F2]/30 transition-all cursor-default">
+                      <td className="p-8 pl-10">
+                        <div className="flex items-center gap-6">
+                           <div className="w-12 h-12 bg-[#F8F4F2] border border-[#B78D7D]/10 rounded-xl flex items-center justify-center text-[#B2AAA6] font-black text-lg group-hover:bg-[#B78D7D] group-hover:text-white transition-all shadow-inner font-mono">
+                              {(idx + 1).toString().padStart(2, '0')}
                            </div>
                            <div>
-                              <p className="text-sm font-bold text-gray-900 tracking-tight">{camp.name}</p>
-                              <p className="text-xs font-semibold text-gray-400 mt-0.5 group-hover:text-[#E1306C]/50 transition-colors italic">ID: {camp._id.toString().slice(-4)}</p>
+                              <p className="text-lg font-black text-[#3E3A39] tracking-tighter uppercase leading-none">{camp.name}</p>
+                              <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono mt-2">Verified Plan</p>
                            </div>
                         </div>
                       </td>
-                      <td className="px-8 py-6">
-                         <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${camp.status === 'Active' ? 'bg-pink-50/50 border-pink-100' : 'bg-gray-50 border-gray-100'}`}>
-                            <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${camp.status === 'Active' ? 'bg-[#E1306C]' : 'bg-gray-300'}`} />
-                            <span className={`text-xs font-bold uppercase tracking-wide ${camp.status === 'Active' ? 'text-[#E1306C]' : 'text-gray-400'}`}>
-                               {camp.status}
-                            </span>
+                      <td className="p-8">
+                         <div className={`inline-flex items-center gap-3 px-4 py-2 rounded-full border font-mono tracking-widest uppercase text-[9px] font-black transition-all ${camp.status === 'Active' ? 'bg-[#B78D7D]/10 border-[#B78D7D]/20 text-[#B78D7D]' : 'bg-[#B2AAA6]/5 border-[#B2AAA6]/10 text-[#B2AAA6]'}`}>
+                            <div className={`w-1.5 h-1.5 rounded-full ${camp.status === 'Active' ? 'bg-[#B78D7D] animate-pulse' : 'bg-[#B2AAA6]'}`} />
+                            {camp.status}
                          </div>
                       </td>
-                      <td className="px-8 py-6">
-                         <div className="flex items-center gap-2">
-                            <span className="text-base font-black text-gray-900">{camp.sentCount || 0}</span>
-                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">DMs Sent</span>
+                      <td className="p-8">
+                         <div className="flex flex-col items-center">
+                            <span className="text-2xl font-black text-[#3E3A39] tracking-tighter">{camp.sentCount || 0}</span>
+                            <span className="text-[8px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono">Posts Sent</span>
                          </div>
                       </td>
-                      <td className="px-8 py-6">
-                         <div className="flex items-center gap-2 text-gray-400 group-hover:text-gray-900 transition-colors lowercase">
-                            <Clock size={12} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">{camp.timezone || 'UTC'}</span>
-                         </div>
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <td className="p-8 pr-10 text-right">
+                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
                             <button 
                               onClick={() => handleToggleStatus(camp._id, camp.status)}
-                              className={`p-2.5 rounded-xl border transition-all ${camp.status === 'Active' ? 'bg-amber-50 border-amber-100 text-amber-500' : 'bg-green-50 border-green-100 text-green-500'}`}
+                              className={`p-3 rounded-lg border transition-all active:scale-90 ${camp.status === 'Active' ? 'text-[#B2AAA6] hover:text-[#B78D7D] border-[#B78D7D]/10' : 'text-[#B78D7D] border-[#B78D7D]/20 hover:bg-[#B78D7D] hover:text-white'}`}
+                              title={camp.status === 'Active' ? 'Pause' : 'Start'}
                             >
-                              {camp.status === 'Active' ? <Pause size={16} /> : <Play size={16} />}
+                              {camp.status === 'Active' ? <Pause size={18} /> : <Play size={18} />}
                             </button>
                             <button
                               onClick={() => router.push(`/instagram/${accountId}/campaigns/${camp._id}/edit`)}
-                              className="p-2.5 bg-blue-50 border border-blue-100 text-blue-500 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                              className="p-3 bg-white border border-[#B78D7D]/10 text-[#B2AAA6] rounded-lg hover:text-[#B78D7D] hover:bg-[#F8F4F2] transition-all active:scale-90"
+                              title="Edit"
                             >
-                              <Pencil size={16} />
+                               <Pencil size={18} />
                             </button>
                             <button 
                               onClick={() => handleDeleteCampaign(camp._id)}
-                              className="p-2.5 bg-red-50 border border-red-100 text-red-500 rounded-xl hover:bg-[#E1306C] hover:text-white transition-all shadow-sm hover:shadow-pink-500/20"
+                              className="p-3 bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all active:scale-90"
+                              title="Delete"
                             >
-                               <Trash2 size={16} />
+                               <Trash2 size={18} />
                             </button>
                          </div>
                       </td>
@@ -271,64 +274,48 @@ export default function InstagramCampaignsPage({ params: paramsPromise }) {
             </div>
           </div>
         ) : (
-          /* Grid View (High-Fidelity Cards) */
+          /* Grid Matrix */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredCampaigns.map((camp) => (
-              <div key={camp._id} className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/20 p-8 hover:shadow-2xl hover:shadow-[#E1306C]/5 transition-all duration-500 group">
-                <div className="flex justify-between items-start mb-8">
-                   <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-[#E1306C]/30 group-hover:bg-pink-50 group-hover:text-[#E1306C] transition-all">
-                      <Zap size={24} />
+              <div key={camp._id} className="group bg-white rounded-[2.5rem] border border-[#B78D7D]/10 transition-all duration-700 flex flex-col relative overflow-hidden h-full shadow-sm hover:shadow-[0_20px_40px_rgba(183,141,125,0.08)]">
+                <div className={`h-1 w-full absolute top-0 left-0 z-20 ${camp.status === 'Active' ? 'bg-[#B78D7D]' : 'bg-[#B2AAA6]'} transition-all`} />
+                <div className="p-10 pb-8 flex-1 flex flex-col relative z-10">
+                   <div className="flex justify-between items-start mb-10">
+                      <div className="w-14 h-14 bg-[#F8F4F2] border border-[#B78D7D]/10 rounded-2xl flex items-center justify-center text-[#B2AAA6] group-hover:text-[#B78D7D] group-hover:bg-white transition-all shadow-inner group-hover:scale-110 group-hover:rotate-6 duration-700">
+                         <Zap size={28} />
+                      </div>
+                      <div className={`px-4 py-1.5 rounded-full border text-[8px] font-black uppercase tracking-widest font-mono transition-all ${camp.status === 'Active' ? 'bg-[#B78D7D]/10 border-[#B78D7D]/20 text-[#B78D7D]' : 'bg-[#B2AAA6]/5 border-[#B2AAA6]/10 text-[#B2AAA6]'}`}>
+                         {camp.status}
+                      </div>
                    </div>
-                   <div className={`px-4 py-1.5 rounded-full border text-xs font-bold uppercase tracking-wide ${camp.status === 'Active' ? 'bg-pink-50/50 border-pink-100 text-[#E1306C]' : 'bg-gray-50 border-gray-100 text-gray-400'}`}>
-                      {camp.status}
+                   <div className="mb-8 flex-1">
+                      <h3 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase mb-2 leading-tight group-hover:text-[#B78D7D] transition-colors duration-500 line-clamp-1">{camp.name}</h3>
+                      <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono">ID: {camp._id.toString().slice(-8).toUpperCase()}</p>
                    </div>
-                </div>
-
-                <div className="mb-8">
-                   <h3 className="text-xl font-bold text-gray-900 tracking-tight truncate mb-2">{camp.name}</h3>
-                   <p className="text-xs text-gray-500 font-medium line-clamp-2 leading-relaxed h-8">{camp.message}</p>
-                </div>
-
-                <div className="flex items-center justify-between p-6 bg-gray-50/50 rounded-3xl border border-gray-50 mb-8 shadow-inner">
-                   <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Sent Count</p>
-                      <p className="text-xl font-bold text-gray-900">{camp.sentCount || 0}</p>
+                   <div className="grid grid-cols-2 gap-4 mt-auto pt-6 border-t border-[#B78D7D]/5">
+                      <div>
+                         <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Delivered</p>
+                         <p className="text-xl font-black text-[#3E3A39]">{camp.sentCount || 0}</p>
+                      </div>
+                      <div>
+                         <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Status</p>
+                         <span className={`text-[10px] font-black uppercase tracking-widest ${camp.status === 'Active' ? 'text-[#B78D7D]' : 'text-[#B2AAA6]'}`}>{camp.status}</span>
+                      </div>
                    </div>
-                   <div className="text-right">
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Connection</p>
-                      <span className="text-xs font-bold text-[#E1306C]">Verified</span>
+                   <div className="mt-8 pt-6 border-t border-[#B78D7D]/10 flex items-center justify-between">
+                      <button 
+                        onClick={() => router.push(`/instagram/${accountId}/campaigns/${camp._id}/edit`)}
+                        className="text-[9px] font-black text-[#B78D7D] uppercase tracking-widest font-mono flex items-center gap-2 group/btn"
+                      >
+                         Configure Plan <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteCampaign(camp._id)}
+                        className="p-2 text-[#B2AAA6] hover:text-rose-500 transition-colors"
+                      >
+                         <Trash2 size={16} />
+                      </button>
                    </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <button 
-                      onClick={() => camp.status !== 'Completed' && handleToggleStatus(camp._id, camp.status)}
-                      disabled={camp.status === 'Completed'}
-                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-xs uppercase tracking-wide transition-all ${
-                          camp.status === 'Completed' ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none' :
-                          camp.status === 'Active' ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 shadow-sm' : 
-                          'bg-green-50 text-green-600 hover:bg-green-100 shadow-sm'
-                      }`}
-                  >
-                    {camp.status === 'Completed' ? <CheckCircle size={14} /> : camp.status === 'Active' ? <Pause size={14} /> : <Play size={14} />}
-                    {camp.status === 'Completed' ? 'Completed' : camp.status === 'Active' ? 'Pause' : 'Resume'}
-                  </button>
-                  <button
-                     onClick={() => camp.status !== 'Completed' && router.push(`/instagram/${accountId}/campaigns/${camp._id}/edit`)}
-                     disabled={camp.status === 'Completed'}
-                     className={`p-4 rounded-2xl transition-all ${
-                         camp.status === 'Completed' ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none' :
-                         'bg-blue-50 text-blue-500 hover:bg-blue-600 hover:text-white shadow-sm'
-                     }`}
-                  >
-                     <Pencil size={16} />
-                  </button>
-                  <button 
-                     onClick={() => handleDeleteCampaign(camp._id)}
-                     className="p-4 bg-red-50 text-red-500 rounded-2xl hover:bg-[#E1306C] hover:text-white transition-all shadow-sm hover:shadow-pink-500/20"
-                  >
-                     <Trash2 size={16} />
-                  </button>
                 </div>
               </div>
             ))}

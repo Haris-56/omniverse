@@ -20,7 +20,15 @@ import {
   Rocket,
   Instagram,
   Camera,
-  Bot
+  Bot,
+  Activity,
+  Layers,
+  ArrowRight,
+  Globe,
+  Heart,
+  Mic,
+  UserPlus,
+  Loader2
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -114,7 +122,6 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
         fetch(`/api/instagram/accounts/${accountId}`),
         fetch("/api/lists")
       ]);
-
       if (accRes.ok) setAccount(await accRes.json());
       if (listsRes.ok) setContactLists(await listsRes.json());
     } catch (error) {
@@ -148,7 +155,7 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
       delayUnit: "hours", 
       message: "",
       executionPriority: ['story', 'highlight', 'message'],
-      media: null,
+      mediaUrl: null,
       showAdvanced: false,
       likeBehavior: "none",
       followBehavior: "none",
@@ -246,7 +253,7 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !listId || (!message && !media)) {
-      alert("Please fill in all required fields (a message or media attachment is required in the first step).");
+      alert("Please fill in all required fields.");
       return;
     }
 
@@ -268,7 +275,7 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
             delayUnit: f.delayUnit,
             message: f.message,
             executionPriority: f.executionPriority || ['story', 'highlight', 'message'],
-            mediaUrl: f.media?.url || null, // placeholder
+            mediaUrl: f.media?.url || null, 
             likeBehavior: f.likeBehavior,
             followBehavior: f.followBehavior,
             commentBehavior: f.commentBehavior
@@ -312,95 +319,96 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
   };
 
   if (loading) return (
-    <div className="h-screen w-full flex flex-col items-center justify-center bg-gray-50/50 space-y-6">
-       <div className="animate-spin w-10 h-10 border-4 border-[#E1306C] border-t-transparent rounded-full" />
-       <p className="text-gray-400 font-medium text-xs uppercase tracking-wide">Loading...</p>
+    <div className="h-screen w-full flex flex-col items-center justify-center bg-[#F8F4F2] space-y-6">
+       <div className="animate-spin w-10 h-10 border-4 border-[#B78D7D] border-t-transparent rounded-full" />
+       <p className="text-[#B2AAA6] font-black text-[9px] uppercase tracking-[0.3em] font-mono">Syncing...</p>
     </div>
   );
 
   return (
-    <div className="w-full min-h-screen bg-gray-50/50 p-4 md:p-8 animate-in fade-in duration-500">
-      <div className="max-w-4xl mx-auto">
+    <div className="w-full min-h-screen bg-[#F8F4F2] p-6 md:p-10 lg:p-16 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <div className="max-w-[1500px] mx-auto">
         
         {/* Header Section */}
-        <div className="flex items-center gap-4 mb-10">
-          <Link href={`/instagram/${accountId}/campaigns`} className="p-3 bg-white border border-gray-100 rounded-2xl text-gray-400 hover:text-gray-900 transition-all shadow-sm">
-            <ChevronLeft size={20} />
-          </Link>
-          <div className="h-10 w-px bg-gray-200 mx-2 hidden md:block" />
-          <div className="min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-               <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wide rounded-full border border-blue-100">Instagram</span>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16">
+          <div className="flex items-center gap-8">
+            <Link href={`/instagram/${accountId}/campaigns`} className="p-4 bg-white border border-[#B78D7D]/10 rounded-[1.5rem] text-[#B78D7D] hover:bg-[#B78D7D] hover:text-white transition-all shadow-lg group">
+              <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            </Link>
+            <div>
+               <div className="flex items-center gap-3 mb-3">
+                  <span className="px-4 py-1.5 bg-[#B78D7D]/10 text-[#B78D7D] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#B78D7D]/20 flex items-center gap-2 font-mono">
+                    <Instagram size={12} />
+                    New Plan
+                  </span>
+               </div>
+               <h1 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">Create Instagram Plan</h1>
+               <p className="text-[#8E7A70] mt-3 text-lg font-medium">Set up your messages and when to send them. Using: <span className="text-[#B78D7D] font-black">{account?.username}</span></p>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight truncate">New Campaign</h1>
-            <p className="text-gray-500 text-sm font-medium mt-1">Creating campaign for <span className="text-gray-900 font-bold">{account?.email}</span></p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-10">
+        <form onSubmit={handleSubmit} className="space-y-16">
           
-          {/* Section 1: Campaign Essentials */}
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/20 overflow-hidden">
-            <div className="p-6 md:p-8 border-b border-gray-50 flex items-center gap-4 bg-gray-50/30">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-[#E1306C]">
+          {/* Phase 1: Details */}
+          <div className="bg-white rounded-[2.5rem] border border-[#B78D7D]/15 shadow-sm overflow-hidden group hover:shadow-[0_20px_40px_rgba(183,141,125,0.05)] transition-all">
+            <div className="p-8 border-b border-[#B78D7D]/10 flex items-center gap-6 bg-[#F8F4F2]/30">
+              <div className="w-12 h-12 bg-[#F8F4F2] border border-[#B78D7D]/10 text-[#B78D7D] rounded-[1.25rem] flex items-center justify-center shadow-inner group-hover:rotate-12 duration-700">
                 <Target size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-900 tracking-tight">Campaign Details</h2>
-                <p className="text-xs font-semibold text-gray-500">Name and target list</p>
+                <h2 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">Plan Details</h2>
+                <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono mt-2">Basic name and target list.</p>
               </div>
             </div>
-            <div className="p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-700 ml-1">Campaign Name</label>
+            <div className="p-10 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="space-y-4">
+                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono ml-4">Plan Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. DM Outreach v1"
-                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 outline-none focus:ring-4 focus:ring-pink-500/10 focus:border-pink-500/30 focus:bg-white transition-all font-bold text-gray-900 placeholder-gray-300"
+                  placeholder="Plan Name"
+                  className="form-input text-lg font-black"
                   required
                 />
               </div>
-              <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-700 ml-1">Contact List</label>
-                <select
-                  value={listId}
-                  onChange={(e) => setListId(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 outline-none focus:ring-4 focus:ring-pink-500/10 focus:border-pink-500/30 focus:bg-white transition-all font-bold text-gray-900 appearance-none"
-                  required
-                >
-                  <option value="">-- Select Master List --</option>
-                  {contactLists.map(list => (
-                    <option key={list._id} value={list._id}>{list.name} ({list.count} units)</option>
-                  ))}
-                </select>
+              <div className="space-y-4">
+                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono ml-4">People to Message</label>
+                <div className="relative">
+                  <select
+                    value={listId}
+                    onChange={(e) => setListId(e.target.value)}
+                    className="form-input appearance-none pr-12 text-lg font-black"
+                    required
+                  >
+                    <option value="">-- Choose List --</option>
+                    {contactLists.map(list => (
+                      <option key={list._id} value={list._id}>{list.name} ({list.count} people)</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Section 2: Strategy Protocol */}
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/20 overflow-hidden">
-             <div className="p-6 md:p-8 border-b border-gray-50 flex items-center gap-4 bg-gray-50/30">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-[#E1306C]">
+          {/* Phase 2: Settings */}
+          <div className="bg-white rounded-[2.5rem] border border-[#B78D7D]/15 shadow-sm overflow-hidden group hover:shadow-[0_20px_40px_rgba(183,141,125,0.05)] transition-all">
+             <div className="p-8 border-b border-[#B78D7D]/10 flex items-center gap-6 bg-[#F8F4F2]/30">
+              <div className="w-12 h-12 bg-[#F8F4F2] border border-[#B78D7D]/10 text-[#B78D7D] rounded-[1.25rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
                 <Rocket size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-900 tracking-tight">Outreach Settings</h2>
-                <p className="text-xs font-semibold text-gray-500">Delivery method & behavioral settings</p>
+                <h2 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">Settings</h2>
+                <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono mt-2">How you want to reach out.</p>
               </div>
             </div>
-            <div className="p-8 md:p-10 space-y-6">
-              
-              {/* Execution Priority */}
+            <div className="p-10 md:p-12 space-y-10">
               <div className="space-y-4">
-                 <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-sm md:text-base font-bold text-gray-900">Execution Priority</h4>
-                      <p className="text-xs text-gray-500 mt-1 font-medium">Order of fallback methods (drag/select to prioritize)</p>
-                    </div>
+                 <div className="flex items-center justify-between ml-4">
+                    <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono">Priority Order</label>
                  </div>
-                 <div className="flex flex-col gap-3">
+                 <div className="flex flex-col xl:flex-row gap-4">
                     {['story', 'highlight', 'message'].map((method) => {
                       const isActive = executionPriority.includes(method);
                       const priorityIndex = executionPriority.indexOf(method);
@@ -409,7 +417,6 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                           key={method}
                           onClick={() => {
                             if (isActive) {
-                                // Keep at least one method active
                                 if (executionPriority.length > 1) {
                                     setExecutionPriority(executionPriority.filter(m => m !== method));
                                 }
@@ -417,153 +424,119 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                                 setExecutionPriority([...executionPriority, method]);
                             }
                           }}
-                          className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${isActive ? 'bg-pink-50 border-pink-200' : 'bg-gray-50/50 border-gray-100 hover:bg-gray-50'}`}
+                          className={`flex-1 p-6 rounded-[1.5rem] border transition-all cursor-pointer flex items-center justify-between ${isActive ? 'bg-[#B78D7D]/5 border-[#B78D7D]/20 shadow-md' : 'bg-[#F8F4F2]/30 border-transparent hover:border-[#B78D7D]/10'}`}
                         >
-                           <div className="flex items-center gap-3">
-                              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isActive ? 'bg-[#E1306C] text-white' : 'bg-gray-200 text-gray-400'}`}>
-                                 {isActive ? priorityIndex + 1 : '-'}
+                           <div className="flex items-center gap-4">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black font-mono ${isActive ? 'bg-[#B78D7D] text-white' : 'bg-[#B2AAA6]/20 text-[#B2AAA6]'}`}>
+                                 {isActive ? (priorityIndex + 1).toString().padStart(2, '0') : '--'}
                               </div>
-                              <span className="font-bold text-gray-900 text-sm capitalize">
-                                {method === 'story' ? 'Reply through Story' : method === 'highlight' ? 'Reply through Highlight' : 'Direct Message'}
+                              <span className="font-black text-[#3E3A39] text-[10px] uppercase tracking-widest font-mono">
+                                {method === 'story' ? 'Story Reply' : method === 'highlight' ? 'Highlight Reply' : 'Direct Message'}
                               </span>
                            </div>
-                           {isActive && <Check size={16} className="text-[#E1306C]" />}
+                           {isActive && <Check size={16} className="text-[#B78D7D]" />}
                         </div>
                       )
                     })}
                  </div>
               </div>
 
-              {/* Message Request */}
-              <div className="flex items-center justify-between p-6 bg-pink-50/30 rounded-[2rem] border border-pink-50 group hover:bg-pink-50 transition-all duration-300">
-                <div className="pr-4">
-                  <h4 className="text-sm md:text-base font-bold text-gray-900">Message Request Mode</h4>
-                  <p className="text-xs text-gray-500 mt-1 font-medium">Send as 'Message Request' if not following</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div onClick={() => setWatchStory(!watchStory)} className={`p-6 rounded-[1.5rem] border-2 transition-all cursor-pointer flex flex-col items-center text-center gap-3 ${watchStory ? 'bg-[#B78D7D]/10 border-[#B78D7D] shadow-lg' : 'bg-[#F8F4F2]/30 border-transparent hover:border-[#B78D7D]/10'}`}>
+                   <span className="text-3xl">👁️</span>
+                   <div>
+                    <h3 className="font-black text-[#3E3A39] text-[10px] uppercase tracking-widest font-mono mb-1">Watch Stories</h3>
+                    <p className="text-[8px] font-bold text-[#8E7A70] uppercase tracking-widest leading-relaxed">Engage before DM.</p>
+                   </div>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer" 
-                    checked={isMessageRequest}
-                    onChange={(e) => setIsMessageRequest(e.target.checked)}
-                  />
-                  <div className="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#E1306C] shadow-inner transition-all border border-transparent peer-checked:border-pink-200"></div>
-                </label>
+
+                <div onClick={() => setWatchHighlights(!watchHighlights)} className={`p-6 rounded-[1.5rem] border-2 transition-all cursor-pointer flex flex-col items-center text-center gap-4 ${watchHighlights ? 'bg-[#B78D7D]/10 border-[#B78D7D] shadow-xl' : 'bg-[#F8F4F2]/30 border-transparent hover:border-[#B78D7D]/10'}`}>
+                   <span className="text-3xl">🌟</span>
+                   <div>
+                    <h3 className="font-black text-[#3E3A39] text-[10px] uppercase tracking-widest font-mono mb-1">Watch Highlights</h3>
+                    <p className="text-[8px] font-bold text-[#8E7A70] uppercase tracking-widest leading-relaxed">Mimic organic interest.</p>
+                   </div>
+                </div>
+
+                <div onClick={() => setEnableAiAgent(!enableAiAgent)} className={`p-6 rounded-[1.5rem] border-2 transition-all cursor-pointer flex flex-col items-center text-center gap-3 ${enableAiAgent ? 'bg-indigo-50 border-indigo-200 shadow-lg' : 'bg-[#F8F4F2]/30 border-transparent hover:border-indigo-400/10'}`}>
+                   <span className="text-3xl text-indigo-500"><Bot size={30} /></span>
+                   <div>
+                    <h3 className="font-black text-[#3E3A39] text-[10px] uppercase tracking-widest font-mono mb-1">AI Auto-Reply</h3>
+                    <p className="text-[8px] font-bold text-indigo-600/70 uppercase tracking-widest leading-relaxed">AI take-over on reply.</p>
+                   </div>
+                </div>
               </div>
 
-              {/* Engagement Triggers */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <div className={`p-6 rounded-[2rem] border transition-all cursor-pointer ${watchStory ? 'bg-pink-50 border-pink-200 shadow-sm' : 'bg-gray-50/50 border-gray-100'}`} onClick={() => setWatchStory(!watchStory)}>
-                    <div className="flex items-center justify-between mb-2">
-                       <span className="font-bold text-gray-900 text-sm">Watch Stories</span>
-                       {watchStory && <Check size={16} className="text-[#E1306C]" />}
-                    </div>
-                    <p className="text-xs text-gray-500 leading-relaxed">Engage with user stories to increase visibility before sending DM.</p>
-                 </div>
-                 
-                 <div className={`p-6 rounded-[2rem] border transition-all cursor-pointer ${watchHighlights ? 'bg-pink-50 border-pink-200 shadow-sm' : 'bg-gray-50/50 border-gray-100'}`} onClick={() => setWatchHighlights(!watchHighlights)}>
-                    <div className="flex items-center justify-between mb-2">
-                       <span className="font-bold text-gray-900 text-sm">Watch Highlights</span>
-                       {watchHighlights && <Check size={16} className="text-[#E1306C]" />}
-                    </div>
-                    <p className="text-xs text-gray-500 leading-relaxed">Interact with profile highlights to mimic organic interest.</p>
-                 </div>
-              </div>
-
-              {/* Interaction Behaviors */}
-              <div className="space-y-4 pt-6 mt-6 border-t border-gray-50">
-                 <h4 className="text-sm md:text-base font-bold text-gray-900">Pre/Post Engagement Actions</h4>
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-2">
-                       <label className="text-xs font-bold text-gray-500 flex items-center justify-between">Follow Target <span>👤</span></label>
-                       <select value={followBehavior} onChange={e => setFollowBehavior(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm font-bold outline-none">
-                         <option value="none">Disabled</option>
-                         <option value="before">Before DM</option>
-                         <option value="after">After DM</option>
-                       </select>
-                    </div>
-                    <div className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-2">
-                       <label className="text-xs font-bold text-gray-500 flex items-center justify-between">Like Recent Post <span>❤️</span></label>
-                       <select value={likeBehavior} onChange={e => setLikeBehavior(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm font-bold outline-none">
-                         <option value="none">Disabled</option>
-                         <option value="before">Before DM</option>
-                         <option value="after">After DM</option>
-                       </select>
-                    </div>
-                    <div className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-2">
-                       <label className="text-xs font-bold text-gray-500 flex items-center justify-between">Comment on Post <span>💬</span></label>
-                       <select value={commentBehavior} onChange={e => setCommentBehavior(e.target.value)} className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm font-bold outline-none">
-                         <option value="none">Disabled</option>
-                         <option value="before">Before DM</option>
-                         <option value="after">After DM</option>
-                       </select>
-                    </div>
-                 </div>
-              </div>
-
+              {enableAiAgent && (
+                <div className="p-8 bg-indigo-50/30 rounded-[2rem] border border-indigo-100 flex items-center gap-10 animate-in slide-in-from-top-4 duration-500">
+                   <div className="flex-1 space-y-4">
+                      <label className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.3em] font-mono ml-4">Choose AI Person</label>
+                      <select value={selectedAgentId} onChange={(e) => setSelectedAgentId(e.target.value)} className="form-input bg-white border-indigo-200 text-indigo-900 h-14">
+                        <option value="">-- Choose Agent --</option>
+                        {aiAgents.map(agent => (
+                          <option key={agent._id} value={agent._id}>{agent.name}</option>
+                        ))}
+                      </select>
+                   </div>
+                   <div className="w-1/3 text-[9px] font-bold text-indigo-400 font-mono tracking-widest leading-loose">
+                      AI will automatically engage after handshake.
+                   </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Section 3: Payload Configuration */}
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/20 overflow-hidden">
-            <div className="p-6 md:p-8 border-b border-gray-50 flex items-center gap-4 bg-gray-50/30">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-[#E1306C]">
+          {/* Phase 3: Content */}
+          <div className="bg-white rounded-[2.5rem] border border-[#B78D7D]/15 shadow-sm overflow-hidden group hover:shadow-[0_20px_40px_rgba(183,141,125,0.05)] transition-all">
+            <div className="p-8 border-b border-[#B78D7D]/10 flex items-center gap-6 bg-[#F8F4F2]/30">
+              <div className="w-12 h-12 bg-[#F8F4F2] border border-[#B78D7D]/10 text-[#B78D7D] rounded-[1.25rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
                 <Cpu size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-900 tracking-tight">Message Content</h2>
-                <p className="text-xs font-semibold text-gray-500">Draft your initial message</p>
+                <h2 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">Message Body</h2>
+                <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono mt-2">What you want to say.</p>
               </div>
             </div>
-            <div className="p-8 md:p-10 space-y-8">
-              <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+            <div className="p-10 md:p-12 space-y-10">
+              <div className="flex flex-col lg:flex-row gap-8 items-start">
                  <div className="flex-1 w-full space-y-3">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Template Preset</label>
+                    <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono ml-4">Apply Save Template</label>
                     <select
                       onChange={(e) => handleApplyTemplate(e.target.value)}
-                      className="w-full bg-pink-50/50 border border-pink-100 rounded-2xl px-6 py-4 outline-none focus:ring-4 focus:ring-pink-500/10 transition-all font-bold text-pink-900 appearance-none text-sm"
+                      className="form-input bg-[#F8F4F2]/30 text-[#B78D7D] h-14"
                     >
-                      <option value="">Manual Entry (No Preset)</option>
+                      <option value="">Manual Input</option>
                       {templates.map(t => (
                         <option key={t._id} value={t._id}>{t.name}</option>
                       ))}
                     </select>
                  </div>
-                 {!showSaveTemplate ? (
-                    <button
-                      type="button"
-                      onClick={() => setShowSaveTemplate(true)}
-                      className="whitespace-nowrap flex items-center gap-2 text-[#E1306C] font-bold text-xs uppercase tracking-wider hover:bg-pink-50 px-6 py-4 rounded-2xl border border-dashed border-pink-200 transition-all mt-6 md:mt-7"
-                    >
-                      <Plus size={16} /> Save Template
-                    </button>
-                 ) : (
-                    <div className="flex-1 w-full p-6 bg-pink-50/30 rounded-3xl border border-pink-50 flex flex-col gap-4 shadow-inner">
-                       <input
-                        type="text"
-                        value={templateName}
-                        onChange={(e) => setTemplateName(e.target.value)}
-                        placeholder="Template Identifier"
-                        className="w-full bg-white border border-pink-100 rounded-xl px-4 py-2 text-sm font-bold outline-none"
-                      />
-                      <div className="flex gap-2">
-                        <button onClick={handleSaveAsTemplate} className="flex-1 bg-[#E1306C] text-white text-xs font-bold uppercase py-2 rounded-lg">Save</button>
-                        <button onClick={() => setShowSaveTemplate(false)} className="flex-1 bg-white border border-gray-200 text-gray-500 text-xs font-bold uppercase py-2 rounded-lg">Cancel</button>
-                      </div>
-                    </div>
-                 )}
+                 <div className="flex-1 w-full space-y-3">
+                    <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono ml-4">Save Template</label>
+                    {!showSaveTemplate ? (
+                       <button type="button" onClick={() => setShowSaveTemplate(true)} className="form-input h-14 flex items-center justify-center gap-4 text-[#B2AAA6] border-dashed border-2 hover:bg-[#B78D7D]/5 hover:text-[#B78D7D] group/save">
+                          <Plus size={18} className="group-hover:rotate-90 transition-transform" /> <span>Save current</span>
+                       </button>
+                    ) : (
+                       <div className="flex gap-4">
+                          <input value={templateName} onChange={e => setTemplateName(e.target.value)} placeholder="Name" className="form-input h-14" />
+                          <button type="button" onClick={handleSaveAsTemplate} className="px-6 bg-[#B78D7D] text-white rounded-[1rem] font-black text-[9px] uppercase tracking-widest">{savingTemplate ? '...' : 'Save'}</button>
+                          <button type="button" onClick={() => setShowSaveTemplate(false)} className="px-6 bg-[#F8F4F2] text-[#B2AAA6] rounded-[1rem] font-black text-[9px] uppercase tracking-widest text-center">X</button>
+                       </div>
+                    )}
+                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                   <label className="text-sm font-bold text-gray-700 ml-1">Initial Message</label>
-                   <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center justify-between ml-4">
+                   <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono">Your Message</label>
+                   <div className="flex items-center gap-2">
                       {availableVariables.map(v => (
                         <button
                           key={v}
                           type="button"
                           onClick={() => insertVariable("main", v)}
-                          className="px-3 py-1 bg-white border border-gray-100 rounded-lg text-[10px] font-bold text-[#E1306C] hover:border-pink-200 hover:bg-pink-50 transition-all"
+                          className="px-3 py-1.5 bg-white border border-[#B78D7D]/10 rounded-lg text-[8px] font-black text-[#B78D7D] hover:bg-[#B78D7D] hover:text-white transition-all shadow-sm font-mono"
                         >
                           {v}
                         </button>
@@ -574,49 +547,57 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                   value={media ? "" : message}
                   onChange={(e) => setMessage(e.target.value)}
                   disabled={!!media}
-                  placeholder={media ? "Media attached. Remove media to type text." : "Enter your initial outreach message..."}
+                  placeholder={media ? "Media file attached. Remove it to write text." : "Hello! How are you?"}
                   rows={6}
-                  className={`w-full ${media ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200' : 'bg-gray-50 border-gray-100 focus:bg-white'} border ${hasLink(message) ? 'border-red-300 ring-4 ring-red-500/10' : 'focus:ring-4 focus:ring-pink-500/10 focus:border-pink-500/30'} rounded-[2rem] px-8 py-8 font-medium text-gray-900 transition-all outline-none resize-none shadow-inner`}
+                  className={`form-input text-lg font-bold min-h-[180px] p-8 ${media ? 'opacity-40 grayscale cursor-not-allowed' : ''} ${hasLink(message) ? 'border-amber-400' : ''}`}
                   required={!media}
                 />
                 
                 {hasLink(message) && (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3 mt-4 animate-in slide-in-from-top-2">
-                    <AlertTriangle size={20} className="text-red-500 mt-0.5 shrink-0" />
+                  <div className="p-6 bg-amber-50 rounded-[1.5rem] border border-amber-200 flex items-center gap-4">
+                    <AlertTriangle size={24} className="text-amber-500 shrink-0" />
                     <div>
-                      <h5 className="text-sm font-bold text-red-800">High Risk of Ban Identified!</h5>
-                      <p className="text-xs font-medium text-red-600 mt-1">Sending URLs in the initial cold outreach message is heavily flagged by Instagram's spam filters. It is highly recommended to wait for a reply before sending links.</p>
+                      <h5 className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1">Warning: URL Found</h5>
+                      <p className="text-[9px] font-bold text-amber-500/80 uppercase tracking-widest font-mono">Instagram might block messages with links.</p>
                     </div>
                   </div>
                 )}
 
-                <div className="flex flex-col gap-4 mt-4">
-                   <div className="flex items-center gap-4">
-                      <label className={`flex items-center gap-2 cursor-pointer px-5 py-3 rounded-xl border font-bold text-xs uppercase transition-all ${message.length > 0 ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50' : 'bg-pink-50 text-[#E1306C] border-pink-100 hover:bg-pink-100'}`}>
-                         <span className="text-lg">🎙️</span> Add Voice Note
+                <div className="flex flex-col gap-6 mt-8 bg-[#F8F4F2]/30 p-8 rounded-[2rem] border border-[#B78D7D]/10">
+                   <div className="flex items-center gap-6">
+                      <label className={`relative flex items-center justify-center gap-3 px-8 py-4 rounded-[1.5rem] border-2 border-dashed font-black text-[10px] uppercase tracking-[0.2em] transition-all cursor-pointer font-mono ${message.length > 0 ? 'opacity-30 cursor-not-allowed' : 'bg-white border-[#B78D7D] text-[#B78D7D] hover:bg-[#B78D7D] hover:text-white'}`}>
+                         <Mic size={18} /> Voice
                          <input type="file" disabled={message.length > 0} accept="audio/*" className="hidden" onChange={(e) => handleMediaUpload(e, -1)} />
+                      </label>
+                      <label className={`relative flex items-center justify-center gap-3 px-8 py-4 rounded-[1.5rem] border-2 border-dashed font-black text-[10px] uppercase tracking-[0.2em] transition-all cursor-pointer font-mono ${message.length > 0 ? 'opacity-30 cursor-not-allowed' : 'bg-white border-[#B78D7D] text-[#B78D7D] hover:bg-[#B78D7D] hover:text-white'}`}>
+                         <Camera size={18} /> Media
+                         <input type="file" disabled={message.length > 0} accept="video/*,image/*" className="hidden" onChange={(e) => handleMediaUpload(e, -1)} />
                       </label>
                    </div>
                    
                    {mediaScanning && (
-                      <div className="flex items-center gap-3 text-sm font-bold text-amber-600 animate-pulse bg-amber-50 p-4 border border-amber-200 rounded-xl w-max">
-                         <div className="w-4 h-4 rounded-full border-2 border-amber-500 border-t-transparent animate-spin" />
-                         Scanning Media for 18+ / Suspicious Content...
+                      <div className="flex items-center gap-4 text-amber-500 font-black text-[9px] uppercase tracking-widest">
+                         <div className="w-5 h-5 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                         Checking...
                       </div>
                    )}
 
                    {media && !mediaScanning && (
-                      <div className="flex flex-col gap-2 bg-gray-50 border border-gray-200 p-4 rounded-2xl w-max relative group">
-                         <button type="button" onClick={() => setMedia(null)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all shadow-md">
-                            <Trash2 size={14} />
-                         </button>
-                         <div className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-2">
-                            <ShieldCheck size={14} className="text-green-500" />
-                            Verified Safe • {media.name}
+                      <div className="flex items-center gap-8 bg-white p-6 rounded-[2rem] border border-[#B78D7D]/20 w-max shadow-lg animate-in fade-in zoom-in duration-500">
+                         <div className="relative group">
+                            {media.type.startsWith('audio/') && <div className="p-6 bg-amber-50 rounded-xl"><Mic size={32} className="text-amber-500" /></div>}
+                            {media.type.startsWith('video/') && <video src={media.url} className="w-40 rounded-xl border-4 border-white shadow-md" />}
+                            {media.type.startsWith('image/') && <img src={media.url} className="w-40 rounded-xl border-4 border-white shadow-md" />}
+                            <button type="button" onClick={() => setMedia(null)} className="absolute -top-3 -right-3 w-10 h-10 bg-white text-rose-500 rounded-full border-4 border-rose-50 shadow-xl flex items-center justify-center hover:scale-110">
+                               <Trash2 size={20} />
+                            </button>
                          </div>
-                         {media.type.startsWith('audio/') && <audio controls src={media.url} className="h-10 outline-none" />}
-                         {media.type.startsWith('video/') && <video controls src={media.url} className="h-32 rounded-lg bg-black" />}
-                         {media.type.startsWith('image/') && <img src={media.url} className="h-32 object-contain rounded-lg border border-gray-200 bg-white" alt="Meme/Gif" />}
+                         <div>
+                            <p className="text-lg font-black text-[#3E3A39] tracking-tighter uppercase mb-2">Attached</p>
+                            <div className="flex items-center gap-2 text-[9px] font-black text-emerald-500 uppercase tracking-widest">
+                               <ShieldCheck size={12} /> Safe
+                            </div>
+                         </div>
                       </div>
                    )}
                 </div>
@@ -624,297 +605,262 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
             </div>
           </div>
 
-          {/* Section 4: Execution Protocol */}
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/20 overflow-hidden">
-            <div className="p-6 md:p-8 border-b border-gray-50 flex items-center gap-4 bg-gray-50/30">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-[#E1306C]">
+          {/* Phase 4: Schedule */}
+          <div className="bg-white rounded-[2.5rem] border border-[#B78D7D]/15 shadow-sm overflow-hidden group hover:shadow-[0_20px_40px_rgba(183,141,125,0.05)] transition-all">
+            <div className="p-8 border-b border-[#B78D7D]/10 flex items-center gap-6 bg-[#F8F4F2]/30">
+              <div className="w-12 h-12 bg-[#F8F4F2] border border-[#B78D7D]/10 text-amber-500 rounded-[1.25rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
                 <Clock size={24} />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-900 tracking-tight">Schedule & Limits</h2>
-                <p className="text-xs font-semibold text-gray-500">Daily limits and timezone</p>
+                <h2 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">Schedule & Limits</h2>
+                <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono mt-2">Control when messages go out.</p>
               </div>
             </div>
-            <div className="p-8 md:p-10 space-y-8">
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="space-y-3">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Daily Limit (DMs)</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      min="1"
-                      max="50"
-                      value={dailyLimit}
-                      onChange={(e) => setDailyLimit(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-black outline-none focus:bg-white transition-all"
-                    />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-amber-500 uppercase">Rec: 20-30</span>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Hourly Limit</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      min="1"
-                      max="10"
-                      value={hourlyLimit}
-                      onChange={(e) => setHourlyLimit(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-black outline-none focus:bg-white transition-all"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-3 col-span-1 md:col-span-2 lg:col-span-3">
-                  <div className="flex items-center justify-between mb-2">
-                     <label className="text-sm font-bold text-gray-700 ml-1">Random Delay (Seconds)</label>
-                     <label className="flex items-center gap-2 cursor-pointer group">
-                        <input 
-                           type="checkbox" 
-                           checked={smartDelay}
-                           onChange={(e) => setSmartDelay(e.target.checked)}
-                           className="w-4 h-4 rounded text-[#E1306C] focus:ring-pink-500/20"
-                        />
-                        <span className="text-[10px] font-bold text-[#E1306C] group-hover:text-pink-600 uppercase tracking-widest transition-colors">Smart Auto Delay</span>
-                     </label>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <input type="number" min="75" value={smartDelay ? 75 : Math.max(75, minDelay)} onChange={(e) => setMinDelay(Math.max(75, e.target.value))} disabled={smartDelay} className={`w-full border rounded-2xl p-4 text-center font-bold outline-none transition-all ${smartDelay ? 'bg-pink-50/50 text-pink-400 border-pink-100 cursor-not-allowed' : 'bg-gray-50 border-gray-100 text-gray-900 focus:bg-white'}`} />
-                    <span className="text-gray-300 font-black">{"->"}</span>
-                    <input type="number" max="2000" value={smartDelay ? 1000 : Math.min(2000, maxDelay)} onChange={(e) => setMaxDelay(Math.min(2000, e.target.value))} disabled={smartDelay} className={`w-full border rounded-2xl p-4 text-center font-bold outline-none transition-all ${smartDelay ? 'bg-pink-50/50 text-pink-400 border-pink-100 cursor-not-allowed' : 'bg-gray-50 border-gray-100 text-gray-900 focus:bg-white'}`} />
-                  </div>
-                  {smartDelay && <p className="text-[10px] text-pink-500 font-bold ml-1 mt-2">Dynamically averages 75s-1000s based on volume limits to strictly evade patterns.</p>}
-                </div>
-              </div>
+            
+            <div className="p-10 md:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+               <div className="space-y-4">
+                 <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono ml-4">Daily Limit</label>
+                 <div className="relative">
+                   <input
+                     type="number"
+                     min="1"
+                     max="50"
+                     value={dailyLimit}
+                     onChange={(e) => setDailyLimit(e.target.value)}
+                     className="form-input text-center text-3xl font-black py-8 bg-[#F8F4F2]/30 h-20"
+                   />
+                   <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-40 pointer-events-none">
+                      <span className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono">Day</span>
+                   </div>
+                 </div>
+               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-gray-50">
-                 <div className="space-y-3">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Timezone</label>
-                  <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-4 font-bold text-sm appearance-none outline-none">
-                     {Intl.supportedValuesOf('timeZone').map(tz => (
-                        <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>
-                     ))}
-                  </select>
-                </div>
-                <div className="space-y-3">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Sending Hours</label>
-                  <div className="flex items-center gap-2">
-                    <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold outline-none" />
-                    <span className="text-gray-300 font-black">-</span>
-                    <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-center font-bold outline-none" />
-                  </div>
-                </div>
-              </div>
+               <div className="space-y-4">
+                 <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono ml-4">Hourly Limit</label>
+                 <div className="relative">
+                   <input
+                     type="number"
+                     min="1"
+                     max="10"
+                     value={hourlyLimit}
+                     onChange={(e) => setHourlyLimit(e.target.value)}
+                     className="form-input text-center text-2xl font-black py-8 bg-[#F8F4F2]/30 h-20"
+                   />
+                   <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-40 pointer-events-none">
+                      <span className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono">Hour</span>
+                   </div>
+                 </div>
+               </div>
+               
+               <div className="space-y-4">
+                 <div className="flex items-center justify-between ml-4">
+                    <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono">Wait Time</label>
+                    <label className="flex items-center gap-2 cursor-pointer group/smart transition-colors">
+                       <input 
+                          type="checkbox" 
+                          checked={smartDelay}
+                          onChange={(e) => setSmartDelay(e.target.checked)}
+                          className="w-4 h-4 rounded-[0.25rem] text-[#B78D7D] bg-white border-[#B78D7D]/20 focus:ring-[#B78D7D]"
+                       />
+                       <span className="text-[8px] font-black text-[#B78D7D] group-hover:text-[#A37B6D] uppercase tracking-widest transition-colors font-mono">Safe</span>
+                    </label>
+                 </div>
+                 <div className="flex items-center gap-4">
+                   <input type="number" min="75" value={smartDelay ? 75 : minDelay} onChange={(e) => setMinDelay(e.target.value)} disabled={smartDelay} className={`form-input text-center text-lg font-black h-20 ${smartDelay ? 'opacity-40 grayscale' : 'bg-[#F8F4F2]/30'}`} />
+                   <ArrowRight size={20} className="text-[#B2AAA6] shrink-0" />
+                   <input type="number" max="2000" value={smartDelay ? 1000 : maxDelay} onChange={(e) => setMaxDelay(e.target.value)} disabled={smartDelay} className={`form-input text-center text-lg font-black h-20 ${smartDelay ? 'opacity-40 grayscale' : 'bg-[#F8F4F2]/30'}`} />
+                 </div>
+               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-gray-50">
-                <div className="space-y-3">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Start Date</label>
-                  <div className="flex items-center">
-                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 font-bold outline-none" />
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between mb-1">
-                     <label className={`text-sm font-bold ml-1 ${endOnCompletion ? 'text-gray-400' : 'text-gray-700'}`}>End Date</label>
-                     <label className="flex items-center gap-2 cursor-pointer group">
-                        <input 
-                           type="checkbox" 
-                           checked={endOnCompletion}
-                           onChange={(e) => {
-                             setEndOnCompletion(e.target.checked);
-                             if (e.target.checked) setEndDate("");
-                           }}
-                           className="w-4 h-4 rounded text-pink-500 focus:ring-pink-500/20"
-                        />
-                        <span className="text-xs font-bold text-gray-500 group-hover:text-gray-900 transition-colors">End when list completed</span>
-                     </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input 
-                       type="date" 
-                       value={endDate} 
-                       onChange={(e) => setEndDate(e.target.value)} 
-                       disabled={endOnCompletion}
-                       className={`w-full border rounded-2xl p-4 font-bold outline-none transition-all ${endOnCompletion ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 border-gray-100 text-gray-900 focus:bg-white'}`} 
-                    />
-                  </div>
-                </div>
-              </div>
+                <div className="space-y-4">
+                 <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono ml-4">Timezone</label>
+                 <div className="relative">
+                    <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="form-input appearance-none bg-[#F8F4F2]/30 text-[#B78D7D] h-20">
+                       {Intl.supportedValuesOf('timeZone').map(tz => (
+                          <option key={tz} value={tz}>{tz}</option>
+                       ))}
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-[#B2AAA6]">
+                       <Globe size={20} />
+                    </div>
+                 </div>
+               </div>
+            </div>
 
+            <div className="p-10 md:p-12 border-t border-[#B78D7D]/10 grid grid-cols-1 md:grid-cols-2 gap-10">
+               <div className="space-y-4">
+                 <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono ml-4">Daily Schedule</label>
+                 <div className="flex items-center gap-5">
+                    <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} className="form-input text-center text-xl font-black py-4 bg-[#F8F4F2]/30 h-16" />
+                    <span className="text-[#B2AAA6] font-black text-sm uppercase tracking-widest font-mono">To</span>
+                    <input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} className="form-input text-center text-xl font-black py-4 bg-[#F8F4F2]/30 h-16" />
+                 </div>
+               </div>
+
+               <div className="space-y-4">
+                 <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.2em] font-mono ml-4">Blacklist</label>
+                 <textarea 
+                   placeholder="Usernames to ignore..." 
+                   value={blacklist} 
+                   onChange={e => setBlacklist(e.target.value)}
+                   className="form-input min-h-[100px] text-base font-bold bg-[#F8F4F2]/30 py-4"
+                 />
+               </div>
             </div>
           </div>
 
-          {/* Section 5: Sequence Layers */}
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/20 overflow-hidden">
-            <div className="p-6 md:p-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-[#E1306C]">
-                  <Zap size={24} />
+          {/* Phase 5: Automatic Replies */}
+          <div className="bg-white rounded-[2.5rem] border border-[#B78D7D]/15 shadow-sm overflow-hidden group hover:shadow-[0_20px_40px_rgba(183,141,125,0.05)] transition-all">
+            <div className="p-8 border-b border-[#B78D7D]/10 flex items-center justify-between bg-[#F8F4F2]/30">
+              <div className="flex items-center gap-8">
+                <div className="w-16 h-16 bg-white border border-[#B78D7D]/10 text-purple-500 rounded-[1.5rem] flex items-center justify-center shadow-inner group-hover:rotate-12 duration-700">
+                  <Layers size={28} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900 tracking-tight">Follow-ups</h2>
-                  <p className="text-xs font-semibold text-gray-500">Automated sequences if no reply</p>
+                  <h2 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">Automatic Replies</h2>
+                  <p className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono mt-2">Follow up messages.</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={addFollowUp}
-                className="px-6 py-3 bg-pink-50 text-[#E1306C] font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#E1306C] hover:text-white transition-all flex items-center gap-2"
+                className="px-8 py-4 bg-[#B78D7D]/10 text-[#B78D7D] font-black text-[10px] uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#B78D7D] hover:text-white transition-all flex items-center gap-3 font-mono shadow-sm border border-[#B78D7D]/10 active:scale-95"
               >
-                <Plus size={16} /> Add Follow-up
+                <Plus size={18} /> Add Follow-up
               </button>
             </div>
-            <div className="p-8 md:p-10 space-y-8">
-              {followUps.length === 0 ? (
-                <div className="text-center py-10 opacity-30 italic font-medium text-gray-400 text-sm">
-                  No follow-ups added.
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {followUps.map((step, idx) => (
-                    <div key={idx} className="bg-gray-50/50 rounded-3xl border border-gray-100 p-8 relative group hover:bg-white hover:border-pink-100 transition-all shadow-sm">
+            
+            <div className="p-10 md:p-12 space-y-10">
+               {followUps.length === 0 ? (
+                 <div className="bg-[#F8F4F2]/50 rounded-[2.5rem] border border-dashed border-[#B78D7D]/30 py-20 flex flex-col items-center justify-center text-center opacity-40">
+                   <Activity size={48} className="text-[#B2AAA6] mb-6" />
+                   <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono">No follow-ups yet</p>
+                 </div>
+               ) : (
+                <div className="space-y-10">
+                   {followUps.map((step, idx) => (
+                    <div key={idx} className="bg-[#F8F4F2]/30 rounded-[2.5rem] border border-[#B78D7D]/10 p-8 relative group/step hover:border-[#B78D7D]/30 transition-all shadow-sm">
                        <button
                         type="button"
                         onClick={() => removeFollowUp(idx)}
-                        className="absolute top-6 right-6 p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                        className="absolute top-8 right-8 p-3 bg-white text-[#B2AAA6] hover:text-rose-500 hover:bg-rose-50 rounded-xl border border-[#B78D7D]/10 shadow-sm transition-all opacity-0 group-hover/step:opacity-100"
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={20} />
                       </button>
-                      <div className="flex flex-col md:flex-row gap-6 mb-6 justify-between items-start md:items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                        <div className="flex items-center gap-4 flex-wrap w-full md:w-auto">
-                           <div className="w-10 h-10 bg-gray-50 shadow-inner border border-gray-200 rounded-xl flex items-center justify-center font-black text-gray-400">{idx + 1}</div>
-                           <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-xl border border-gray-200">
-                              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Wait</span>
-                              <input
-                                type="number"
-                                min="1"
-                                value={step.delayValue}
-                                onChange={(e) => updateFollowUp(idx, "delayValue", e.target.value)}
-                                className="w-16 bg-white border border-gray-200 rounded-lg py-1 text-center font-black text-sm outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all shadow-sm block"
-                              />
-                              <select 
-                                value={step.delayUnit}
-                                onChange={(e) => updateFollowUp(idx, "delayUnit", e.target.value)}
-                                className="bg-white border border-gray-200 text-xs font-bold text-gray-700 rounded-lg py-1 px-2 outline-none appearance-none block"
-                              >
-                                <option value="minutes">Minutes</option>
-                                <option value="hours">Hours</option>
-                                <option value="days">Days</option>
-                              </select>
-                           </div>
-                        </div>
-
-                        <div className="flex flex-col md:w-auto w-full">
-                           <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Priority</div>
-                           <div className="flex gap-1.5 flex-wrap">
-                              {['story', 'highlight', 'message'].map((method) => {
-                                let stepPriority = step.executionPriority || ['story', 'highlight', 'message'];
-                                const isActive = stepPriority.includes(method);
-                                const priorityIndex = stepPriority.indexOf(method);
-                                return (
-                                  <div 
-                                    key={method}
-                                    onClick={() => {
-                                      if (isActive) {
-                                          if (stepPriority.length > 1) {
-                                              updateFollowUp(idx, "executionPriority", stepPriority.filter(m => m !== method));
-                                          }
-                                      } else {
-                                          updateFollowUp(idx, "executionPriority", [...stepPriority, method]);
-                                      }
-                                    }}
-                                    className={`px-3 py-1.5 rounded-lg border text-[10px] font-black cursor-pointer flex items-center gap-1 transition-all ${isActive ? 'bg-pink-50 border-pink-200 text-[#E1306C]' : 'bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100'}`}
+                      <div className="flex flex-col xl:flex-row gap-8 items-center mb-10">
+                         <div className="w-16 h-16 bg-white border border-[#B78D7D]/20 rounded-[1.25rem] flex items-center justify-center font-black text-[#B78D7D] text-2xl font-mono">
+                            {(idx + 1).toString().padStart(2, '0')}
+                         </div>
+                         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+                            <div className="space-y-3">
+                               <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono ml-4">Timing Delay</label>
+                               <div className="flex items-center gap-4 bg-white border border-[#B78D7D]/10 p-4 rounded-[1.25rem] shadow-sm">
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    value={step.delayValue}
+                                    onChange={(e) => updateFollowUp(idx, "delayValue", e.target.value)}
+                                    className="bg-transparent text-[#3E3A39] font-black text-xl w-16 text-center outline-none"
+                                  />
+                                  <div className="w-[1px] h-6 bg-[#B78D7D]/20" />
+                                  <select 
+                                    value={step.delayUnit}
+                                    onChange={(e) => updateFollowUp(idx, "delayUnit", e.target.value)}
+                                    className="bg-transparent border-none text-[10px] font-black text-[#B78D7D] outline-none uppercase tracking-widest cursor-pointer"
                                   >
-                                     <span className={`w-3 h-3 flex items-center justify-center rounded-sm ${isActive ? 'bg-[#E1306C] text-white' : 'bg-gray-300 text-gray-500'} text-[8px]`}>{isActive ? priorityIndex + 1 : '-'}</span>
-                                     <span className="capitalize">{method === 'message' ? 'DM' : method}</span>
-                                  </div>
-                                )
-                              })}
-                           </div>
-                        </div>
-
-                        <div className="flex items-center gap-1 flex-wrap">
-                          {availableVariables.map(v => (
-                            <button
-                              key={v}
-                              type="button"
-                              onClick={() => insertVariable(idx, v)}
-                              className="px-2 py-1 bg-white border border-gray-200 shadow-sm rounded-lg text-[10px] font-bold text-[#E1306C] hover:border-pink-300 hover:bg-pink-50 transition-all"
-                            >
-                              {v}
-                            </button>
-                          ))}
-                        </div>
+                                    <option value="minutes">Minutes</option>
+                                    <option value="hours">Hours</option>
+                                    <option value="days">Days</option>
+                                  </select>
+                               </div>
+                            </div>
+                            
+                            <div className="space-y-3">
+                               <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono ml-4">Priority</label>
+                               <div className="flex gap-2">
+                                  {['story', 'highlight', 'message'].map((method) => {
+                                    const stepPriority = step.executionPriority || ['story', 'highlight', 'message'];
+                                    const isStepActive = stepPriority.includes(method);
+                                    const stepIdx = stepPriority.indexOf(method);
+                                    return (
+                                      <div 
+                                        key={method}
+                                        onClick={() => {
+                                          if (isStepActive) {
+                                              if (stepPriority.length > 1) {
+                                                  updateFollowUp(idx, "executionPriority", stepPriority.filter(m => m !== method));
+                                              }
+                                          } else {
+                                              updateFollowUp(idx, "executionPriority", [...stepPriority, method]);
+                                          }
+                                        }}
+                                        className={`flex-1 py-3 text-center rounded-lg border transition-all cursor-pointer font-black text-[8px] uppercase tracking-widest ${isStepActive ? 'bg-[#B78D7D] border-[#B78D7D] text-white' : 'bg-white border-[#B78D7D]/10 text-[#B2AAA6]'}`}
+                                      >
+                                         {isStepActive ? (stepIdx + 1) : '--'} {method === 'message' ? 'DM' : method}
+                                      </div>
+                                    )
+                                  })}
+                               </div>
+                            </div>
+                         </div>
                       </div>
 
-                      <div className="mb-4">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between ml-4">
+                           <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono">Message Text</label>
+                        </div>
                         <textarea
                           value={step.media || step.mediaUrl ? "" : step.message}
                           onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
                           disabled={!!(step.media || step.mediaUrl)}
                           placeholder={step.media || step.mediaUrl ? "Media attached. Remove media to type message." : "Type follow-up message..."}
                           rows={3}
-                          className={`w-full border ${step.media || step.mediaUrl ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white border-gray-100 focus:ring-4 focus:ring-pink-100'} rounded-2xl p-6 text-sm font-medium outline-none transition-all resize-none shadow-sm`}
+                          className={`form-input p-6 text-base font-bold ${step.media || step.mediaUrl ? 'opacity-40 grayscale cursor-not-allowed' : ''}`}
                         />
                       </div>
 
-                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                         
-                         {/* Follow-up Attachments */}
-                         <div className="flex flex-wrap gap-2 items-center">
-                            <label className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border font-bold text-[10px] uppercase transition-all ${!(step.executionPriority || ['story', 'highlight', 'message']).includes('message') || (step.message && step.message.length > 0) ? 'bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed opacity-50' : 'bg-pink-50 text-[#E1306C] border-pink-100 hover:bg-pink-100'}`}>
-                               🎙️ Voice Note
-                               <input type="file" disabled={!(step.executionPriority || ['story', 'highlight', 'message']).includes('message') || (step.message && step.message.length > 0)} accept="audio/*" className="hidden" onChange={(e) => handleMediaUpload(e, idx)} />
+                      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mt-8 bg-white/50 p-6 rounded-[2rem] border border-[#B78D7D]/5">
+                         <div className="flex gap-3">
+                            <label className={`flex items-center gap-2 cursor-pointer px-5 py-2.5 rounded-xl border-2 border-dashed font-black text-[9px] uppercase tracking-widest transition-all ${step.message.length > 0 ? 'opacity-20' : 'bg-white border-[#B78D7D] text-[#B78D7D] hover:bg-[#B78D7D] hover:text-white'}`}>
+                               🎙️ Voice
+                               <input type="file" disabled={step.message.length > 0} accept="audio/*" className="hidden" onChange={(e) => handleMediaUpload(e, idx)} />
                             </label>
-                            <label className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border font-bold text-[10px] uppercase transition-all ${!(step.executionPriority || ['story', 'highlight', 'message']).includes('message') || (step.message && step.message.length > 0) ? 'bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed opacity-50' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'}`}>
-                               🎬 Video / Meme
-                               <input type="file" disabled={!(step.executionPriority || ['story', 'highlight', 'message']).includes('message') || (step.message && step.message.length > 0)} accept="video/*,image/*" className="hidden" onChange={(e) => handleMediaUpload(e, idx)} />
+                            <label className={`flex items-center gap-2 cursor-pointer px-5 py-2.5 rounded-xl border-2 border-dashed font-black text-[9px] uppercase tracking-widest transition-all ${step.message.length > 0 ? 'opacity-20' : 'bg-white border-[#B78D7D] text-[#B78D7D] hover:bg-[#B78D7D] hover:text-white'}`}>
+                               🎥 Media
+                               <input type="file" disabled={step.message.length > 0} accept="video/*,image/*" className="hidden" onChange={(e) => handleMediaUpload(e, idx)} />
                             </label>
-
-                            {step.mediaScanning && <span className="text-amber-500 text-[10px] font-bold animate-pulse">Scanning media...</span>}
-                            {step.media && !step.mediaScanning && (
-                               <div className="flex items-center gap-2 ml-2">
-                                  <span className="text-[10px] font-bold text-green-500 flex items-center gap-1"><ShieldCheck size={12}/> Safe</span>
-                                  <button type="button" onClick={() => updateFollowUp(idx, "media", null)} className="text-red-500 hover:text-red-600"><Trash2 size={12}/></button>
-                                  {step.media.type.startsWith('audio/') && <span className="text-xs">🎵 Audio attached</span>}
-                                  {step.media.type.startsWith('video/') && <span className="text-xs">🎥 Video attached</span>}
-                                  {step.media.type.startsWith('image/') && <span className="text-xs">🖼️ Image attached</span>}
-                               </div>
-                            )}
                          </div>
 
-                         {/* Advanced Toggle */}
                          <button
                            type="button"
                            onClick={() => updateFollowUp(idx, "showAdvanced", !step.showAdvanced)}
-                           className="flex items-center gap-1 px-4 py-2 bg-gray-900 text-white rounded-lg text-[10px] font-bold uppercase hover:bg-black transition-all shadow-md ml-auto"
+                           className="flex items-center gap-2 px-6 py-2.5 bg-[#3E3A39] text-white rounded-[1rem] text-[9px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-md ml-auto"
                          >
-                           <Settings size={14} /> Advanced Options {step.showAdvanced ? '▴' : '▾'}
+                           <Settings size={14} /> Advanced {step.showAdvanced ? '▴' : '▾'}
                          </button>
                       </div>
 
-                      {/* Advanced Tray natively rendering */}
                       {step.showAdvanced && (
-                        <div className="mt-4 p-6 bg-white border border-gray-200 rounded-2xl shadow-inner animate-in slide-in-from-top-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-                           <div className="space-y-2">
-                              <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Follow Action</label>
-                              <select value={step.followBehavior} onChange={e => updateFollowUp(idx, "followBehavior", e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold outline-none">
+                        <div className="mt-6 p-8 bg-white border border-[#B78D7D]/10 rounded-[2rem] shadow-inner grid grid-cols-1 md:grid-cols-3 gap-6">
+                           <div className="space-y-3">
+                              <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono ml-4">Follow Action</label>
+                              <select value={step.followBehavior} onChange={e => updateFollowUp(idx, "followBehavior", e.target.value)} className="form-input bg-[#F8F4F2]/30 text-[10px] h-12">
                                 <option value="none">Disabled</option>
                                 <option value="before">Before Message</option>
                                 <option value="after">After Message</option>
                               </select>
                            </div>
-                           <div className="space-y-2">
-                              <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Like Post</label>
-                              <select value={step.likeBehavior} onChange={e => updateFollowUp(idx, "likeBehavior", e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold outline-none">
+                           <div className="space-y-3">
+                              <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono ml-4">Like Post</label>
+                              <select value={step.likeBehavior} onChange={e => updateFollowUp(idx, "likeBehavior", e.target.value)} className="form-input bg-[#F8F4F2]/30 text-[10px] h-12">
                                 <option value="none">Disabled</option>
                                 <option value="before">Before Message</option>
                                 <option value="after">After Message</option>
                               </select>
                            </div>
-                           <div className="space-y-2">
-                              <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Comment Post</label>
-                              <select value={step.commentBehavior} onChange={e => updateFollowUp(idx, "commentBehavior", e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs font-bold outline-none">
+                           <div className="space-y-3">
+                              <label className="text-[9px] font-black text-[#B2AAA6] uppercase tracking-[0.3em] font-mono ml-4">Comment Post</label>
+                              <select value={step.commentBehavior} onChange={e => updateFollowUp(idx, "commentBehavior", e.target.value)} className="form-input bg-[#F8F4F2]/30 text-[10px] h-12">
                                 <option value="none">Disabled</option>
                                 <option value="before">Before Message</option>
                                 <option value="after">After Message</option>
@@ -925,107 +871,68 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                     </div>
                   ))}
                 </div>
-              )}
+               )}
             </div>
           </div>
 
-          {/* Section 6: AI Intelligence */}
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/20 overflow-hidden">
-             <div className="p-6 md:p-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-[#E1306C]">
-                    <Bot size={24} />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-gray-900 tracking-tight">AI Auto-Reply</h2>
-                    <p className="text-xs font-semibold text-gray-500">Hand over to AI after reply</p>
-                  </div>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer" 
-                    checked={enableAiAgent}
-                    onChange={(e) => setEnableAiAgent(e.target.checked)}
-                  />
-                  <div className="w-14 h-8 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#E1306C] shadow-inner transition-all border border-transparent peer-checked:border-pink-200"></div>
-                </label>
-             </div>
-             
-             {enableAiAgent && (
-               <div className="p-8 md:p-10 animate-in slide-in-from-top-4 duration-300">
-                  <div className="p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100 mb-6">
-                     <p className="text-xs font-medium text-indigo-800 leading-relaxed">
-                        <Info size={14} className="inline mr-2 -mt-0.5" />
-                        Selected AI Agent will take over the conversation after the initial message or reply. Ensure the agent is compatible with your campaign goals.
-                     </p>
-                  </div>
-                  
-                  <div className="space-y-3">
-                     <label className="text-xs font-bold text-gray-400 uppercase tracking-wide ml-1">Select Persona</label>
-                     <select
-                       value={selectedAgentId}
-                       onChange={(e) => setSelectedAgentId(e.target.value)}
-                       className="w-full bg-white border border-gray-200 rounded-2xl px-6 py-4 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500/30 transition-all font-bold text-gray-900 appearance-none"
-                     >
-                       <option value="">-- Choose an Agent --</option>
-                       {aiAgents.map(agent => (
-                         <option key={agent._id} value={agent._id}>{agent.name}</option>
-                       ))}
-                     </select>
-                  </div>
-               </div>
-             )}
-          </div>
-
-          {/* Section 7: Master Control */}
-          <div className="bg-[#1C0912] rounded-[2.5rem] border border-pink-900/30 shadow-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-10">
-             <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2 text-pink-400">
-                   <ShieldCheck size={20} />
-                   <h3 className="text-xs font-bold uppercase tracking-wide">Stop Settings</h3>
-                </div>
-                <h2 className="text-xl font-bold text-white mb-4">Stop on Reply</h2>
-                <div className="flex items-center justify-between p-6 bg-pink-950/20 rounded-3xl border border-pink-900/30">
-                   <div className="pr-4 text-left">
-                      <p className="text-sm font-bold text-pink-50">Stop on Reply</p>
-                      <p className="text-xs text-pink-400 mt-1 font-medium">Pause follow-ups if contact replies</p>
+          <div className="bg-[#3E3A39] rounded-[3rem] border border-[#B78D7D]/15 shadow-2xl p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden group/footer">
+             <div className="absolute top-0 right-0 w-[300px] h-full bg-[#B78D7D] opacity-[0.03] -rotate-12 translate-x-20" />
+             <div className="flex-1 relative z-10 w-full">
+                <div className="flex items-center gap-5 mb-8">
+                   <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-[1rem] flex items-center justify-center text-[#B78D7D]">
+                      <ShieldCheck size={28} />
                    </div>
-                   <label className="relative inline-flex items-center cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      className="sr-only peer" 
-                      checked={stopOnReply}
-                      onChange={(e) => setStopOnReply(e.target.checked)}
-                    />
-                    <div className="w-14 h-8 bg-pink-900/40 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#E1306C] border border-pink-800 transition-all shadow-inner"></div>
-                  </label>
+                   <div>
+                      <h3 className="text-2xl font-black text-white tracking-tighter uppercase leading-none">Activate Plan</h3>
+                      <p className="text-[9px] font-black text-[#B2AAA6] tracking-[0.3em] uppercase mt-2 font-mono">Control Activation</p>
+                   </div>
+                </div>
+                <div className="flex flex-col gap-6 mt-10">
+                   <div className="flex items-center justify-between p-8 bg-white/5 rounded-[2rem] border border-white/10 transition-all duration-700">
+                    <div className="pr-8 text-left">
+                       <p className="text-lg font-black text-white tracking-widest uppercase font-mono">Stop on reply</p>
+                       <p className="text-[10px] text-white/70 mt-2 uppercase font-black font-mono tracking-widest leading-relaxed">Auto-stop if they reply.</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                     <input 
+                       type="checkbox" 
+                       className="sr-only peer" 
+                       checked={stopOnReply}
+                       onChange={(e) => setStopOnReply(e.target.checked)}
+                     />
+                     <div className="w-16 h-8 bg-white/20 border border-white/30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white/60 after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-white peer-checked:after:bg-[#B78D7D] shadow-xl"></div>
+                   </label>
+                  </div>
                 </div>
              </div>
 
-             <div className="w-full md:w-auto flex flex-col gap-4 shrink-0">
+             <div className="w-full md:w-auto flex flex-col gap-5 shrink-0 relative z-10 lg:w-[400px]">
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-12 py-5 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white font-bold text-xs uppercase tracking-widest rounded-2xl hover:opacity-90 transition-all shadow-xl shadow-pink-900/40 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
+                  className="group/submit px-12 py-8 bg-[#B78D7D] text-white font-black text-xl uppercase tracking-[0.2em] rounded-[2.5rem] hover:bg-[#A37B6D] transition-all shadow-2xl flex flex-col items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
                 >
-                  {submitting ? "Creating..." : "Create Campaign"}
-                  <Camera size={18} />
+                   {submitting ? (
+                      <Loader2 className="animate-spin" size={32} />
+                   ) : (
+                      <div className="flex items-center gap-4">
+                         <span>Start Plan</span>
+                         <ArrowRight size={24} className="group-hover/submit:translate-x-2 transition-transform duration-700" />
+                      </div>
+                   )}
                 </button>
                 <button
                   type="button"
                   onClick={() => router.back()}
-                  className="px-12 py-4 bg-pink-950/20 text-pink-400 font-bold text-xs uppercase tracking-widest rounded-2xl hover:bg-pink-950/40 transition-all flex items-center justify-center border border-pink-900/20"
+                  className="px-12 py-5 bg-white/5 text-white/50 hover:text-white font-black text-[10px] uppercase tracking-[0.4em] rounded-[2rem] hover:bg-white/10 transition-all flex items-center justify-center border border-white/5 font-mono"
                 >
-                  Cancel
+                  Cancel Plan
                 </button>
              </div>
           </div>
 
         </form>
       </div>
-
-
     </div>
   );
 }

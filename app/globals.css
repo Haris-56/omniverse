@@ -1,101 +1,178 @@
 @import "tailwindcss";
 
+@layer base {
+  * {
+  font-style: normal !important;
+}
+
 :root {
-  --background: #f9fafb; /* gray-50 to match app background */
-  --foreground: #111822; /* gray-900 */
+    --background: #F8F4F2; /* Warm Neutral Off-white */
+    --foreground: #3E3A39; /* Deep Charcoal */
+    --accent-primary: #B78D7D; /* Tan/Copper Accent */
+    --accent-secondary: #8E7A70; /* Muted Taupe */
+    --surface: #FEFAF8; /* Soft Cream Surface */
+    --border-thin: 1px;
+    --border-thick: 1.5px;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--foreground);
+  }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Copper Harmony - Floating Soft Surface Aesthetic */
+.floating-glass {
+  background: var(--surface);
+  border: var(--border-thin) solid rgba(183, 141, 125, 0.1);
+  box-shadow: 0 20px 40px -10px rgba(62, 58, 57, 0.05);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Force light mode background unless explicitly changed to prevent "black line" at bottom */
-html, body {
-  background: var(--background);
-  color: var(--foreground);
-  overflow: hidden; /* Prevent body scroll, all scrolling should be inside ClientLayout */
+.floating-glass:hover {
+  border-color: rgba(183, 141, 125, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 40px 60px -15px rgba(62, 58, 57, 0.1);
 }
 
-/* Custom Scrollbar */
+/* Blueprint Grid Background */
+.grid-background {
+  background-image: 
+    linear-gradient(rgba(183, 141, 125, 0.03) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, rgba(183, 141, 125, 0.03) 1.5px, transparent 1.5px);
+  background-size: 50px 50px;
+}
+
+/* Custom Scrollbar for Copper Theme */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
+  height: 6px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
-  border-radius: 10px;
+  background: rgba(183, 141, 125, 0.2);
+  border-radius: 20px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #d1d5db;
+  background: rgba(183, 141, 125, 0.4);
 }
 
-/* Print Optimization */
-@media print {
-  @page {
-    margin: 20mm;
-  }
-  
-  html, body {
-    height: auto !important;
-    overflow: visible !important;
-    background: white !important;
-    color: black !important;
-  }
-
-  .print\:hidden {
-    display: none !important;
-  }
-
-  /* Force background colors for status pills and charts in PDF */
-  .bg-emerald-500\/10, .bg-rose-500\/10, .bg-blue-500\/10, .bg-indigo-500\/10, .bg-amber-500\/10, .bg-white\/5, .bg-indigo-500\/5, .bg-emerald-500\/5 {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-  
-  .bg-[#121214], .bg-[#0e0e10], .bg-[#050505], .bg-[#141006] { 
-    background-color: #f3f4f6 !important; /* Soft gray for dark containers in PDF */
-    border: 1px solid #e5e7eb !important;
-    color: black !important;
-  }
-  
-  .text-emerald-400 { color: #065f46 !important; }
-  .text-rose-400 { color: #9f1239 !important; }
-  .text-blue-400 { color: #1e40af !important; }
-  .text-indigo-300, .text-indigo-400 { color: #3730a3 !important; }
-  .text-amber-400 { color: #92400e !important; }
-  .text-white, .text-slate-200, .text-slate-300, .text-slate-400 { color: #1f2937 !important; }
-
-  /* Ensure tables look good */
-  table { 
-    border-collapse: collapse !important;
-    width: 100% !important;
-    border: 1px solid #e5e7eb !important;
-  }
-  th {
-    background-color: #f9fafb !important;
-    color: #4b5563 !important;
-    font-weight: bold !important;
-  }
-  td, th {
-    border: 1px solid #e5e7eb !important;
-    padding: 12px !important;
-  }
-
-  /* Elements that must remain black on white */
-  .border-white\/5, .border-white\/10, .border-indigo-500\/20, .border-emerald-500\/20 {
-    border-color: #d1d5db !important;
-  }
-
-  /* Layout tweaks */
-  .transition-all {
-    transition: none !important;
-  }
-  .shadow-2xl, .shadow-xl, .shadow-lg {
-    box-shadow: none !important;
-  }
+/* Input Fields - Warm Minimalist */
+input, textarea, select {
+  background-color: #FFF;
+  border: var(--border-thin) solid rgba(183, 141, 125, 0.2);
+  color: var(--foreground);
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+  outline: none;
 }
+
+input::placeholder, textarea::placeholder {
+  color: #B2AAA6;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent-primary);
+  background-color: #FFF;
+  box-shadow: 0 0 0 4px rgba(183, 141, 125, 0.1);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: white;
+  font-weight: 700;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-radius: 1rem;
+  transition: all 0.3s;
+  border: none;
+  box-shadow: 0 10px 25px -5px rgba(183, 141, 125, 0.4);
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+}
+
+.btn-primary:hover {
+  background-color: #A37C6D;
+  box-shadow: 0 15px 30px -5px rgba(183, 141, 125, 0.5);
+}
+
+.btn-secondary {
+  background-color: #FFF;
+  color: var(--accent-secondary);
+  font-weight: 700;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  transition: all 0.3s;
+  border: 1px solid rgba(183, 141, 125, 0.2);
+}
+
+.btn-secondary:hover {
+  background-color: var(--background);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.form-input {
+  width: 100%;
+  background-color: #FFF;
+  border: 1px solid rgba(183, 141, 125, 0.2);
+  border-radius: 1.5rem;
+  padding: 1rem 1.5rem;
+  color: var(--foreground);
+  font-weight: 600;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.form-input:focus, .active-input {
+  border-color: var(--accent-primary);
+  background-color: #FFF;
+  box-shadow: 0 0 0 4px rgba(183, 141, 125, 0.1);
+}
+
+/* Animation Utilities */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.2s ease-in-out 0s 2;
+}
+
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Card Glow Effects */
+.glow-emerald { box-shadow: 0 0 60px -15px rgba(16, 185, 129, 0.1); }
+.glow-purple { box-shadow: 0 0 60px -15px rgba(139, 92, 246, 0.1); }
+.glow-rose { box-shadow: 0 0 60px -15px rgba(244, 63, 94, 0.1); }
+.glow-amber { box-shadow: 0 0 60px -15px rgba(245, 158, 11, 0.1); }
+.glow-blue { box-shadow: 0 0 60px -15px rgba(59, 130, 246, 0.1); }

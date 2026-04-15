@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { LogOut, Power } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function LogoutButton() {
@@ -19,10 +19,12 @@ export default function LogoutButton() {
   return (
     <button 
       onClick={handleLogout}
-      className="flex items-center gap-3 text-slate-400 hover:text-red-600 font-bold text-sm transition-all group px-4 py-3 rounded-xl hover:bg-red-50 w-full"
+      className="flex items-center gap-5 text-[#B2AAA6] hover:text-rose-500 font-black text-[10px] uppercase tracking-[0.3em] transition-all group px-8 py-5 rounded-[1.75rem] hover:bg-rose-50 w-full border-2 border-transparent hover:border-rose-100 font-mono shadow-sm hover:shadow-md"
     >
-      <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
-      <span>Logout SysAdmin</span>
+      <div className="w-10 h-10 bg-[#F8F4F2] group-hover:bg-white rounded-xl flex items-center justify-center transition-all duration-500 group-hover:rotate-12">
+        <Power size={18} className="transition-transform group-hover:scale-110" />
+      </div>
+      <span className="italic">Sever_Link</span>
     </button>
   );
 }

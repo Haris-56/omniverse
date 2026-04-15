@@ -3,11 +3,13 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { 
   LayoutDashboard, Users, CreditCard, 
-  MapPin, Shield, Activity, LogOut, ChevronRight
+  MapPin, Shield, Activity, LogOut, ChevronRight,
+  ShieldCheck, Cpu, Globe, Zap, Hexagon
 } from "lucide-react";
 import Link from "next/link";
 import SidebarLink from "./SidebarLink";
 import LogoutButton from "./LogoutButton";
+
 
 export default async function SystemLayout({ children }) {
   // 1. Strict Auth Check
@@ -15,7 +17,6 @@ export default async function SystemLayout({ children }) {
   const token = cookieStore.get("system_admin_token")?.value;
 
   if (!token) {
-    console.log("[SystemLayout] Missing token, redirecting to /system-login");
     redirect("/system-login");
   }
 
@@ -26,69 +27,97 @@ export default async function SystemLayout({ children }) {
   });
 
   if (!session) {
-    console.log("[SystemLayout] Invalid or expired session instance, redirecting to /system-login");
     redirect("/system-login");
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex h-screen bg-[#F8F4F2] text-[#3E3A39] overflow-hidden font-sans grid-background relative">
+      
       {/* Sidebar - Dedicated System Admin Sidebar */}
-      <aside className="w-72 bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 z-50">
-        <div className="p-8">
-          <div className="flex items-center gap-3 mb-10">
-            <div className="w-12 h-12 bg-indigo-600 rounded-[1.25rem] flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-indigo-100">
-              Ω
-            </div>
+      <aside className="w-[280px] bg-white border-r border-[#B78D7D]/15 flex flex-col h-full shadow-[10px_0_30px_rgba(183,141,125,0.05)] relative z-50">
+        <div className="p-6 flex flex-col h-full">
+          <div className="flex flex-col items-center gap-4 mb-10 group cursor-pointer text-center">
+            <Link href="/" className="w-12 h-12 bg-[#B78D7D] rounded-xl flex items-center justify-center text-white shadow-lg group-hover:rotate-12 transition-all duration-500">
+               <ShieldCheck size={24} strokeWidth={2.5} />
+            </Link>
             <div>
-              <h1 className="text-xl font-black text-slate-900 tracking-tight">Omniverse</h1>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">System Admin</p>
+              <h1 className="text-xl font-bold text-[#3E3A39] uppercase tracking-wide">Omniverse</h1>
+              <p className="text-[10px] font-bold text-[#B78D7D] uppercase tracking-widest font-mono mt-1">System Admin</p>
             </div>
           </div>
 
-          <nav className="space-y-1.5">
-            <SidebarLink href="/system" icon={<LayoutDashboard size={18} />} label="Dashboard" />
-            <SidebarLink href="/system/users" icon={<Users size={18} />} label="User Management" />
-            <SidebarLink href="/system/plans" icon={<CreditCard size={18} />} label="Subscription Plans" />
-            <SidebarLink href="/system/ips" icon={<MapPin size={18} />} label="IP Management" />
-            <SidebarLink href="/system/settings" icon={<Shield size={18} />} label="System Limits" />
-            <SidebarLink href="/system/logs" icon={<Activity size={18} />} label="Audit Logs" />
+          <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
+            <h3 className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-widest mb-4 ml-4">Pages & Nav</h3>
+            <SidebarLink href="/" icon={<Globe size={18} />} label="Return to App" />
+            <div className="h-4"></div>
+            <h3 className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-widest mb-4 ml-4">System Settings</h3>
+            <SidebarLink href="/system" icon={<LayoutDashboard size={18} />} label="Dashboard Hub" />
+            <SidebarLink href="/system/users" icon={<Users size={18} />} label="User Registry" />
+            <SidebarLink href="/system/plans" icon={<CreditCard size={18} />} label="Service Matrix" />
+            <SidebarLink href="/system/ips" icon={<MapPin size={18} />} label="Proxy Ingress" />
+            <SidebarLink href="/system/settings" icon={<Shield size={18} />} label="Safety Protocol" />
+            <SidebarLink href="/system/logs" icon={<Activity size={18} />} label="Audit Records" />
           </nav>
+
+          <div className="mt-auto pt-6 border-t border-[#B78D7D]/10">
+{/* Removed operator display per request */}
+             <LogoutButton />
+          </div>
         </div>
 
-        <div className="mt-auto p-8 border-t border-slate-50">
-          <LogoutButton />
-        </div>
+        {/* Texture */}
+        <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0">
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col min-w-0 relative overflow-hidden">
         {/* Top Header */}
-        <header className="h-24 bg-white/80 backdrop-blur-md border-b border-slate-100 px-10 flex items-center justify-between sticky top-0 z-40">
-          <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Infrastructure Status</p>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-              <h2 className="text-sm font-black text-slate-900">System Monitoring Active</h2>
+        <header className="h-20 bg-[#F8F4F2]/80 backdrop-blur-md border-b border-[#B78D7D]/15 px-8 flex items-center justify-between sticky top-0 z-40 shadow-sm">
+          <div className="flex items-center gap-6">
+            <div className="hidden xl:flex items-center gap-3 px-4 py-2 bg-white border border-[#B78D7D]/15 rounded-full shadow-sm">
+               <div className="w-2 h-2 bg-[#B78D7D] rounded-full animate-pulse" />
+               <h2 className="text-[10px] font-bold text-[#B78D7D] uppercase tracking-wider">System Active</h2>
+            </div>
+            
+            <div className="h-8 w-[1px] bg-[#B78D7D]/20 hidden xl:block" />
+
+            <div>
+              <p className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider mb-1">Status</p>
+              <h2 className="text-sm font-bold text-[#3E3A39] uppercase tracking-wide flex items-center gap-2">
+                 <Cpu size={16} className="text-[#B78D7D]" />
+                 Authority Mode
+              </h2>
             </div>
           </div>
           
           <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-2xl border border-slate-100">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Node:</span>
-              <span className="text-[10px] font-black text-indigo-600 uppercase tracking-wider">Level 4 Administrator</span>
+            <div className="hidden md:flex flex-col text-right">
+              <span className="text-[10px] font-bold text-[#B2AAA6] uppercase tracking-wider">Latency</span>
+              <span className="text-sm font-bold text-[#3E3A39] flex items-center gap-2 justify-end mt-1">
+                 <Zap size={14} className="text-[#B78D7D]" />
+                 18ms
+              </span>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center font-black text-slate-400">
+            <div className="w-10 h-10 rounded-full bg-white border border-[#B78D7D]/20 flex items-center justify-center font-bold text-[#B78D7D] shadow-sm hover:bg-[#F8F4F2] cursor-pointer">
               {session.email.charAt(0).toUpperCase()}
             </div>
           </div>
         </header>
 
-        <div className="flex-1 p-10 lg:p-14">
-          <div className="max-w-[1600px] mx-auto">
+        <div className="flex-1 overflow-auto custom-scrollbar p-6 lg:p-12 relative">
+           {/* Floating Accents */}
+           <div className="absolute -top-32 -right-32 w-80 h-80 bg-[#B78D7D]/[0.05] rounded-full blur-[100px] pointer-events-none" />
+           <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-[#8E7A70]/[0.05] rounded-full blur-[100px] pointer-events-none" />
+           
+          <div className="w-full animate-in fade-in slide-in-from-bottom-5 duration-500">
             {children}
           </div>
         </div>
       </main>
+
+      {/* Decorative Text */}
+      {/* Decorative Text */}
+      <h2 className="fixed bottom-10 right-10 text-[10rem] font-black text-[#B78D7D]/[0.03] pointer-events-none select-none tracking-[0.5em] z-0 uppercase font-sans">Admin</h2>
     </div>
   );
 }
