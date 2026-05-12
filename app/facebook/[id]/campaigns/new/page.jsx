@@ -196,14 +196,14 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
   };
 
   if (loading) return (
-     <div className="h-screen w-full flex flex-col items-center justify-center bg-[#F8F4F2] space-y-10 text-center px-10 font-sans">
+     <div className="h-screen w-full flex flex-col items-center justify-center bg-[#FCF8FE] space-y-10 text-center px-10 font-sans">
         <div className="relative">
-           <div className="w-20 h-20 border-4 border-[#B78D7D]/10 border-t-[#B78D7D] rounded-full animate-spin shadow-sm" />
+           <div className="w-20 h-20 border-4 border-[#8245EF]/10 border-t-[#8245EF] rounded-full animate-spin shadow-sm" />
            <div className="absolute inset-0 flex items-center justify-center">
-              <Facebook size={32} className="text-[#B78D7D]" />
+              <Facebook size={32} className="text-[#8245EF]" />
            </div>
         </div>
-        <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] font-mono">Loading...</p>
+        <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono">Loading...</p>
      </div>
   );
 
@@ -212,38 +212,38 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
       <div className="max-w-[1700px] mx-auto space-y-16">
         
         {/* Header Sector */}
-        <div className="flex items-center gap-10 border-b border-[#B78D7D]/15 pb-12">
-          <Link href={`/facebook/${accountId}/campaigns`} className="p-5 bg-white border border-[#B78D7D]/10 rounded-[1.5rem] text-[#B2AAA6] hover:text-[#B78D7D] transition-all shadow-sm hover:bg-[#F8F4F2] group">
+        <div className="flex items-center gap-10 border-b border-[#8245EF]/15 pb-12">
+          <Link href={`/facebook/${accountId}/campaigns`} className="p-5 bg-white border border-[#8245EF]/10 rounded-[1.5rem] text-[#94a3b8] hover:text-[#8245EF] transition-all shadow-sm hover:bg-[#FCF8FE] group">
             <ChevronLeft size={28} className="group-hover:-translate-x-1 transition-transform" />
           </Link>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-4 mb-4">
-               <span className="px-5 py-2 bg-[#B78D7D]/10 text-[#B78D7D] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#B78D7D]/20 flex items-center gap-2 font-mono">
+               <span className="px-5 py-2 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono">
                  <ShieldCheck size={14} className="opacity-80" />
                  Ready to go
                </span>
             </div>
-            <h1 className="text-5xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">Make a Plan</h1>
-            <p className="text-[#8E7A70] mt-4 text-xl font-medium">Create a new way to talk to people on Facebook using <span className="text-[#B78D7D] font-black">{account?.email}</span></p>
+            <h1 className="text-5xl font-black text-[#161932] tracking-tighter uppercase leading-tight">Make a Plan</h1>
+            <p className="text-[#64748b] mt-4 text-xl font-medium">Create a new way to talk to people on Facebook using <span className="text-[#8245EF] font-black">{account?.email}</span></p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-16">
           
           {/* Section 1: Plan Details */}
-          <div className="bg-white rounded-[4rem] border border-[#B78D7D]/15 shadow-sm overflow-hidden relative group transition-all hover:shadow-[0_40px_80px_rgba(183,141,125,0.05)]">
-            <div className="p-12 border-b border-[#B78D7D]/10 flex items-center gap-8 bg-[#F8F4F2]/30">
-              <div className="w-16 h-16 bg-[#F8F4F2] border border-[#B78D7D]/10 text-[#B78D7D] rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
+          <div className="bg-white rounded-[4rem] border border-[#8245EF]/15 shadow-sm overflow-hidden relative group transition-all hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.05)]">
+            <div className="p-12 border-b border-[#8245EF]/10 flex items-center gap-8 bg-[#FCF8FE]/30">
+              <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 text-[#8245EF] rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
                 <Target size={32} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">Plan Details</h2>
-                <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono mt-3">Pick a name and a list of people.</p>
+                <h2 className="text-2xl font-black text-[#161932] tracking-tighter uppercase leading-none">Plan Details</h2>
+                <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono mt-3">Pick a name and a list of people.</p>
               </div>
             </div>
             <div className="p-12 md:p-16 grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-4">Name your plan</label>
+                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Name your plan</label>
                 <input
                   type="text"
                   value={name}
@@ -254,7 +254,7 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
                 />
               </div>
               <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-4">Who are we talking to?</label>
+                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Who are we talking to?</label>
                 <div className="relative">
                   <select
                     value={listId}
@@ -267,7 +267,7 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
                       <option key={list._id} value={list._id}>{list.name.toUpperCase()} — [{list.count} people]</option>
                     ))}
                   </select>
-                  <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#B2AAA6]">
+                  <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#94a3b8]">
                     <Layers size={22} />
                   </div>
                 </div>
@@ -276,22 +276,22 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
           </div>
 
           {/* Section 2: The Message */}
-          <div className="bg-white rounded-[4rem] border border-[#B78D7D]/15 shadow-sm overflow-hidden group hover:shadow-[0_40px_80px_rgba(183,141,125,0.05)] transition-all">
-            <div className="p-12 border-b border-[#B78D7D]/10 flex items-center justify-between bg-[#F8F4F2]/30">
+          <div className="bg-white rounded-[4rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.05)] transition-all">
+            <div className="p-12 border-b border-[#8245EF]/10 flex items-center justify-between bg-[#FCF8FE]/30">
               <div className="flex items-center gap-10">
-                <div className="w-16 h-16 bg-[#F8F4F2] border border-[#B78D7D]/10 text-[#B78D7D] rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:rotate-12 duration-700">
+                <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 text-[#8245EF] rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:rotate-12 duration-700">
                   <Cpu size={32} />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">The Message</h2>
-                  <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono mt-3">What do you want to say?</p>
+                  <h2 className="text-2xl font-black text-[#161932] tracking-tighter uppercase leading-none">The Message</h2>
+                  <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono mt-3">What do you want to say?</p>
                 </div>
               </div>
               {!showSaveTemplate ? (
                  <button
                    type="button"
                    onClick={() => setShowSaveTemplate(true)}
-                   className="px-8 py-4 bg-white border border-dashed border-[#B78D7D]/30 text-[#B2AAA6] font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:text-[#B78D7D] hover:border-[#B78D7D]/50 transition-all font-mono flex items-center gap-4"
+                   className="px-8 py-4 bg-white border border-dashed border-[#8245EF]/30 text-[#94a3b8] font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:text-[#8245EF] hover:border-[#8245EF]/50 transition-all font-mono flex items-center gap-4"
                  >
                    <Save size={18} /> Save as template
                  </button>
@@ -302,41 +302,41 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
                       value={templateName}
                       onChange={(e) => setTemplateName(e.target.value)}
                       placeholder="Template Name"
-                      className="px-6 py-3 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-xl text-[10px] font-black text-[#3E3A39] font-mono uppercase tracking-widest outline-none focus:border-[#B78D7D]"
+                      className="px-6 py-3 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-xl text-[10px] font-black text-[#161932] font-mono uppercase tracking-widest outline-none focus:border-[#8245EF]"
                     />
-                    <button type="button" onClick={handleSaveAsTemplate} className="px-6 py-3 bg-[#B78D7D] text-white text-[10px] font-black uppercase rounded-xl shadow-lg font-mono">Save</button>
-                    <button type="button" onClick={() => setShowSaveTemplate(false)} className="px-6 py-3 bg-white text-[#B2AAA6] text-[10px] font-black uppercase rounded-xl font-mono">Cancel</button>
+                    <button type="button" onClick={handleSaveAsTemplate} className="px-6 py-3 bg-[#8245EF] text-white text-[10px] font-black uppercase rounded-xl shadow-lg font-mono">Save</button>
+                    <button type="button" onClick={() => setShowSaveTemplate(false)} className="px-6 py-3 bg-white text-[#94a3b8] text-[10px] font-black uppercase rounded-xl font-mono">Cancel</button>
                  </div>
               )}
             </div>
             <div className="p-12 md:p-16 space-y-12">
                <div className="flex flex-col lg:flex-row gap-12">
                   <div className="flex-1 space-y-4">
-                     <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-4">Use a saved message</label>
+                     <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Use a saved message</label>
                      <div className="relative">
                         <select
                           onChange={(e) => handleApplyTemplate(e.target.value)}
-                          className="form-input appearance-none cursor-pointer pr-16 bg-[#F8F4F2]/30"
+                          className="form-input appearance-none cursor-pointer pr-16 bg-[#FCF8FE]/30"
                         >
                           <option value="">Start from scratch...</option>
                           {templates.map(t => (
                             <option key={t._id} value={t._id}>{t.name.toUpperCase()}</option>
                           ))}
                         </select>
-                        <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#B2AAA6]">
+                        <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#94a3b8]">
                            <Layers size={22} />
                         </div>
                      </div>
                   </div>
                   <div className="flex-1 space-y-4">
-                     <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-4">Insert details</label>
+                     <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Insert details</label>
                      <div className="flex flex-wrap gap-3">
                         {["First Name", "Last Name", "Company"].map(v => (
                           <button
                             key={v}
                             type="button"
                             onClick={() => insertVariable("main", `[[${v}]]`)}
-                            className="px-6 py-3 bg-[#F8F4F2]/50 border border-[#B78D7D]/10 rounded-xl text-[10px] font-black text-[#B78D7D] hover:text-white hover:bg-[#B78D7D] transition-all font-mono"
+                            className="px-6 py-3 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-xl text-[10px] font-black text-[#8245EF] hover:text-white hover:bg-[#8245EF] transition-all font-mono"
                           >
                             {v}
                           </button>
@@ -356,19 +356,19 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
           </div>
 
           {/* Section 3: When to send */}
-          <div className="bg-white rounded-[4rem] border border-[#B78D7D]/15 shadow-sm overflow-hidden group hover:shadow-[0_40px_80px_rgba(183,141,125,0.05)] transition-all">
-            <div className="p-12 border-b border-[#B78D7D]/10 flex items-center gap-8 bg-[#F8F4F2]/30">
-              <div className="w-16 h-16 bg-[#F8F4F2] border border-[#B78D7D]/10 text-amber-500 rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
+          <div className="bg-white rounded-[4rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.05)] transition-all">
+            <div className="p-12 border-b border-[#8245EF]/10 flex items-center gap-8 bg-[#FCF8FE]/30">
+              <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 text-amber-500 rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
                 <Clock size={32} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">When to send</h2>
-                <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono mt-3">Pick the speed and timezone.</p>
+                <h2 className="text-2xl font-black text-[#161932] tracking-tighter uppercase leading-none">When to send</h2>
+                <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono mt-3">Pick the speed and timezone.</p>
               </div>
             </div>
             <div className="p-12 md:p-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-4">Daily message limit</label>
+                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Daily message limit</label>
                 <div className="relative">
                   <input
                     type="number"
@@ -376,28 +376,28 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
                     max="100"
                     value={dailyLimit}
                     onChange={(e) => setDailyLimit(e.target.value)}
-                    className="form-input text-center text-4xl font-black py-8 bg-[#F8F4F2]/30"
+                    className="form-input text-center text-4xl font-black py-8 bg-[#FCF8FE]/30"
                   />
-                  <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-[#B78D7D] uppercase tracking-widest font-mono opacity-40">Limit</span>
+                  <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-[#8245EF] uppercase tracking-widest font-mono opacity-40">Limit</span>
                 </div>
               </div>
               <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-4">Wait between messages (Sec)</label>
+                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Wait between messages (Sec)</label>
                 <div className="flex items-center gap-6">
-                  <input type="number" min="10" value={minDelay} onChange={(e) => setMinDelay(e.target.value)} className="form-input text-center text-xl font-black py-5 bg-[#F8F4F2]/30" />
-                  <ArrowRight size={24} className="text-[#B2AAA6] shrink-0" />
-                  <input type="number" max="600" value={maxDelay} onChange={(e) => setMaxDelay(e.target.value)} className="form-input text-center text-xl font-black py-5 bg-[#F8F4F2]/30" />
+                  <input type="number" min="10" value={minDelay} onChange={(e) => setMinDelay(e.target.value)} className="form-input text-center text-xl font-black py-5 bg-[#FCF8FE]/30" />
+                  <ArrowRight size={24} className="text-[#94a3b8] shrink-0" />
+                  <input type="number" max="600" value={maxDelay} onChange={(e) => setMaxDelay(e.target.value)} className="form-input text-center text-xl font-black py-5 bg-[#FCF8FE]/30" />
                 </div>
               </div>
               <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono ml-4">Your Timezone</label>
+                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Your Timezone</label>
                 <div className="relative">
-                   <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="form-input appearance-none pr-16 bg-[#F8F4F2]/30 text-[#B78D7D]">
+                   <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="form-input appearance-none pr-16 bg-[#FCF8FE]/30 text-[#8245EF]">
                       {Intl.supportedValuesOf('timeZone').map(tz => (
                          <option key={tz} value={tz}>{tz.toUpperCase()}</option>
                       ))}
                    </select>
-                   <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#B2AAA6]">
+                   <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#94a3b8]">
                       <Globe size={22} />
                    </div>
                 </div>
@@ -406,57 +406,57 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
           </div>
 
           {/* Section 4: Follow up messages */}
-          <div className="bg-white rounded-[4rem] border border-[#B78D7D]/15 shadow-sm overflow-hidden group hover:shadow-[0_40px_80px_rgba(183,141,125,0.05)] transition-all">
-            <div className="p-12 border-b border-[#B78D7D]/10 flex items-center justify-between bg-[#F8F4F2]/30">
+          <div className="bg-white rounded-[4rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.05)] transition-all">
+            <div className="p-12 border-b border-[#8245EF]/10 flex items-center justify-between bg-[#FCF8FE]/30">
               <div className="flex items-center gap-10">
-                <div className="w-16 h-16 bg-[#F8F4F2] border border-[#B78D7D]/10 text-purple-500 rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:rotate-12 duration-700">
+                <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 text-purple-500 rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:rotate-12 duration-700">
                   <Zap size={32} />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">Follow up</h2>
-                  <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono mt-3">Send more messages automatically.</p>
+                  <h2 className="text-2xl font-black text-[#161932] tracking-tighter uppercase leading-none">Follow up</h2>
+                  <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono mt-3">Send more messages automatically.</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={addFollowUp}
-                className="px-10 py-5 bg-[#B78D7D]/10 text-[#B78D7D] font-black text-[10px] uppercase tracking-[0.5em] rounded-2xl hover:bg-[#B78D7D] hover:text-white transition-all flex items-center gap-4 font-mono shadow-sm active:scale-95"
+                className="px-10 py-5 bg-[#8245EF]/10 text-[#8245EF] font-black text-[10px] uppercase tracking-[0.5em] rounded-2xl hover:bg-[#8245EF] hover:text-white transition-all flex items-center gap-4 font-mono shadow-sm active:scale-95"
               >
                 <Plus size={18} /> Add a follow up
               </button>
             </div>
             <div className="p-12 md:p-16 space-y-12">
                {followUps.length === 0 ? (
-                 <div className="bg-[#F8F4F2]/50 rounded-[3.5rem] border border-dashed border-[#B78D7D]/30 py-24 flex flex-col items-center justify-center text-center opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-                   <Activity size={60} className="text-[#B2AAA6] mb-8" />
-                   <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] font-mono">No follow up messages yet</p>
+                 <div className="bg-[#FCF8FE]/50 rounded-[3.5rem] border border-dashed border-[#8245EF]/30 py-24 flex flex-col items-center justify-center text-center opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
+                   <Activity size={60} className="text-[#94a3b8] mb-8" />
+                   <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono">No follow up messages yet</p>
                  </div>
                ) : (
                  <div className="space-y-10">
                     {followUps.map((step, idx) => (
-                      <div key={idx} className="bg-[#F8F4F2]/30 rounded-[3.5rem] border border-[#B78D7D]/10 p-10 relative group/step hover:border-[#B78D7D]/30 transition-all shadow-sm">
+                      <div key={idx} className="bg-[#FCF8FE]/30 rounded-[3.5rem] border border-[#8245EF]/10 p-10 relative group/step hover:border-[#8245EF]/30 transition-all shadow-sm">
                         <button
                          type="button"
                          onClick={() => removeFollowUp(idx)}
-                         className="absolute top-10 right-10 p-4 bg-white text-[#B2AAA6] hover:text-rose-500 hover:bg-rose-50 rounded-2xl border border-[#B78D7D]/10 shadow-sm transition-all opacity-0 group-hover/step:opacity-100"
+                         className="absolute top-10 right-10 p-4 bg-white text-[#94a3b8] hover:text-rose-500 hover:bg-rose-50 rounded-2xl border border-[#8245EF]/10 shadow-sm transition-all opacity-0 group-hover/step:opacity-100"
                         >
                           <Trash2 size={24} />
                         </button>
                         <div className="flex flex-col md:flex-row gap-10 items-center mb-10">
-                           <div className="w-20 h-20 bg-white border border-[#B78D7D]/20 rounded-[2rem] flex items-center justify-center font-black text-[#B78D7D] text-2xl font-mono shadow-md">
+                           <div className="w-20 h-20 bg-white border border-[#8245EF]/20 rounded-[2rem] flex items-center justify-center font-black text-[#8245EF] text-2xl font-mono shadow-md">
                               {(idx + 1).toString().padStart(2, '0')}
                            </div>
                            <div className="flex items-center gap-6">
-                              <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] font-mono">Wait for:</p>
-                              <div className="flex items-center gap-4 bg-white border border-[#B78D7D]/10 p-4 rounded-2xl shadow-sm">
+                              <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono">Wait for:</p>
+                              <div className="flex items-center gap-4 bg-white border border-[#8245EF]/10 p-4 rounded-2xl shadow-sm">
                                  <input
                                     type="number"
                                     min="1"
                                     value={step.delayValue || step.delayDays}
                                     onChange={(e) => updateFollowUp(idx, "delayValue", e.target.value)}
-                                    className="bg-transparent text-[#3E3A39] font-black text-xl w-16 text-center outline-none"
+                                    className="bg-transparent text-[#161932] font-black text-xl w-16 text-center outline-none"
                                   />
-                                  <span className="text-[10px] font-black text-[#B78D7D] uppercase tracking-widest font-mono">Days</span>
+                                  <span className="text-[10px] font-black text-[#8245EF] uppercase tracking-widest font-mono">Days</span>
                               </div>
                            </div>
                         </div>
@@ -465,7 +465,7 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
                           onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
                           placeholder="What should this follow up message say?"
                           rows={4}
-                          className="form-input bg-white border-[#B78D7D]/10 focus:bg-white min-h-[150px] pt-8 text-lg shadow-sm"
+                          className="form-input bg-white border-[#8245EF]/10 focus:bg-white min-h-[150px] pt-8 text-lg shadow-sm"
                           required
                         />
                       </div>
@@ -476,7 +476,7 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
           </div>
 
           {/* Section 5: Start now */}
-          <div className="bg-[#B78D7D] rounded-[4rem] shadow-[0_40px_100px_rgba(183,141,125,0.2)] p-12 md:p-20 flex flex-col xl:flex-row items-center justify-between gap-16 relative overflow-hidden group">
+          <div className="bg-[#8245EF] rounded-[4rem] shadow-[0_40px_100px_rgba(130, 69, 239,0.2)] p-12 md:p-20 flex flex-col xl:flex-row items-center justify-between gap-16 relative overflow-hidden group">
              <div className="absolute -bottom-20 -right-20 p-10 opacity-10 grayscale group-hover:grayscale-0 transition-all duration-1000 rotate-12">
                 <Hexagon size={300} className="text-white" />
              </div>
@@ -499,7 +499,7 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
                       checked={stopOnReply}
                       onChange={(e) => setStopOnReply(e.target.checked)}
                     />
-                    <div className="w-16 h-9 bg-white/20 border border-white/30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white/50 after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-white peer-checked:after:bg-[#B78D7D] shadow-xl"></div>
+                    <div className="w-16 h-9 bg-white/20 border border-white/30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white/50 after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-white peer-checked:after:bg-[#8245EF] shadow-xl"></div>
                   </label>
                 </div>
              </div>
@@ -508,7 +508,7 @@ export default function NewFacebookCampaignPage({ params: paramsPromise }) {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-14 py-7 bg-white text-[#B78D7D] font-black text-[12px] uppercase tracking-[0.4em] rounded-[1.75rem] hover:bg-[#F8F4F2] transition-all shadow-2xl flex items-center justify-center gap-5 active:scale-95 disabled:opacity-50 font-mono"
+                  className="px-14 py-7 bg-white text-[#8245EF] font-black text-[12px] uppercase tracking-[0.4em] rounded-[1.75rem] hover:bg-[#FCF8FE] transition-all shadow-2xl flex items-center justify-center gap-5 active:scale-95 disabled:opacity-50 font-mono"
                 >
                   {submitting ? "Starting..." : "Run the Plan"}
                   <Rocket size={24} />

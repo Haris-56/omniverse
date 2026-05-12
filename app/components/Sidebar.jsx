@@ -69,7 +69,7 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
   ];
 
   return (
-    <div className="h-full w-full flex flex-col bg-[#B78D7D] font-sans border-r border-white/10 relative overflow-hidden text-white">
+    <div className="h-full w-full flex flex-col bg-[#FCF8FE] font-sans border-r border-[#161932]/10 relative overflow-hidden text-slate-700">
       
       {/* Visual Texture */}
       <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
@@ -77,17 +77,17 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
       {/* BRANDING HEADER */}
       <div className="p-6 pb-8 flex flex-col gap-4 relative z-10 text-center items-center">
         <div className="w-full flex justify-end xl:hidden">
-          <button onClick={onClose} className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all text-white">
+          <button onClick={onClose} className="p-2 bg-[#161932]/5 rounded-lg hover:bg-[#161932]/10 transition-all text-[#161932]">
             <X size={16} />
           </button>
         </div>
         <Link href="/" className="group cursor-pointer">
-           <div className="w-12 h-12 bg-white border-2 border-white/20 rounded-2xl flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-500">
-             <Hexagon size={24} strokeWidth={2.5} className="text-[#B78D7D] group-hover:rotate-12 transition-transform duration-700" />
+           <div className="w-12 h-12 bg-[#8245EF] rounded-xl flex items-center justify-center shadow-lg shadow-[#8245EF]/20 group-hover:scale-110 transition-transform duration-500">
+             <Hexagon size={24} strokeWidth={2.5} className="text-white group-hover:rotate-12 transition-transform duration-700" />
            </div>
         </Link>
         <div className="space-y-1">
-          <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/70">Omniverse</h2>
+          <h2 className="text-[12px] font-black uppercase tracking-[0.4em] text-[#161932]">Omniverse</h2>
         </div>
       </div>
 
@@ -95,27 +95,27 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
       <nav className="flex-1 overflow-y-auto px-4 py-2 space-y-8 custom-scrollbar relative z-10">
         {menu.map((section, sIdx) => (
           <div key={sIdx} className="space-y-3">
-             <h3 className="text-[8px] font-black text-white/40 uppercase tracking-[0.4em] px-4 font-mono">
+             <h3 className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] px-4 font-mono">
                {section.group}
              </h3>
              <div className="space-y-0.5">
                {section.items.map((item) => {
                  const isActive = active === item.route || (item.route !== '/' && active.startsWith(item.route));
                  return (
-                   <Link
+                     <Link
                      key={item.label}
                      href={item.route}
                      className={`group w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all font-mono border-2 ${
                        isActive
-                         ? "bg-white text-[#B78D7D] border-transparent shadow-[0_10px_20px_rgba(0,0,0,0.1)]"
-                         : "text-white/70 hover:bg-white/10 hover:text-white border-transparent"
+                         ? "bg-[#161932] text-white border-transparent shadow-lg"
+                         : "text-slate-500 hover:text-white hover:bg-[#161932] border-transparent"
                      }`}
                    >
-                     <div className={`transition-all ${isActive ? "scale-110 text-[#B78D7D]" : "text-white/50 group-hover:text-white group-hover:scale-110"}`}>
+                     <div className={`transition-all ${isActive ? "scale-110 text-[#8245EF]" : "text-slate-400 group-hover:text-[#8245EF] group-hover:scale-110"}`}>
                        {item.icon}
                      </div>
                      <span className="truncate">{item.label}</span>
-                     {isActive && <div className="ml-auto w-1 h-1 bg-[#B78D7D] rounded-full shadow-[0_0_5px_rgba(183,141,125,0.5)]" />}
+                     {isActive && <div className="ml-auto w-1.5 h-1.5 bg-[#8245EF] rounded-full shadow-[0_0_8px_rgba(130,69,239,0.8)]" />}
                    </Link>
                  );
                })}
@@ -125,10 +125,10 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
       </nav>
 
       {/* FOOTER branding */}
-      <div className="p-6 mt-auto relative z-10 text-center border-t border-white/10 bg-black/5 backdrop-blur-sm">
+      <div className="p-6 mt-auto relative z-10 text-center border-t border-[#161932]/10 bg-transparent">
         <div className="flex items-center justify-center gap-3">
-           <Activity size={12} className="text-white/60 animate-pulse" />
-           <p className="text-[8px] font-black text-white/40 tracking-[0.4em] uppercase font-mono">Everything is ready</p>
+           <Activity size={12} className="text-slate-400 animate-pulse" />
+           <p className="text-[8px] font-black text-slate-400 tracking-[0.4em] uppercase font-mono">Everything is ready</p>
         </div>
       </div>
     </div>

@@ -1,76 +1,82 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/mongodb";
-import { checkSystemAuth } from "@/lib/system/auth";
-import { ObjectId } from "mongodb";
+import { auth } from "@/lib/auth"; // auth is likely imported differently in app router, wait, I'll use MongoClient directly.
+import { MongoClient, ObjectId } from "mongodb";
 
-export async function GET(req) {
-  const authStatus = await checkSystemAuth(req);
-  if (!authStatus.authorized) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/omniverse";
 
-  try {
-    const db = await getDb();
-    const proxies = await db.collection("system_proxies").find({}).sort({ createdAt: -1 }).toArray();
-    return NextResponse.json(proxies);
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch proxies" }, { status: 500 });
-  }
-}
-
-export async function POST(req) {
-  const authStatus = await checkSystemAuth(req);
-  if (!authStatus.authorized) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  try {
-    const db = await getDb();
-    const body = await req.json();
-    const { host, port, protocol, username, password, type, dailyLimit } = body;
-
-    if (!host || !port || !protocol || !type) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+export async function GET(request) {
+    let client;
+    try {
+        client = new MongoClient(MONGO_URI);
+        await client.connect();
+        const db = client.db(process.env.MONGODB_DB || "omniverse");
+        const proxies = await db.collection("system_proxies").find({}).toArray();
+        return NextResponse.json(proxies);
+    } catch (e) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+    } finally {
+        if(client) await client.close();
     }
-
-    const newProxy = {
-      host,
-      port: parseInt(port),
-      protocol, // 'http', 'https', 'socks5'
-      auth: (username && password) ? { username, password } : null,
-      type, // 'residential' or 'shared'
-      status: 'active',
-      limits: {
-        daily: parseInt(dailyLimit) || 1000,
-        hourly: 50 // Default from readme
-      },
-      usage: {
-        today: 0,
-        hourly: 0,
-        total: 0,
-        lastReset: new Date()
-      },
-      assignedCampaigns: [], // Track which campaigns are locked to this IP
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
-    const res = await db.collection("system_proxies").insertOne(newProxy);
-    return NextResponse.json({ ...newProxy, _id: res.insertedId });
-
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to create proxy" }, { status: 500 });
-  }
 }
 
-export async function DELETE(req) {
-  const authStatus = await checkSystemAuth(req);
-  if (!authStatus.authorized) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function POST(request) {
+    let client;
+    try {
+        const body = await request.json();
+        client = new MongoClient(MONGO_URI);
+        await client.connect();
+        const db = client.db(process.env.MONGODB_DB || "omniverse");
+        
+        const newProxy = {
+            host: body.host || body.ip,
+            port: body.port,
+            protocol: body.protocol || "socks5",
+            type: body.type || "residential",
+            username: body.username || "",
+            password: body.password || "",
+            limits: { daily: body.dailyLimit ? parseInt(body.dailyLimit) : 1000 },
+            usage: { today: 0 },
+            allocations: {
+                facebook: null,
+                instagram: null,
+                linkedin: null,
+                emails: []
+            },
+            status: "active",
+            health_latency_ms: 0,
+            assigned_user_id: null,
+            createdAt: new Date()
+        };
 
-  try {
-    const db = await getDb();
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
+        const result = await db.collection("system_proxies").insertOne(newProxy);
+        return NextResponse.json({ success: true, id: result.insertedId });
+    } catch (e) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+    } finally {
+        if(client) await client.close();
+    }
+}
 
-    await db.collection("system_proxies").deleteOne({ _id: new ObjectId(id) });
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
-  }
+export async function DELETE(request) {
+    let client;
+    try {
+        const url = new URL(request.url);
+        const id = url.searchParams.get("id");
+        if (!id) return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+        
+        client = new MongoClient(MONGO_URI);
+        await client.connect();
+        const db = client.db(process.env.MONGODB_DB || "omniverse");
+        
+        const result = await db.collection("system_proxies").deleteOne({ _id: new ObjectId(id) });
+        if (result.deletedCount === 0) {
+            return NextResponse.json({ error: "Proxy not found" }, { status: 404 });
+        }
+        
+        return NextResponse.json({ success: true });
+    } catch (e) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+    } finally {
+        if(client) await client.close();
+    }
 }

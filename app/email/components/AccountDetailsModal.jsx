@@ -31,23 +31,23 @@ export default function AccountDetailsModal({ account, isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-[9999] p-4 lg:p-20 animate-in fade-in duration-500">
-      <div className="absolute inset-0 bg-[#3E3A39]/20 backdrop-blur-[60px]" onClick={handleBackdropClick} />
+      <div className="absolute inset-0 bg-[#161932]/20 backdrop-blur-[60px]" onClick={handleBackdropClick} />
       
-      <div className="bg-white rounded-[4rem] shadow-[0_50px_100px_rgba(183,141,125,0.15)] w-full max-w-7xl h-full overflow-hidden border border-[#B78D7D]/15 relative z-10 animate-in zoom-in-95 duration-500">
+      <div className="bg-white rounded-[4rem] shadow-[0_50px_100px_rgba(130, 69, 239,0.15)] w-full max-w-7xl h-full overflow-hidden border border-[#8245EF]/15 relative z-10 animate-in zoom-in-95 duration-500">
         
         {/* Decorative Texture */}
         <div className="absolute inset-0 opacity-[0.015] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
 
         {/* Modal Header */}
-        <div className="p-10 border-b border-[#B78D7D]/10 flex justify-between items-center bg-[#F8F4F2]/50 relative z-10">
+        <div className="p-10 border-b border-[#8245EF]/10 flex justify-between items-center bg-[#FCF8FE]/50 relative z-10">
           <div className="flex items-center gap-8">
-            <div className={`w-14 h-14 rounded-[1.5rem] flex items-center justify-center shadow-inner transition-all border border-[#B78D7D]/15 ${account.status === "Connected" ? 'bg-[#B78D7D] text-white' : 'bg-[#F8F4F2] text-rose-500'}`}>
+            <div className={`w-14 h-14 rounded-[1.5rem] flex items-center justify-center shadow-inner transition-all border border-[#8245EF]/15 ${account.status === "Connected" ? 'bg-[#8245EF] text-white' : 'bg-[#FCF8FE] text-rose-500'}`}>
               <Mail size={28} />
             </div>
             <div>
               <div className="flex items-center gap-4 mb-2">
-                <h2 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase">{account.email}</h2>
-                <span className="px-3 py-1 bg-white border border-[#B78D7D]/10 rounded-lg text-[9px] font-black text-[#B2AAA6] font-mono tracking-widest uppercase shadow-sm">
+                <h2 className="text-3xl font-black text-[#161932] tracking-tighter uppercase">{account.email}</h2>
+                <span className="px-3 py-1 bg-white border border-[#8245EF]/10 rounded-lg text-[9px] font-black text-[#94a3b8] font-mono tracking-widest uppercase shadow-sm">
                   SMTP_NODE
                 </span>
               </div>
@@ -59,7 +59,7 @@ export default function AccountDetailsModal({ account, isOpen, onClose }) {
               </div>
             </div>
           </div>
-          <button onClick={onClose} className="p-4 bg-white hover:bg-[#F8F4F2] rounded-2xl transition-all border border-[#B78D7D]/10 text-[#B2AAA6] hover:text-[#B78D7D] active:scale-90 shadow-sm">
+          <button onClick={onClose} className="p-4 bg-white hover:bg-[#FCF8FE] rounded-2xl transition-all border border-[#8245EF]/10 text-[#94a3b8] hover:text-[#8245EF] active:scale-90 shadow-sm">
             <X size={24} />
           </button>
         </div>
@@ -68,30 +68,30 @@ export default function AccountDetailsModal({ account, isOpen, onClose }) {
           {/* Quick Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
              {[
-               { label: 'Sent Units', val: '1.24k', icon: Send, color: 'text-[#B78D7D]' },
+               { label: 'Sent Units', val: '1.24k', icon: Send, color: 'text-[#8245EF]' },
                { label: 'Inbox Health', val: 'Active', icon: Inbox, color: 'text-emerald-500' },
-               { label: 'Node Sync', val: 'Stable', icon: ShieldCheck, color: 'text-[#B78D7D]' },
+               { label: 'Node Sync', val: 'Stable', icon: ShieldCheck, color: 'text-[#8245EF]' },
              ].map((m, i) => (
-               <div key={i} className="bg-[#F8F4F2]/50 rounded-[2.5rem] p-8 border border-[#B78D7D]/10 hover:border-[#B78D7D]/30 transition-all group shadow-inner">
-                  <div className={`${m.color} mb-6 bg-white w-12 h-12 rounded-2xl flex items-center justify-center border border-[#B78D7D]/15 shadow-sm group-hover:rotate-12 transition-transform`}>
+               <div key={i} className="bg-[#FCF8FE]/50 rounded-[2.5rem] p-8 border border-[#8245EF]/10 hover:border-[#8245EF]/30 transition-all group shadow-inner">
+                  <div className={`${m.color} mb-6 bg-white w-12 h-12 rounded-2xl flex items-center justify-center border border-[#8245EF]/15 shadow-sm group-hover:rotate-12 transition-transform`}>
                      <m.icon size={22} />
                   </div>
-                  <p className="text-3xl font-black text-[#3E3A39] mb-1.5 tracking-tighter leading-none">{m.val}</p>
-                  <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] font-mono">{m.label}</p>
+                  <p className="text-3xl font-black text-[#161932] mb-1.5 tracking-tighter leading-none">{m.val}</p>
+                  <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono">{m.label}</p>
                </div>
              ))}
           </div>
 
           <div className="space-y-8">
              <div className="flex items-center justify-between px-4">
-                <h3 className="text-[11px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] flex items-center gap-4 font-mono">
-                  <Activity size={18} className="text-[#B78D7D] animate-pulse" />
+                <h3 className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.5em] flex items-center gap-4 font-mono">
+                  <Activity size={18} className="text-[#8245EF] animate-pulse" />
                   Cluster_Broadcasting_Telemetry
                 </h3>
              </div>
 
              {account.status !== "Connected" ? (
-               <div className="text-center py-24 bg-[#F8F4F2]/30 rounded-[3.5rem] border border-dashed border-rose-500/20 text-rose-500">
+               <div className="text-center py-24 bg-[#FCF8FE]/30 rounded-[3.5rem] border border-dashed border-rose-500/20 text-rose-500">
                  <ShieldCheck size={56} className="mx-auto mb-8 opacity-20" />
                  <p className="text-sm font-black uppercase tracking-[0.4em] font-mono italic">Neural_Link_Severed</p>
                  <p className="text-xs mt-4 opacity-60 max-w-xs mx-auto font-bold">Re-calibrate SMTP handshake to restore automated outreach sequence.</p>
@@ -99,44 +99,44 @@ export default function AccountDetailsModal({ account, isOpen, onClose }) {
              ) : campaigns.length > 0 ? (
                <div className="grid grid-cols-1 gap-6">
                  {campaigns.map((camp) => (
-                   <div key={camp.id} className="group relative bg-white rounded-[3rem] border border-[#B78D7D]/10 p-10 hover:border-[#B78D7D]/30 hover:shadow-xl transition-all duration-700">
+                   <div key={camp.id} className="group relative bg-white rounded-[3rem] border border-[#8245EF]/10 p-10 hover:border-[#8245EF]/30 hover:shadow-xl transition-all duration-700">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10">
                          <div className="flex items-center gap-6">
-                           <div className={`w-16 h-16 rounded-[1.75rem] flex items-center justify-center border border-[#B78D7D]/10 shadow-inner ${camp.status === 'Running' ? 'bg-[#B78D7D]/10 text-[#B78D7D]' : 'bg-[#F8F4F2] text-[#B2AAA6]'}`}>
+                           <div className={`w-16 h-16 rounded-[1.75rem] flex items-center justify-center border border-[#8245EF]/10 shadow-inner ${camp.status === 'Running' ? 'bg-[#8245EF]/10 text-[#8245EF]' : 'bg-[#FCF8FE] text-[#94a3b8]'}`}>
                               {camp.status === 'Running' ? <PlayCircle size={32} /> : <PauseCircle size={32} />}
                            </div>
                            <div>
-                              <p className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-none">{camp.name}</p>
+                              <p className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none">{camp.name}</p>
                               <p className={`text-[10px] font-black uppercase tracking-[0.3em] mt-3 font-mono italic ${camp.status === 'Running' ? 'text-emerald-600' : 'text-amber-600'}`}>{camp.status === 'Running' ? 'ACTIVE_BROADCAST' : 'SYSTEM_PAUSE'}</p>
                            </div>
                          </div>
                          <div className="text-left md:text-right">
-                            <p className="text-4xl font-black text-[#3E3A39] tracking-tighter leading-none">{camp.sent}</p>
-                            <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] mt-2 font-mono italic">Units_Dispatched</p>
+                            <p className="text-4xl font-black text-[#161932] tracking-tighter leading-none">{camp.sent}</p>
+                            <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] mt-2 font-mono italic">Units_Dispatched</p>
                          </div>
                       </div>
 
                       <div className="space-y-4">
-                         <div className="flex justify-between text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.4em] px-2 font-mono italic">
+                         <div className="flex justify-between text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] px-2 font-mono italic">
                             <span>Saturation_Index</span>
-                            <span className="text-[#B78D7D]">{camp.progress}%</span>
+                            <span className="text-[#8245EF]">{camp.progress}%</span>
                          </div>
-                         <div className="h-4 w-full bg-[#F8F4F2] rounded-full overflow-hidden border border-[#B78D7D]/10 p-1 shadow-inner">
+                         <div className="h-4 w-full bg-[#FCF8FE] rounded-full overflow-hidden border border-[#8245EF]/10 p-1 shadow-inner">
                             <div 
-                              className={`h-full transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] rounded-full ${camp.status === 'Running' ? 'bg-[#B78D7D] shadow-[0_0_15px_rgba(183,141,125,0.4)]' : 'bg-[#B2AAA6]'}`}
+                              className={`h-full transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] rounded-full ${camp.status === 'Running' ? 'bg-[#8245EF] shadow-[0_0_15px_rgba(130, 69, 239,0.4)]' : 'bg-[#94a3b8]'}`}
                               style={{ width: `${camp.progress}%` }}
                             />
                          </div>
                       </div>
 
-                      <button className="absolute top-10 right-10 text-[#B2AAA6] hover:text-[#B78D7D] transition-colors active:scale-90">
+                      <button className="absolute top-10 right-10 text-[#94a3b8] hover:text-[#8245EF] transition-colors active:scale-90">
                          <ExternalLink size={22} />
                       </button>
                    </div>
                  ))}
                </div>
              ) : (
-               <div className="text-center py-24 bg-[#F8F4F2]/30 rounded-[3.5rem] border border-dashed border-[#B78D7D]/20 text-[#B2AAA6]">
+               <div className="text-center py-24 bg-[#FCF8FE]/30 rounded-[3.5rem] border border-dashed border-[#8245EF]/20 text-[#94a3b8]">
                  <Zap size={56} className="mx-auto mb-8 opacity-20" />
                  <p className="text-sm font-black uppercase tracking-[0.4em] font-mono italic">Empty_Cluster_Registry</p>
                  <p className="text-xs mt-4 opacity-60 max-w-xs mx-auto font-bold">Initiate a new neural sequence to activate real-time telemetry tracking.</p>
@@ -146,12 +146,12 @@ export default function AccountDetailsModal({ account, isOpen, onClose }) {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-10 bg-[#F8F4F2]/50 border-t border-[#B78D7D]/10 flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+        <div className="p-10 bg-[#FCF8FE]/50 border-t border-[#8245EF]/10 flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
            <div className="flex items-center gap-4">
               <ShieldCheck size={24} className="text-emerald-500" />
-              <span className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-[0.5em] font-mono italic">Node_Identity_Verified :: Protocol_L4_Secure</span>
+              <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono italic">Node_Identity_Verified :: Protocol_L4_Secure</span>
            </div>
-           <button onClick={onClose} className="w-full md:w-auto px-12 py-5 bg-[#B78D7D] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.4em] transition-all font-mono hover:bg-[#A37B6D] shadow-lg active:scale-95 border border-white/10">
+           <button onClick={onClose} className="w-full md:w-auto px-12 py-5 bg-[#8245EF] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.4em] transition-all font-mono hover:bg-[#6d28d9] shadow-lg active:scale-95 border border-white/10">
               Deactivate_Console
            </button>
         </div>

@@ -6,10 +6,10 @@
 }
 
 :root {
-    --background: #F8F4F2; /* Warm Neutral Off-white */
-    --foreground: #3E3A39; /* Deep Charcoal */
-    --accent-primary: #B78D7D; /* Tan/Copper Accent */
-    --accent-secondary: #8E7A70; /* Muted Taupe */
+    --background: #FCF8FE; /* Warm Neutral Off-white */
+    --foreground: #161932; /* Deep Charcoal */
+    --accent-primary: #8245EF; /* Tan/Copper Accent */
+    --accent-secondary: #64748b; /* Muted Taupe */
     --surface: #FEFAF8; /* Soft Cream Surface */
     --border-thin: 1px;
     --border-thick: 1.5px;
@@ -33,22 +33,22 @@
 /* Copper Harmony - Floating Soft Surface Aesthetic */
 .floating-glass {
   background: var(--surface);
-  border: var(--border-thin) solid rgba(183, 141, 125, 0.1);
-  box-shadow: 0 20px 40px -10px rgba(62, 58, 57, 0.05);
+  border: var(--border-thin) solid rgba(130, 69, 239, 0.1);
+  box-shadow: 0 20px 40px -10px rgba(22, 25, 50, 0.05);
   transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .floating-glass:hover {
-  border-color: rgba(183, 141, 125, 0.3);
+  border-color: rgba(130, 69, 239, 0.3);
   transform: translateY(-4px);
-  box-shadow: 0 40px 60px -15px rgba(62, 58, 57, 0.1);
+  box-shadow: 0 40px 60px -15px rgba(22, 25, 50, 0.1);
 }
 
 /* Blueprint Grid Background */
 .grid-background {
   background-image: 
-    linear-gradient(rgba(183, 141, 125, 0.03) 1.5px, transparent 1.5px),
-    linear-gradient(90deg, rgba(183, 141, 125, 0.03) 1.5px, transparent 1.5px);
+    linear-gradient(rgba(130, 69, 239, 0.03) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, rgba(130, 69, 239, 0.03) 1.5px, transparent 1.5px);
   background-size: 50px 50px;
 }
 
@@ -63,18 +63,18 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(183, 141, 125, 0.2);
+  background: rgba(130, 69, 239, 0.2);
   border-radius: 20px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(183, 141, 125, 0.4);
+  background: rgba(130, 69, 239, 0.4);
 }
 
 /* Input Fields - Warm Minimalist */
 input, textarea, select {
   background-color: #FFF;
-  border: var(--border-thin) solid rgba(183, 141, 125, 0.2);
+  border: var(--border-thin) solid rgba(130, 69, 239, 0.2);
   color: var(--foreground);
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -83,13 +83,13 @@ input, textarea, select {
 }
 
 input::placeholder, textarea::placeholder {
-  color: #B2AAA6;
+  color: #94a3b8;
 }
 
 input:focus, textarea:focus, select:focus {
   border-color: var(--accent-primary);
   background-color: #FFF;
-  box-shadow: 0 0 0 4px rgba(183, 141, 125, 0.1);
+  box-shadow: 0 0 0 4px rgba(130, 69, 239, 0.1);
 }
 
 /* Buttons */
@@ -104,7 +104,7 @@ input:focus, textarea:focus, select:focus {
   border-radius: 1rem;
   transition: all 0.3s;
   border: none;
-  box-shadow: 0 10px 25px -5px rgba(183, 141, 125, 0.4);
+  box-shadow: 0 10px 25px -5px rgba(130, 69, 239, 0.4);
 }
 
 .btn-primary:active {
@@ -112,8 +112,8 @@ input:focus, textarea:focus, select:focus {
 }
 
 .btn-primary:hover {
-  background-color: #A37C6D;
-  box-shadow: 0 15px 30px -5px rgba(183, 141, 125, 0.5);
+  background-color: #6d28d9;
+  box-shadow: 0 15px 30px -5px rgba(130, 69, 239, 0.5);
 }
 
 .btn-secondary {
@@ -123,7 +123,7 @@ input:focus, textarea:focus, select:focus {
   padding: 1rem 2rem;
   border-radius: 1rem;
   transition: all 0.3s;
-  border: 1px solid rgba(183, 141, 125, 0.2);
+  border: 1px solid rgba(130, 69, 239, 0.2);
 }
 
 .btn-secondary:hover {
@@ -135,7 +135,7 @@ input:focus, textarea:focus, select:focus {
 .form-input {
   width: 100%;
   background-color: #FFF;
-  border: 1px solid rgba(183, 141, 125, 0.2);
+  border: 1px solid rgba(130, 69, 239, 0.2);
   border-radius: 1.5rem;
   padding: 1rem 1.5rem;
   color: var(--foreground);
@@ -147,7 +147,7 @@ input:focus, textarea:focus, select:focus {
 .form-input:focus, .active-input {
   border-color: var(--accent-primary);
   background-color: #FFF;
-  box-shadow: 0 0 0 4px rgba(183, 141, 125, 0.1);
+  box-shadow: 0 0 0 4px rgba(130, 69, 239, 0.1);
 }
 
 /* Animation Utilities */

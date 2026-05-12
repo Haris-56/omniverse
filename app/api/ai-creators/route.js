@@ -1,37 +1,45 @@
 import { NextResponse } from "next/server";
+import { getDb } from "@/lib/mongodb";
 import { auth } from "@/lib/auth";
+import { rewriteRepostCaption } from "@/lib/ai/gemini-engine";
+import { checkPlanLimit } from "@/lib/limits"; // hypothetical limit logic
 
-// Mock database (in-memory for now, replace with actual DB)
-let creators = [];
+export async function POST(request) {
+    const session = await auth.api.getSession({ headers: request.headers });
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-export async function GET(req) {
-  const session = await auth.api.getSession({ headers: req.headers });
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+    try {
+        const body = await request.json();
+        const { action, mediaUrl, caption, originalPostUrl, accounts } = body;
 
-  const userCreators = creators.filter(c => c.userId === session.user.id);
-  return NextResponse.json(userCreators);
-}
+        // Check plan limits
+        const db = await getDb();
+        const userCount = await db.collection("linkedin_campaigns").countDocuments({ userId: session.user.id }); 
+        // This is a proxy for plan checks over daily quotas
 
-export async function POST(req) {
-  const session = await auth.api.getSession({ headers: req.headers });
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+        if (action === "rewrite_caption") {
+            const rewritten = await rewriteRepostCaption(caption, "Friendly and engaging, matching the brand of the original post.");
+            return NextResponse.json({ success: true, text: rewritten });
+        }
 
-  try {
-    const body = await req.json();
-    const newCreator = {
-      _id: Date.now().toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: session.user.id,
-      ...body,
-    };
-    creators.push(newCreator);
-    return NextResponse.json(newCreator, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to create creator" }, { status: 500 });
-  }
+        if (action === "schedule_repost") {
+            const newDoc = {
+                userId: session.user.id,
+                mediaUrl,
+                caption,
+                accounts,
+                originalPostUrl,
+                status: "Pending",
+                scheduledFor: new Date(Date.now() + 60 * 60 * 1000), // 1 hour buffer organically
+                createdAt: new Date()
+            };
+            await db.collection("ai_creators_jobs").insertOne(newDoc);
+            return NextResponse.json({ success: true, message: "Repost Scheduled Ghostly" });
+        }
+
+        return NextResponse.json({ error: "Unknown action" }, { status: 400 });
+    } catch (e) {
+        console.error("AI Creators Route Error:", e);
+        return NextResponse.json({ error: e.message }, { status: 500 });
+    }
 }

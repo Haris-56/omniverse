@@ -42,18 +42,18 @@ export default function ClientLayout({ children }) {
     pathname.includes("/campaign-builder/"); 
 
   return (
-    <div className="flex h-screen w-full relative overflow-hidden bg-[#F8F4F2] text-[#3E3A39] font-sans grid-background group/main">
+    <div className="flex h-screen w-full relative overflow-hidden bg-[#FCF8FE] text-[#161932] font-sans grid-background group/main">
       {!shouldHideSidebar && (
         <>
           {/* Mobile Overlay - High Z-Index */}
           <div 
-            className={`fixed inset-0 bg-[#3E3A39]/10 backdrop-blur-2xl z-[60] xl:hidden transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+            className={`fixed inset-0 bg-[#161932]/10 backdrop-blur-2xl z-[60] xl:hidden transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             onClick={() => setIsSidebarOpen(false)}
           />
 
           {/* Sidebar container - Standard width (240px) */}
           <aside className={`
-            fixed inset-y-0 left-0 z-[70] xl:relative transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col shadow-[15px_0_40px_rgba(183,141,125,0.04)] border-r border-[#B78D7D]/15 overflow-hidden
+            fixed inset-y-0 left-0 z-[70] xl:relative transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col shadow-[15px_0_40px_rgba(130, 69, 239,0.04)] border-r border-[#8245EF]/15 overflow-hidden
             ${isSidebarOpen ? "w-[240px] translate-x-0 opacity-100" : "w-0 -translate-x-full opacity-0 pointer-events-none"}
           `}>
              <div className="min-w-[240px] h-full flex flex-col">
@@ -71,12 +71,12 @@ export default function ClientLayout({ children }) {
         
         {!shouldHideSidebar && (
           <header className={`fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-10 z-[50] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isSidebarOpen ? 'xl:pl-[240px]' : 'xl:pl-0'} print:hidden`}>
-             <div className="absolute inset-0 bg-white/40 backdrop-blur-3xl border-b border-[#B78D7D]/15 shadow-sm" />
+             <div className="absolute inset-0 bg-white/40 backdrop-blur-3xl border-b border-[#8245EF]/15 shadow-sm" />
              
              <div className="flex items-center gap-6 relative z-10">
                 <button 
                   onClick={() => setIsSidebarOpen(prev => !prev)}
-                  className={`p-2 bg-[#B78D7D] text-white rounded-xl shadow-lg transition-all hover:bg-[#A37B6D] active:scale-95 flex items-center justify-center group border border-white/10`}
+                  className={`p-2 bg-[#8245EF] text-white rounded-xl shadow-lg transition-all hover:bg-[#6d28d9] active:scale-95 flex items-center justify-center group border border-white/10`}
                   title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
                   id="sidebar-toggle-trigger"
                 >
@@ -87,18 +87,18 @@ export default function ClientLayout({ children }) {
                   )}
                 </button>
                
-                 <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/50 border border-[#B78D7D]/15 rounded-lg text-[9px] font-black uppercase tracking-widest text-[#B78D7D] font-mono leading-none">
+                 <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/50 border border-[#8245EF]/15 rounded-lg text-[9px] font-black uppercase tracking-widest text-[#8245EF] font-mono leading-none">
                     <Activity size={10} className="animate-pulse" />
                     Live
                  </div>
              </div>
             
             <div className={`relative z-10 flex items-center gap-6`}>
-               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#B78D7D]/10 border border-[#B78D7D]/20 rounded-lg font-mono text-[9px] text-[#B78D7D] transition-all hover:bg-[#B78D7D]/20 shadow-sm leading-none">
+               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#8245EF]/10 border border-[#8245EF]/20 rounded-lg font-mono text-[9px] text-[#8245EF] transition-all hover:bg-[#8245EF]/20 shadow-sm leading-none">
                   <Zap size={10} className="animate-pulse" />
                   Stable
                </div>
-               <div className="p-0.5 bg-white rounded-full border border-[#B78D7D]/15 hover:border-[#B78D7D]/30 transition-all shadow-md">
+               <div className="p-0.5 bg-white rounded-full border border-[#8245EF]/15 hover:border-[#8245EF]/30 transition-all shadow-md">
                   <UserMenu />
                </div>
             </div>
@@ -106,7 +106,8 @@ export default function ClientLayout({ children }) {
         )}
         
         <div className={`transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] min-h-full ${!shouldHideSidebar ? 'pt-24 px-6 md:px-12 xl:px-16 pb-24' : ''}`}>
-          <div className="max-w-[1400px] mx-auto transition-all duration-700">
+          <div className="max-w-[1400px] mx-auto transition-all duration-700 relative">
+            <LockdownOverlay />
             {children}
           </div>
         </div>
@@ -115,10 +116,43 @@ export default function ClientLayout({ children }) {
       {/* Platform Branding Watermark */}
       <div className="fixed bottom-8 right-8 pointer-events-none opacity-[0.02] select-none z-0 hidden lg:block">
          <div className="flex items-center gap-4 grayscale">
-            <Hexagon size={60} strokeWidth={1} className="text-[#B78D7D]" />
-            <h1 className="text-[5rem] font-black font-sans -ml-4 tracking-tighter text-[#B78D7D]">OMNIVERSE</h1>
+            <Hexagon size={60} strokeWidth={1} className="text-[#8245EF]" />
+            <h1 className="text-[5rem] font-black font-sans -ml-4 tracking-tighter text-[#8245EF]">OMNIVERSE</h1>
          </div>
       </div>
     </div>
   );
+}
+
+import { authClient } from "@/lib/auth-client";
+import { Lock } from "lucide-react";
+
+function LockdownOverlay() {
+   const { data: session, isPending } = authClient.useSession();
+   const pathname = usePathname();
+   
+   if (isPending || !session) return null;
+
+   const isWhitelisted = pathname === "/login" || pathname === "/register" || pathname === "/onboarding";
+
+   // Implementation for Module 01: The Lockdown State
+   if (session.user?.status === "Locked" && !isWhitelisted) {
+      return (
+         <div className="absolute inset-0 z-[100] backdrop-blur-[30px] bg-[#FCF8FE]/80 flex items-center justify-center rounded-[3rem] p-10">
+            <div className="bg-white max-w-xl w-full rounded-[4rem] shadow-[0_50px_100px_rgba(130, 69, 239,0.15)] border border-[#8245EF]/20 p-16 text-center animate-in zoom-in-95 duration-500">
+               <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-10 border border-rose-100 shadow-inner">
+                  <Lock size={40} />
+               </div>
+               <h2 className="text-4xl font-black text-[#161932] tracking-tighter uppercase mb-6">Administrative Hold</h2>
+               <p className="text-[#64748b] text-[12px] uppercase tracking-widest font-mono font-black mb-12">
+                  Your node is currently <span className="text-rose-500">LOCKED</span> under the $0 Restricted Plan. Social accounts cannot be connected and campaigns cannot be launched. Please contact the System Administrator to activate this node.
+               </p>
+               <button className="w-full py-6 bg-[#8245EF] text-white font-black text-[12px] uppercase tracking-[0.5em] rounded-[2rem] shadow-[0_25px_50px_rgba(130, 69, 239,0.3)] hover:bg-[#6d28d9] transition-all flex items-center justify-center gap-4 font-mono active:scale-95">
+                  Contact Support
+               </button>
+            </div>
+         </div>
+      );
+   }
+   return null;
 }

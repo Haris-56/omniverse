@@ -22,6 +22,10 @@ async function runSocialWorker() {
         // Run Engines Sequentially (except LI which runs via BullMQ now)
         try { await processFacebookCampaigns(db); } catch (e) { console.error("Facebook Engine Error:", e); }
         try { await processInstagramCampaigns(db); } catch (e) { console.error("Instagram Engine Error:", e); }
+        try {
+            const { processNexusCampaigns } = await import('./lib/social-automation/nexus-orchestrator.js');
+            await processNexusCampaigns(db);
+        } catch (e) { console.error("Nexus Engine Error:", e); }
 
     } catch (err) {
         console.error("FATAL SOCIAL WORKER ERROR:", err);

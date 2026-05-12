@@ -58,28 +58,28 @@ export default function LinkedInPage() {
   };
 
   return (
-    <div className="w-full font-sans pb-32 p-6 md:p-10 lg:p-12 bg-[#F8F4F2]/30 min-h-screen">
+    <div className="w-full font-sans pb-32 p-6 md:p-10 lg:p-12 bg-[#FCF8FE]/30 min-h-screen">
       <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
       <div className="max-w-[1400px] mx-auto space-y-12">
         
         {/* Header Sector */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#B78D7D]/15 pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#8245EF]/15 pb-8">
           <div>
             <div className="flex items-center gap-3 mb-4">
-                 <span className="px-4 py-1.5 bg-[#B78D7D]/10 text-[#B78D7D] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#B78D7D]/20 flex items-center gap-2 font-mono">
+                 <span className="px-4 py-1.5 bg-[#8245EF]/10 text-[#8245EF] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono">
                  <ShieldCheck size={14} className="opacity-80" />
                  Verified
                </span>
             </div>
-            <h1 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">LinkedIn</h1>
-            <p className="text-[#8E7A70] mt-3 text-lg font-medium max-w-2xl leading-relaxed">Connect and manage your LinkedIn accounts safely.</p>
+            <h1 className="text-3xl font-black text-[#161932] tracking-tighter uppercase leading-tight">LinkedIn</h1>
+            <p className="text-[#64748b] mt-3 text-lg font-medium max-w-2xl leading-relaxed">Connect and manage your LinkedIn accounts safely.</p>
           </div>
           <button
             onClick={() => {
                 setSelectedAccount(null);
                 setIsConnectModalOpen(true);
             }}
-            className="group px-10 py-5 bg-[#B78D7D] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#A37B6D] transition-all shadow-[0_15px_30px_rgba(183,141,125,0.2)] flex items-center justify-center gap-3 active:scale-95 border border-white/10 font-mono"
+            className="group px-10 py-5 bg-[#8245EF] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#6d28d9] transition-all shadow-[0_15px_30px_rgba(130, 69, 239,0.2)] flex items-center justify-center gap-3 active:scale-95 border border-white/10 font-mono"
           >
             <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" />
             Connect Account
@@ -89,24 +89,24 @@ export default function LinkedInPage() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-40 space-y-8 text-center">
              <div className="relative">
-                <div className="animate-spin w-12 h-12 border-[4px] border-[#B78D7D]/10 border-t-[#B78D7D] rounded-full shadow-sm" />
+                <div className="animate-spin w-12 h-12 border-[4px] border-[#8245EF]/10 border-t-[#8245EF] rounded-full shadow-sm" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                   <Briefcase size={20} className="text-[#B78D7D] animate-pulse" />
+                   <Briefcase size={20} className="text-[#8245EF] animate-pulse" />
                 </div>
              </div>
-             <p className="text-[#B2AAA6] font-black uppercase tracking-[0.3em] font-mono text-[9px]">Syncing accounts...</p>
+             <p className="text-[#94a3b8] font-black uppercase tracking-[0.3em] font-mono text-[9px]">Syncing accounts...</p>
           </div>
         ) : accounts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2.5rem] border border-dashed border-[#B78D7D]/20 text-center shadow-sm p-12 max-w-3xl mx-auto relative overflow-hidden group">
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#B78D7D]/5 rounded-full blur-3xl group-hover:bg-[#B78D7D]/10 transition-colors" />
-            <div className="w-20 h-20 bg-[#F8F4F2] text-[#B78D7D] rounded-3xl flex items-center justify-center mb-8 shadow-inner">
+          <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2.5rem] border border-dashed border-[#8245EF]/20 text-center shadow-sm p-12 max-w-3xl mx-auto relative overflow-hidden group">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#8245EF]/5 rounded-full blur-3xl group-hover:bg-[#8245EF]/10 transition-colors" />
+            <div className="w-20 h-20 bg-[#FCF8FE] text-[#8245EF] rounded-3xl flex items-center justify-center mb-8 shadow-inner">
                <Linkedin size={40} />
             </div>
-            <h2 className="text-2xl font-black text-[#3E3A39] uppercase tracking-tighter">No Accounts</h2>
-            <p className="text-[#8E7A70] mt-4 max-w-md mx-auto leading-relaxed">Connect your LinkedIn profile to start outreach and networking automation.</p>
+            <h2 className="text-2xl font-black text-[#161932] uppercase tracking-tighter">No Accounts</h2>
+            <p className="text-[#64748b] mt-4 max-w-md mx-auto leading-relaxed">Connect your LinkedIn profile to start outreach and networking automation.</p>
             <button 
               onClick={() => setIsConnectModalOpen(true)}
-              className="mt-10 px-10 py-4 bg-[#B78D7D]/10 text-[#B78D7D] rounded-xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-[#B78D7D] hover:text-white transition-all border border-[#B78D7D]/20"
+              className="mt-10 px-10 py-4 bg-[#8245EF]/10 text-[#8245EF] rounded-xl font-black text-[10px] uppercase tracking-[0.3em] hover:bg-[#8245EF] hover:text-white transition-all border border-[#8245EF]/20"
             >
               Connect Profile
             </button>
@@ -117,11 +117,11 @@ export default function LinkedInPage() {
               <div 
                 key={account._id}
                 onClick={() => setSelectedAccount(account)}
-                className="group bg-white rounded-[2rem] border border-[#B78D7D]/10 shadow-sm hover:shadow-[0_20px_40px_rgba(183,141,125,0.08)] transition-all cursor-pointer relative overflow-hidden flex flex-col p-8"
+                className="group bg-white rounded-[2rem] border border-[#8245EF]/10 shadow-sm hover:shadow-[0_20px_40px_rgba(130, 69, 239,0.08)] transition-all cursor-pointer relative overflow-hidden flex flex-col p-8"
               >
                  <div className="flex items-start justify-between mb-8">
                     <div className="relative">
-                        <div className="w-16 h-16 rounded-[1.25rem] overflow-hidden border-4 border-[#F8F4F2] shadow-md group-hover:scale-110 transition-transform duration-500">
+                        <div className="w-16 h-16 rounded-[1.25rem] overflow-hidden border-4 border-[#FCF8FE] shadow-md group-hover:scale-110 transition-transform duration-500">
                            <img 
                              src={account.profilePicture || `https://ui-avatars.com/api/?name=${account.name}&background=B78D7D&color=fff`} 
                              alt={account.name}
@@ -135,14 +135,14 @@ export default function LinkedInPage() {
                     <div className="flex gap-2">
                        <button
                          onClick={(e) => handleReconnect(e, account)}
-                         className="p-3 bg-[#F8F4F2] text-[#B2AAA6] hover:text-[#B78D7D] rounded-xl hover:bg-[#B78D7D]/10 transition-all border border-[#B78D7D]/5 active:scale-90"
+                         className="p-3 bg-[#FCF8FE] text-[#94a3b8] hover:text-[#8245EF] rounded-xl hover:bg-[#8245EF]/10 transition-all border border-[#8245EF]/5 active:scale-90"
                          title="Reconnect"
                        >
                          <RefreshCw size={16} />
                        </button>
                        <button
                          onClick={(e) => handleDelete(e, account._id)}
-                         className="p-3 bg-[#F8F4F2] text-[#B2AAA6] hover:text-red-500 rounded-xl hover:bg-red-50 transition-all border border-[#B78D7D]/5 active:scale-90"
+                         className="p-3 bg-[#FCF8FE] text-[#94a3b8] hover:text-red-500 rounded-xl hover:bg-red-50 transition-all border border-[#8245EF]/5 active:scale-90"
                          title="Remove Account"
                        >
                          <Trash2 size={16} />
@@ -151,28 +151,28 @@ export default function LinkedInPage() {
                  </div>
 
                  <div className="space-y-1">
-                    <h3 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight group-hover:text-[#B78D7D] transition-colors line-clamp-1">{account.name}</h3>
-                    <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono line-clamp-1">{account.headline || "Professional LinkedIn User"}</p>
+                    <h3 className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-tight group-hover:text-[#8245EF] transition-colors line-clamp-1">{account.name}</h3>
+                    <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest font-mono line-clamp-1">{account.headline || "Professional LinkedIn User"}</p>
                  </div>
 
                  <div className="grid grid-cols-2 gap-3 mt-8">
-                    <div className="bg-[#F8F4F2]/50 p-4 rounded-2xl border border-[#B78D7D]/5 group-hover:bg-[#F8F4F2] transition-colors">
-                       <p className="text-[8px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Status</p>
+                    <div className="bg-[#FCF8FE]/50 p-4 rounded-2xl border border-[#8245EF]/5 group-hover:bg-[#FCF8FE] transition-colors">
+                       <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-widest font-mono mb-1">Status</p>
                        <div className="flex items-center gap-2">
                           <div className={`w-1.5 h-1.5 rounded-full ${account.status === "ACTIVE" ? "bg-emerald-500" : "bg-amber-500"} shadow-sm`} />
-                          <span className="text-[9px] font-black text-[#3E3A39] uppercase tracking-widest font-mono">{account.status}</span>
+                          <span className="text-[9px] font-black text-[#161932] uppercase tracking-widest font-mono">{account.status}</span>
                        </div>
                     </div>
-                    <div className="bg-[#F8F4F2]/50 p-4 rounded-2xl border border-[#B78D7D]/5 group-hover:bg-[#F8F4F2] transition-colors">
-                       <p className="text-[8px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Last Sync</p>
+                    <div className="bg-[#FCF8FE]/50 p-4 rounded-2xl border border-[#8245EF]/5 group-hover:bg-[#FCF8FE] transition-colors">
+                       <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-widest font-mono mb-1">Last Sync</p>
                        <div className="flex items-center gap-2">
-                          <Calendar size={10} className="text-[#B78D7D]" />
-                          <span className="text-[9px] font-black text-[#3E3A39] uppercase tracking-widest font-mono">{account.lastUsed ? new Date(account.lastUsed).toLocaleDateString() : "--"}</span>
+                          <Calendar size={10} className="text-[#8245EF]" />
+                          <span className="text-[9px] font-black text-[#161932] uppercase tracking-widest font-mono">{account.lastUsed ? new Date(account.lastUsed).toLocaleDateString() : "--"}</span>
                        </div>
                     </div>
                  </div>
 
-                 <div className="mt-8 pt-6 border-t border-[#B78D7D]/10 flex items-center justify-between">
+                 <div className="mt-8 pt-6 border-t border-[#8245EF]/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                        <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[8px] font-black uppercase tracking-widest border border-emerald-100">
                           <Activity size={10} /> Safe
@@ -180,7 +180,7 @@ export default function LinkedInPage() {
                     </div>
                     <button 
                       onClick={() => router.push(`/linkedin/${account._id}/campaigns`)}
-                      className="text-[9px] font-black text-[#B78D7D] uppercase tracking-widest font-mono flex items-center gap-2 group/btn"
+                      className="text-[9px] font-black text-[#8245EF] uppercase tracking-widest font-mono flex items-center gap-2 group/btn"
                     >
                        View Plans <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                     </button>

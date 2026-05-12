@@ -85,25 +85,25 @@ export default function AICreatorPage() {
   };
 
   return (
-    <div className="w-full font-sans pb-32 p-6 md:p-10 lg:p-12 bg-[#F8F4F2]/30 min-h-screen">
+    <div className="w-full font-sans pb-32 p-6 md:p-10 lg:p-12 bg-[#FCF8FE]/30 min-h-screen">
       <div className="animate-in fade-in slide-in-from-bottom-5 duration-1000">
       <div className="max-w-[1400px] mx-auto space-y-12">
         
         {/* Header Sector */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#B78D7D]/15 pb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#8245EF]/15 pb-8">
           <div>
             <div className="flex items-center gap-3 mb-4">
-               <span className="px-4 py-1.5 bg-[#B78D7D]/10 text-[#B78D7D] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#B78D7D]/20 flex items-center gap-2 font-mono">
+               <span className="px-4 py-1.5 bg-[#8245EF]/10 text-[#8245EF] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono">
                  <ShieldCheck size={14} className="opacity-80" />
                  Verified Personalities
                </span>
             </div>
-            <h1 className="text-3xl font-black text-[#3E3A39] tracking-tighter uppercase leading-tight">AI Creator</h1>
-            <p className="text-[#8E7A70] mt-3 text-lg font-medium max-w-2xl leading-relaxed">Create and manage your AI personas to generate unique content and interact naturally.</p>
+            <h1 className="text-3xl font-black text-[#161932] tracking-tighter uppercase leading-tight">AI Creator</h1>
+            <p className="text-[#64748b] mt-3 text-lg font-medium max-w-2xl leading-relaxed">Create and manage your AI personas to generate unique content and interact naturally.</p>
           </div>
           <button
             onClick={openCreateModal}
-            className="group px-10 py-5 bg-[#B78D7D] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#A37B6D] transition-all shadow-[0_15px_30px_rgba(183,141,125,0.2)] flex items-center justify-center gap-3 active:scale-95 border border-white/10 font-mono"
+            className="group px-10 py-5 bg-[#8245EF] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#6d28d9] transition-all shadow-[0_15px_30px_rgba(130, 69, 239,0.2)] flex items-center justify-center gap-3 active:scale-95 border border-white/10 font-mono"
           >
             <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" />
             Build New Persona
@@ -113,24 +113,24 @@ export default function AICreatorPage() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-40 space-y-8 text-center">
              <div className="relative">
-                <div className="animate-spin w-12 h-12 border-[4px] border-[#B78D7D]/10 border-t-[#B78D7D] rounded-full shadow-sm" />
+                <div className="animate-spin w-12 h-12 border-[4px] border-[#8245EF]/10 border-t-[#8245EF] rounded-full shadow-sm" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                   <Sparkles size={20} className="text-[#B78D7D] animate-pulse" />
+                   <Sparkles size={20} className="text-[#8245EF] animate-pulse" />
                 </div>
              </div>
-             <p className="text-[#B2AAA6] font-black uppercase tracking-[0.3em] font-mono text-[9px]">Initializing Identities...</p>
+             <p className="text-[#94a3b8] font-black uppercase tracking-[0.3em] font-mono text-[9px]">Initializing Identities...</p>
           </div>
         ) : creators.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2rem] border border-dashed border-[#B78D7D]/20 text-center shadow-lg p-16 max-w-3xl mx-auto relative overflow-hidden group">
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#B78D7D]/5 rounded-full blur-3xl group-hover:bg-[#B78D7D]/10 transition-colors" />
-            <div className="w-20 h-20 bg-[#F8F4F2] text-[#B78D7D] rounded-3xl flex items-center justify-center mb-8 shadow-inner">
+          <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2rem] border border-dashed border-[#8245EF]/20 text-center shadow-lg p-16 max-w-3xl mx-auto relative overflow-hidden group">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#8245EF]/5 rounded-full blur-3xl group-hover:bg-[#8245EF]/10 transition-colors" />
+            <div className="w-20 h-20 bg-[#FCF8FE] text-[#8245EF] rounded-3xl flex items-center justify-center mb-8 shadow-inner">
                <UserPlus size={44} />
             </div>
-            <h2 className="text-2xl font-black text-[#3E3A39] uppercase tracking-tighter">No Personalities</h2>
-            <p className="text-[#8E7A70] mt-4 max-w-md mx-auto leading-relaxed text-lg">Build an AI creator to help you generate posts, replies, and engage with your community effortlessly.</p>
+            <h2 className="text-2xl font-black text-[#161932] uppercase tracking-tighter">No Personalities</h2>
+            <p className="text-[#64748b] mt-4 max-w-md mx-auto leading-relaxed text-lg">Build an AI creator to help you generate posts, replies, and engage with your community effortlessly.</p>
             <button 
               onClick={openCreateModal}
-              className="mt-10 px-10 py-5 bg-[#B78D7D]/10 text-[#B78D7D] rounded-xl font-black text-[10px] uppercase tracking-[0.4em] hover:bg-[#B78D7D] hover:text-white transition-all border border-[#B78D7D]/20"
+              className="mt-10 px-10 py-5 bg-[#8245EF]/10 text-[#8245EF] rounded-xl font-black text-[10px] uppercase tracking-[0.4em] hover:bg-[#8245EF] hover:text-white transition-all border border-[#8245EF]/20"
             >
               Start Creating Now
             </button>
@@ -141,22 +141,22 @@ export default function AICreatorPage() {
               <div 
                 key={creator._id}
                 onClick={() => openEditModal(creator)}
-                className="group bg-white rounded-[2.5rem] border border-[#B78D7D]/10 shadow-sm hover:shadow-[0_20px_40px_rgba(183,141,125,0.08)] transition-all cursor-pointer relative overflow-hidden flex flex-col p-8"
+                className="group bg-white rounded-[2.5rem] border border-[#8245EF]/10 shadow-sm hover:shadow-[0_20px_40px_rgba(130, 69, 239,0.08)] transition-all cursor-pointer relative overflow-hidden flex flex-col p-8"
               >
                  <div className="flex items-start justify-between mb-8">
-                    <div className="w-14 h-14 bg-[#F8F4F2] text-[#B78D7D] rounded-2xl flex items-center justify-center border border-[#B78D7D]/10 group-hover:rotate-12 transition-transform duration-500 shadow-inner">
+                    <div className="w-14 h-14 bg-[#FCF8FE] text-[#8245EF] rounded-2xl flex items-center justify-center border border-[#8245EF]/10 group-hover:rotate-12 transition-transform duration-500 shadow-inner">
                        <PenTool size={28} />
                     </div>
                     <div className="flex gap-2">
                        <button
                          onClick={(e) => { e.stopPropagation(); openEditModal(creator); }}
-                         className="p-3 bg-[#F8F4F2] text-[#B2AAA6] hover:text-[#B78D7D] rounded-xl hover:bg-[#B78D7D]/10 transition-all border border-[#B78D7D]/5 active:scale-90"
+                         className="p-3 bg-[#FCF8FE] text-[#94a3b8] hover:text-[#8245EF] rounded-xl hover:bg-[#8245EF]/10 transition-all border border-[#8245EF]/5 active:scale-90"
                        >
                          <Edit2 size={16} />
                        </button>
                        <button
                          onClick={(e) => handleDelete(e, creator._id)}
-                         className="p-3 bg-[#F8F4F2] text-[#B2AAA6] hover:text-red-500 rounded-xl hover:bg-red-50 transition-all border border-[#B78D7D]/5 active:scale-90"
+                         className="p-3 bg-[#FCF8FE] text-[#94a3b8] hover:text-red-500 rounded-xl hover:bg-red-50 transition-all border border-[#8245EF]/5 active:scale-90"
                        >
                          <Trash2 size={16} />
                        </button>
@@ -164,51 +164,51 @@ export default function AICreatorPage() {
                  </div>
 
                  <div className="space-y-1">
-                    <h3 className="text-xl font-black text-[#3E3A39] tracking-tighter uppercase group-hover:text-[#B78D7D] transition-colors line-clamp-1">{creator.name}</h3>
-                    <p className="text-[10px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono">Style: {creator.style?.toUpperCase() || "NATURAL"}</p>
+                    <h3 className="text-xl font-black text-[#161932] tracking-tighter uppercase group-hover:text-[#8245EF] transition-colors line-clamp-1">{creator.name}</h3>
+                    <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest font-mono">Style: {creator.style?.toUpperCase() || "NATURAL"}</p>
                  </div>
 
                  <div className="mt-8 space-y-4 flex-1">
                     <div className="grid grid-cols-3 gap-3">
-                       <div className="p-3 bg-[#F8F4F2]/50 rounded-xl border border-[#B78D7D]/5 flex flex-col items-center gap-1">
-                          <Mic size={14} className="text-[#B78D7D]" />
-                          <span className="text-[8px] font-black text-[#B2AAA6] uppercase font-mono">Voice</span>
+                       <div className="p-3 bg-[#FCF8FE]/50 rounded-xl border border-[#8245EF]/5 flex flex-col items-center gap-1">
+                          <Mic size={14} className="text-[#8245EF]" />
+                          <span className="text-[8px] font-black text-[#94a3b8] uppercase font-mono">Voice</span>
                        </div>
-                       <div className="p-3 bg-[#F8F4F2]/50 rounded-xl border border-[#B78D7D]/5 flex flex-col items-center gap-1">
-                          <Layout size={14} className="text-[#B78D7D]" />
-                          <span className="text-[8px] font-black text-[#B2AAA6] uppercase font-mono">Visual</span>
+                       <div className="p-3 bg-[#FCF8FE]/50 rounded-xl border border-[#8245EF]/5 flex flex-col items-center gap-1">
+                          <Layout size={14} className="text-[#8245EF]" />
+                          <span className="text-[8px] font-black text-[#94a3b8] uppercase font-mono">Visual</span>
                        </div>
-                       <div className="p-3 bg-[#F8F4F2]/50 rounded-xl border border-[#B78D7D]/5 flex flex-col items-center gap-1">
-                          <Repeat size={14} className="text-[#B78D7D]" />
-                          <span className="text-[8px] font-black text-[#B2AAA6] uppercase font-mono">Logic</span>
+                       <div className="p-3 bg-[#FCF8FE]/50 rounded-xl border border-[#8245EF]/5 flex flex-col items-center gap-1">
+                          <Repeat size={14} className="text-[#8245EF]" />
+                          <span className="text-[8px] font-black text-[#94a3b8] uppercase font-mono">Logic</span>
                        </div>
                     </div>
                  </div>
 
                  <div className="grid grid-cols-2 gap-3 mt-8">
-                    <div className="bg-[#F8F4F2]/50 p-4 rounded-2xl border border-[#B78D7D]/5 group-hover:bg-[#F8F4F2] transition-colors">
-                       <p className="text-[8px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Knowledge</p>
+                    <div className="bg-[#FCF8FE]/50 p-4 rounded-2xl border border-[#8245EF]/5 group-hover:bg-[#FCF8FE] transition-colors">
+                       <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-widest font-mono mb-1">Knowledge</p>
                        <div className="flex items-center gap-2">
-                          <Database size={12} className="text-[#B78D7D]" />
-                          <span className="text-[10px] font-black text-[#3E3A39] tracking-widest font-mono">Linked</span>
+                          <Database size={12} className="text-[#8245EF]" />
+                          <span className="text-[10px] font-black text-[#161932] tracking-widest font-mono">Linked</span>
                        </div>
                     </div>
-                    <div className="bg-[#F8F4F2]/50 p-4 rounded-2xl border border-[#B78D7D]/5 group-hover:bg-[#F8F4F2] transition-colors">
-                       <p className="text-[8px] font-black text-[#B2AAA6] uppercase tracking-widest font-mono mb-1">Status</p>
+                    <div className="bg-[#FCF8FE]/50 p-4 rounded-2xl border border-[#8245EF]/5 group-hover:bg-[#FCF8FE] transition-colors">
+                       <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-widest font-mono mb-1">Status</p>
                        <div className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-sm" />
-                          <span className="text-[10px] font-black text-[#3E3A39] tracking-widest font-mono uppercase">Online</span>
+                          <span className="text-[10px] font-black text-[#161932] tracking-widest font-mono uppercase">Online</span>
                        </div>
                     </div>
                  </div>
 
-                 <div className="mt-8 pt-6 border-t border-[#B78D7D]/10 flex items-center justify-between">
+                 <div className="mt-8 pt-6 border-t border-[#8245EF]/10 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                       <span className="flex items-center gap-1.5 px-3 py-1 bg-[#B78D7D]/10 text-[#B78D7D] rounded-lg text-[8px] font-black uppercase tracking-widest border border-[#B78D7D]/10">
+                       <span className="flex items-center gap-1.5 px-3 py-1 bg-[#8245EF]/10 text-[#8245EF] rounded-lg text-[8px] font-black uppercase tracking-widest border border-[#8245EF]/10">
                           <Zap size={10} /> Active
                        </span>
                     </div>
-                    <button className="text-[9px] font-black text-[#B78D7D] uppercase tracking-widest font-mono flex items-center gap-2 group/btn">
+                    <button className="text-[9px] font-black text-[#8245EF] uppercase tracking-widest font-mono flex items-center gap-2 group/btn">
                        Manage Persona <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                     </button>
                  </div>

@@ -28,7 +28,7 @@ export async function POST(request) {
     const db = await getDb();
     const body = await request.json();
     
-    const { name, platform, blocks, status } = body;
+    const { name, listId, platform, blocks, status } = body;
 
     if (!name) {
       return NextResponse.json({ error: "Campaign name is required" }, { status: 400 });
@@ -37,6 +37,7 @@ export async function POST(request) {
     const newCampaign = {
       userId: session.user.id,
       name,
+      listId: listId || null,
       platform: platform || "facebook",
       status: status || "Draft",
       blocks: blocks || [], // Use blocks from request if provided
