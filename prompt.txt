@@ -1,0 +1,17 @@
+please go through all files in /omniverse folder (except node modeules)
+& figure out the following :
+1. Is everything is working condition ? is the project is 100% productions ready?
+2. what are the issues in this project ? what are the bugs in this project ? 
+3. how can i make it production ready ? 
+4. what are the logical issues that can cause any campaign like Instagram, linkedin, facebook, email or multichannel campaign to fail? is there any logical or any other error/ constraints in it ? is it production ready? to run campaigns for days, weeks, & even months? when sceduled
+5. is it scalable? can it run 10s of campaigns at the same time?
+6. Is AI-agent is fine to work completety autonomously? is there any prompt or logical error in it? can it open chat browser & reply affected to close the leads specifically ? can it reply in non ai, non salesy, very short, friendly, & ideal way to? & ask qualifying questions to move lead towrd whats the end goal?
+7. is AI-Creator can go look for new post of creators tht are set to track & repost or  make a non ai, super relistic humanoid kind of post? with proper spacing in texts/elements/ super readibility? 
+8. is all the campaigns are ready to run completely autonomously 24/7 without any human intervention for weeks & months? on server?
+9. is at /system (admin side) had all controls over each & everything? 
+10. Is the all campaigns automation is algorithms are best one or is designed perfectly to give all platforms algorithms a proper human non ai, non bot feel?
+11. is the system ready to deal with all kind of unexpected things like ip ban, account ban, or any other unexpected things?  
+12. if given the Ip can the system affectively retain session of tht specific ip?
+13. on social actions , when we move to new page, or some paticular action, even without tht , the platform show a popup, or anything like tht, can our system affectively detect & deal with it?
+14. when running the browser automation is our system uses a algorithm tht is not easily/ regularly can be detected by platforms algorithms?
+& give me detailed response to all of above in a /documentation folder by creating a new file so i can read!                
