@@ -87,16 +87,16 @@ export default function ClientLayout({ children }) {
                   )}
                 </button>
                
-                 <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/50 border border-[#8245EF]/15 rounded-lg text-[9px] font-black uppercase tracking-widest text-[#8245EF] font-mono leading-none">
+                 <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-green-50 border border-green-100 rounded-lg text-[10px] font-bold text-green-600 leading-none">
                     <Activity size={10} className="animate-pulse" />
-                    Live
+                    Active
                  </div>
              </div>
             
             <div className={`relative z-10 flex items-center gap-6`}>
-               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#8245EF]/10 border border-[#8245EF]/20 rounded-lg font-mono text-[9px] text-[#8245EF] transition-all hover:bg-[#8245EF]/20 shadow-sm leading-none">
+               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-100 rounded-lg text-[10px] font-bold text-green-600 transition-all shadow-sm leading-none">
                   <Zap size={10} className="animate-pulse" />
-                  Stable
+                  Active
                </div>
                <div className="p-0.5 bg-white rounded-full border border-[#8245EF]/15 hover:border-[#8245EF]/30 transition-all shadow-md">
                   <UserMenu />
@@ -143,11 +143,11 @@ function LockdownOverlay() {
                <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-10 border border-rose-100 shadow-inner">
                   <Lock size={40} />
                </div>
-               <h2 className="text-4xl font-black text-[#161932] tracking-tighter uppercase mb-6">Administrative Hold</h2>
-               <p className="text-[#64748b] text-[12px] uppercase tracking-widest font-mono font-black mb-12">
-                  Your node is currently <span className="text-rose-500">LOCKED</span> under the $0 Restricted Plan. Social accounts cannot be connected and campaigns cannot be launched. Please contact the System Administrator to activate this node.
+               <h2 className="text-3xl font-bold text-gray-900 mb-4">Account Locked</h2>
+               <p className="text-gray-500 text-sm font-bold mb-10">
+                  Your account is locked. You cannot connect accounts or start plans. Please contact support to unlock it.
                </p>
-               <button className="w-full py-6 bg-[#8245EF] text-white font-black text-[12px] uppercase tracking-[0.5em] rounded-[2rem] shadow-[0_25px_50px_rgba(130, 69, 239,0.3)] hover:bg-[#6d28d9] transition-all flex items-center justify-center gap-4 font-mono active:scale-95">
+               <button className="w-full py-5 bg-[#8245EF] text-white font-bold text-xs uppercase rounded-2xl shadow-lg hover:bg-[#6d28d9] transition-all flex items-center justify-center gap-2 active:scale-95">
                   Contact Support
                </button>
             </div>

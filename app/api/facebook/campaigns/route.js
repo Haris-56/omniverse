@@ -11,13 +11,26 @@ export async function GET(req) {
 
   try {
     const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
     const accountId = searchParams.get("accountId");
 
-    if (!accountId) {
-      return NextResponse.json({ error: "Account ID is required" }, { status: 400 });
+    const db = await getDb();
+
+    if (id) {
+      const campaign = await db.collection("facebook_campaigns").findOne({
+        _id: new ObjectId(id),
+        userId: session.user.id
+      });
+      if (!campaign) {
+        return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
+      }
+      return NextResponse.json(campaign);
     }
 
-    const db = await getDb();
+    if (!accountId) {
+      return NextResponse.json({ error: "Account ID or ID is required" }, { status: 400 });
+    }
+
     const campaigns = await db.collection("facebook_campaigns")
       .find({ 
         userId: session.user.id,
@@ -55,7 +68,9 @@ export async function POST(request) {
       hours, 
       sequences, 
       stopOnReply, 
-      blacklist 
+      blacklist,
+      aiCloserId,
+      aiAgentTargetType
     } = data;
 
     if (!accountId || !name || !listId || !message) {
@@ -76,10 +91,20 @@ export async function POST(request) {
       sequences: sequences || [],
       stopOnReply: !!stopOnReply,
       blacklist: blacklist || [],
+      aiCloserId: aiCloserId || "",
+      aiAgentTargetType: aiAgentTargetType || "leads_only",
       status: "Active",
       sentCount: 0,
       createdAt: new Date(),
     };
+
+    // Enforce 1 active campaign per account
+    if (newCampaign.status === "Active") {
+      await db.collection("facebook_campaigns").updateMany(
+        { accountId, status: "Active", userId: session.user.id },
+        { $set: { status: "Paused" } }
+      );
+    }
 
     const result = await db.collection("facebook_campaigns").insertOne(newCampaign);
     
@@ -99,15 +124,44 @@ export async function PATCH(request) {
 
   try {
     const db = await getDb();
-    const { id, status } = await request.json();
+    const data = await request.json();
+    const { id, status, name, listId, message, dailyLimit, minDelay, maxDelay, timezone, hours, sequences, stopOnReply, blacklist, aiCloserId, aiAgentTargetType } = data;
 
-    if (!id || !status) {
-      return NextResponse.json({ error: "ID and Status are required" }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+
+    const updateFields = {};
+    if (status !== undefined) updateFields.status = status;
+    if (name !== undefined) updateFields.name = name;
+    if (listId !== undefined) updateFields.listId = listId;
+    if (message !== undefined) updateFields.message = message;
+    if (dailyLimit !== undefined) updateFields.dailyLimit = parseInt(dailyLimit) || 1;
+    if (minDelay !== undefined) updateFields.minDelay = parseInt(minDelay) || 10;
+    if (maxDelay !== undefined) updateFields.maxDelay = parseInt(maxDelay) || 40;
+    if (timezone !== undefined) updateFields.timezone = timezone;
+    if (hours !== undefined) updateFields.hours = hours;
+    if (sequences !== undefined) updateFields.sequences = sequences;
+    if (stopOnReply !== undefined) updateFields.stopOnReply = !!stopOnReply;
+    if (blacklist !== undefined) updateFields.blacklist = blacklist;
+    if (aiCloserId !== undefined) updateFields.aiCloserId = aiCloserId;
+    if (aiAgentTargetType !== undefined) updateFields.aiAgentTargetType = aiAgentTargetType;
+    updateFields.updatedAt = new Date();
+
+    // Enforce 1 active campaign per account on status transition to Active
+    if (status === "Active") {
+      const existingCampaign = await db.collection("facebook_campaigns").findOne({ _id: new ObjectId(id), userId: session.user.id });
+      if (existingCampaign && existingCampaign.accountId) {
+        await db.collection("facebook_campaigns").updateMany(
+          { accountId: existingCampaign.accountId, status: "Active", userId: session.user.id, _id: { $ne: new ObjectId(id) } },
+          { $set: { status: "Paused" } }
+        );
+      }
     }
 
     const result = await db.collection("facebook_campaigns").updateOne(
       { _id: new ObjectId(id), userId: session.user.id },
-      { $set: { status, updatedAt: new Date() } }
+      { $set: updateFields }
     );
 
     if (result.matchedCount === 0) {

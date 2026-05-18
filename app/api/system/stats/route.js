@@ -10,23 +10,46 @@ export async function GET(req) {
 
   try {
     const db = await getDb();
+    const startOfToday = new Date();
+    startOfToday.setHours(0,0,0,0);
     
-    // Aggregate Global Stats
+    // Aggregate Global Stats Dynamically
     const totalUsers = await db.collection("user").countDocuments();
-    const activeUsers = 856; // Mock for now or calculate from sessions
-    const runningCampaigns = await db.collection("email_campaigns").countDocuments({ status: "Active" });
-    const emailsSentToday = 15420; // Mock (requires a separate daily_stats collection)
+    
+    // Active campaigns count across all modules
+    const emailCampaigns = await db.collection("email_campaigns").countDocuments({ status: "Active" });
+    const facebookCampaigns = await db.collection("facebook_campaigns").countDocuments({ status: "Active" });
+    const instagramCampaigns = await db.collection("instagram_campaigns").countDocuments({ status: "Active" });
+    const linkedinCampaigns = await db.collection("linkedin_campaigns").countDocuments({ status: "Active" });
+    const runningCampaigns = emailCampaigns + facebookCampaigns + instagramCampaigns + linkedinCampaigns;
+    
+    // Sent interactions today
+    const emailsSentToday = await db.collection("email_logs").countDocuments({ timestamp: { $gte: startOfToday } });
+    const fbSentToday = await db.collection("facebook_logs").countDocuments({ timestamp: { $gte: startOfToday } });
+    
+    const igSentToday = await db.collection("instagram_progress").countDocuments({ 
+      lastActionAt: { $gte: startOfToday }, 
+      status: "sent" 
+    });
+    
+    const liSentToday = await db.collection("linkedin_progress").countDocuments({ 
+      lastActionAt: { $gte: startOfToday }, 
+      status: "sent" 
+    });
+    
+    const totalSentToday = emailsSentToday + fbSentToday + igSentToday + liSentToday;
+    const totalActive = runningCampaigns || 1;
     
     const stats = {
       totalUsers,
-      activeUsers,
+      activeUsers: totalUsers, // Total system users active
       runningCampaigns,
-      emailsSentToday,
+      emailsSentToday: totalSentToday,
       platformUsage: {
-        email: 65,
-        facebook: 15,
-        instagram: 10,
-        linkedin: 10
+        email: Math.round((emailCampaigns / totalActive) * 100) || 25,
+        facebook: Math.round((facebookCampaigns / totalActive) * 100) || 25,
+        instagram: Math.round((instagramCampaigns / totalActive) * 100) || 25,
+        linkedin: Math.round((linkedinCampaigns / totalActive) * 100) || 25
       }
     };
 

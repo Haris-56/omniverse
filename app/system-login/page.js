@@ -90,48 +90,48 @@ export default function SystemLogin() {
            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.015] pointer-events-none group-hover:opacity-[0.03] transition-opacity" />
            
           <div className="text-center mb-16 relative z-10">
-            <div className="w-28 h-28 bg-[#FCF8FE] border-2 border-[#8245EF]/15 rounded-[3.5rem] flex items-center justify-center mx-auto mb-10 shadow-xl transition-all duration-700 group-hover:rotate-12 group-hover:border-[#8245EF] group-hover:scale-110">
+            <div className="w-28 h-28 bg-[#FCF8FE] border-2 border-gray-100 rounded-[3.5rem] flex items-center justify-center mx-auto mb-10 shadow-sm transition-all duration-700 group-hover:rotate-12 group-hover:border-[#8245EF]/30 group-hover:scale-110">
               <ShieldCheck size={48} className="text-[#8245EF]" />
             </div>
-            <h1 className="text-4xl lg:text-5xl font-black text-[#161932] tracking-tighter uppercase mb-6 leading-none italic">Admin_<span className="text-[#8245EF]">Sector</span></h1>
-            <p className="text-[#94a3b8] font-black uppercase tracking-[0.4em] text-[11px] font-mono italic opacity-60 leading-none">Infrastructure_Protection_Layer</p>
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">Admin Login</h1>
+            <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Secure Access</p>
           </div>
 
           {error && (
-            <div className="mb-12 p-8 bg-rose-50 border-2 border-rose-100 rounded-[2.5rem] flex items-center gap-6 text-rose-600 text-[11px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-top-4 font-mono shadow-sm relative z-10">
-              <AlertCircle size={24} className="shrink-0" />
+            <div className="mb-12 p-6 bg-rose-50 border border-rose-100 rounded-3xl flex items-center gap-4 text-rose-600 text-xs font-bold animate-in fade-in slide-in-from-top-4">
+              <AlertCircle size={20} className="shrink-0" />
               <span className="leading-relaxed">{error}</span>
             </div>
           )}
 
           {step === 1 ? (
             <form onSubmit={handleCredentials} className="space-y-12 relative z-10">
-              <div className="space-y-5">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] ml-8 font-mono italic">Authority_Identifier</label>
+              <div className="space-y-4">
+                <label className="text-xs font-bold text-gray-400 ml-4">Email</label>
                 <div className="relative group/field">
-                  <Mail className="absolute left-8 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/field:text-[#8245EF] transition-all" size={24} />
+                  <Mail className="absolute left-8 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/field:text-[#8245EF] transition-all" size={24} />
                   <input 
                     type="email" 
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ADMIN_NODE::SIGNATURE"
-                    className="w-full pl-22 pr-10 py-7 bg-[#FCF8FE]/50 border-2 border-transparent border-b-[#8245EF]/15 rounded-3xl text-[#161932] font-black placeholder:text-[#94a3b8] outline-none focus:border-b-[#8245EF] focus:bg-white transition-all font-mono text-base shadow-inner italic"
+                    placeholder="Admin Email"
+                    className="w-full pl-20 pr-10 py-6 bg-gray-50 border-2 border-transparent border-b-gray-100 rounded-3xl text-gray-900 font-bold placeholder:text-gray-300 outline-none focus:border-b-[#8245EF] focus:bg-white transition-all text-lg shadow-inner"
                   />
                 </div>
               </div>
 
-              <div className="space-y-5">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] ml-8 font-mono italic">Encryption_Secret</label>
+              <div className="space-y-4">
+                <label className="text-xs font-bold text-gray-400 ml-4">Password</label>
                 <div className="relative group/field">
-                  <Key className="absolute left-8 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/field:text-[#8245EF] transition-all" size={24} />
+                  <Key className="absolute left-8 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/field:text-[#8245EF] transition-all" size={24} />
                   <input 
                     type="password" 
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••••••"
-                    className="w-full pl-22 pr-10 py-7 bg-[#FCF8FE]/50 border-2 border-transparent border-b-[#8245EF]/15 rounded-3xl text-[#161932] font-black placeholder:text-[#94a3b8] outline-none focus:border-b-[#8245EF] focus:bg-white transition-all font-mono text-base shadow-inner"
+                    className="w-full pl-20 pr-10 py-6 bg-gray-50 border-2 border-transparent border-b-gray-100 rounded-3xl text-gray-900 font-bold placeholder:text-gray-300 outline-none focus:border-b-[#8245EF] focus:bg-white transition-all text-lg shadow-inner"
                   />
                 </div>
               </div>
@@ -139,38 +139,38 @@ export default function SystemLogin() {
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full py-8 bg-[#8245EF] hover:bg-[#6d28d9] text-white rounded-[2.5rem] font-black text-[11px] uppercase tracking-[0.5em] transition-all shadow-[0_25px_50px_rgba(130, 69, 239,0.3)] flex items-center justify-center gap-5 group font-mono active:scale-95 border border-white/10"
+                className="w-full py-6 bg-[#8245EF] hover:bg-[#6d28d9] text-white rounded-3xl font-bold text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95 border border-white/10"
               >
-                {loading ? <Loader2 size={28} className="animate-spin" /> : (
+                {loading ? <Loader2 size={24} className="animate-spin" /> : (
                   <>
-                    Initialize_Node_Auth
-                    <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform duration-500" />
+                    Login
+                    <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform duration-500" />
                   </>
                 )}
               </button>
             </form>
           ) : (
             <form onSubmit={handleVerify} className="space-y-12 relative z-10">
-              <div className="text-center p-10 bg-[#FCF8FE] rounded-[3.5rem] border border-[#8245EF]/15 mb-12 shadow-inner group/sync">
-                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 border border-emerald-100 shadow-sm transition-transform duration-700 group-hover/sync:rotate-12">
-                   <Shield size={32} className="text-emerald-500" />
+              <div className="text-center p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100 mb-10 shadow-inner group/sync">
+                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 border border-green-100 shadow-sm transition-transform duration-700 group-hover/sync:rotate-12">
+                   <Shield size={32} className="text-green-500" />
                 </div>
-                <p className="text-[#64748b] text-[11px] font-black leading-relaxed italic uppercase font-mono tracking-widest">
-                   Security cipher dispatched to master node. Synchronize 2FA registry.
+                <p className="text-gray-500 text-xs font-bold leading-relaxed">
+                   A security code has been sent to your email. Please enter it below.
                 </p>
               </div>
 
               <div className="space-y-6 text-center">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono italic block w-full">2FA_Encrypted_Cipher</label>
+                <label className="text-xs font-bold text-gray-400 block w-full">Security Code</label>
                 <div className="relative">
                   <input 
                     type="text" 
                     required
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
-                    placeholder="000 000"
+                    placeholder="000000"
                     maxLength={6}
-                    className="w-full px-10 py-10 bg-white border-2 border-[#8245EF]/20 rounded-[3rem] text-[#161932] text-center text-6xl font-black tracking-[0.4em] placeholder:text-[#FCF8FE]/50 outline-none focus:border-[#8245EF] transition-all font-mono shadow-xl italic"
+                    className="w-full px-8 py-8 bg-white border-2 border-gray-100 rounded-3xl text-gray-900 text-center text-5xl font-bold tracking-[0.2em] placeholder:text-gray-100 outline-none focus:border-[#8245EF] transition-all shadow-lg"
                   />
                   <div className="absolute -inset-2 bg-[#8245EF]/5 rounded-[3.5rem] -z-10 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity" />
                 </div>
@@ -179,23 +179,23 @@ export default function SystemLogin() {
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full py-8 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[2.5rem] font-black text-[11px] uppercase tracking-[0.5em] transition-all shadow-[0_25px_50px_rgba(16,185,129,0.2)] flex items-center justify-center gap-5 font-mono active:scale-95 border border-white/10"
+                className="w-full py-6 bg-green-500 hover:bg-green-600 text-white rounded-3xl font-bold text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95 border border-white/10"
               >
-                {loading ? <Loader2 size={28} className="animate-spin" /> : "Verify_Identity_Node"}
+                {loading ? <Loader2 size={24} className="animate-spin" /> : "Verify"}
               </button>
 
               <button 
                 type="button"
                 onClick={() => setStep(1)}
-                className="w-full py-2 text-[#94a3b8] font-black text-[10px] uppercase tracking-[0.5em] hover:text-[#8245EF] transition-colors font-mono italic leading-none"
+                className="w-full py-2 text-gray-400 font-bold text-[10px] uppercase tracking-widest hover:text-[#8245EF] transition-colors"
               >
-                Abort_Protocol_Return
+                Cancel
               </button>
             </form>
           )}
 
-          <div className="mt-20 pt-10 border-t border-[#FCF8FE] text-center">
-             <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono opacity-60 leading-none">Omniverse_Security_Group :: SECTOR_A3_INFRA</p>
+          <div className="mt-16 pt-8 border-t border-gray-50 text-center">
+             <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest opacity-60">Omniverse Security</p>
           </div>
         </div>
       </div>

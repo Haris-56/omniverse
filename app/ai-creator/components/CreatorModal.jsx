@@ -9,8 +9,12 @@ export default function CreatorModal({ isOpen, onClose, onSave, initialData }) {
     profilesToTrack: "",
     platform: "LinkedIn",
     tone: "Professional",
-    postType: "Repost", // or 'New Post'
+    postType: "Repost",
+    accountId: "",
+    competitors: "",
   });
+
+  const [connectedAccounts, setConnectedAccounts] = useState([]);
 
   useEffect(() => {
     if (initialData) {
@@ -22,9 +26,31 @@ export default function CreatorModal({ isOpen, onClose, onSave, initialData }) {
         platform: "LinkedIn",
         tone: "Professional",
         postType: "Repost",
+        accountId: "",
+        competitors: "",
       });
     }
   }, [initialData, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    async function fetchAccounts() {
+      try {
+        const plat = formData.platform.toLowerCase();
+        const res = await fetch(`/api/${plat}/accounts`);
+        if (res.ok) {
+          const data = await res.json();
+          setConnectedAccounts(data);
+          if (data.length > 0 && !formData.accountId) {
+            setFormData(prev => ({ ...prev, accountId: data[0]._id }));
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching connected accounts:", err);
+      }
+    }
+    fetchAccounts();
+  }, [formData.platform, isOpen]);
 
   if (!isOpen) return null;
 
@@ -86,20 +112,44 @@ export default function CreatorModal({ isOpen, onClose, onSave, initialData }) {
               </div>
             </div>
 
-            {/* Profiles to Track */}
+            {/* Select Connected Account */}
             <div className="space-y-4">
               <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] ml-2 font-mono">
-                Who are you talking to? <span className="text-[8px] font-black text-[#94a3b8] normal-case opacity-50">(Describe your customers)</span>
+                Select Connected Profile
+              </label>
+              <div className="relative group">
+                <select
+                  name="accountId"
+                  value={formData.accountId}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-[#FCF8FE]/50 border-2 border-transparent border-b-[#8245EF]/10 rounded-2xl pl-16 pr-12 py-5 text-base font-bold text-[#161932] outline-none focus:border-b-[#8245EF] focus:bg-white transition-all appearance-none cursor-pointer shadow-inner"
+                >
+                  <option value="">-- Choose Connected Profile --</option>
+                  {connectedAccounts.map((acc) => (
+                    <option key={acc._id} value={acc._id}>
+                      {acc.username || acc.email} ({acc.status || 'Connected'})
+                    </option>
+                  ))}
+                </select>
+                <UserPlus className="absolute left-6 top-1/2 -translate-y-1/2 text-[#8245EF]/40 group-focus-within:text-[#8245EF]" size={22} />
+              </div>
+            </div>
+
+            {/* Competitor Profile URLs / Handles */}
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] ml-2 font-mono">
+                Competitor Handles or URLs (Up to 5, comma-separated)
               </label>
               <div className="relative group">
                 <textarea
-                  name="profilesToTrack"
-                  value={formData.profilesToTrack}
+                  name="competitors"
+                  value={formData.competitors || ""}
                   onChange={handleChange}
                   required
-                  rows={3}
+                  rows={2}
                   className="w-full bg-[#FCF8FE]/50 border-2 border-transparent border-b-[#8245EF]/10 rounded-[2rem] pl-16 pr-8 py-6 text-base font-bold text-[#161932] outline-none focus:border-b-[#8245EF] focus:bg-white transition-all resize-none custom-scrollbar shadow-inner"
-                  placeholder="Describe your customers here..."
+                  placeholder="e.g. @competitor1, @competitor2, https://instagram.com/competitor3"
                 />
                 <AtSign className="absolute left-6 top-7 text-[#8245EF]/40 group-focus-within:text-[#8245EF]" size={22} />
               </div>

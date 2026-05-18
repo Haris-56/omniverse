@@ -43,13 +43,13 @@ export async function POST(request) {
     }
 
     // Format for automation usage (flatten auth)
-    const proxy = {
+    const proxy = assignedProxyDoc ? {
         host: assignedProxyDoc.host,
         port: assignedProxyDoc.port,
         protocol: assignedProxyDoc.protocol,
         username: assignedProxyDoc.auth?.username,
         password: assignedProxyDoc.auth?.password
-    };
+    } : null;
 
     // Check if account already exists for this user
     const existing = await db.collection("instagram_accounts").findOne({ 

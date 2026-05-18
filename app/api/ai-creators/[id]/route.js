@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
+import { getDb } from "@/lib/mongodb";
 import { auth } from "@/lib/auth";
-
-// Mock database reference (should access the same source as the main route)
-// For this session, we'll assume the same in-memory array is accessible or re-declared
-// NOTE: In a real app, this would query a database. For this mock, we can't easily share 
-// the `creators` array across modules in Next.js app router without a singleton or proper DB.
-// I will implement a simple simulation where we "find" it if it were a DB.
+import { ObjectId } from "mongodb";
 
 export async function PUT(req, { params }) {
   const session = await auth.api.getSession({ headers: req.headers });
@@ -16,12 +12,31 @@ export async function PUT(req, { params }) {
   try {
     const { id } = await params;
     const body = await req.json();
+    const db = await getDb();
     
-    // Simulating DB update with user check
-    // In a real scenario: await db.collection('creators').updateOne({ _id: id, userId: session.user.id }, { $set: body })
+    const { name, platform, tone, postType, accountId, competitors, status } = body;
+    const updateFields = {};
+    if (name !== undefined) updateFields.name = name;
+    if (platform !== undefined) updateFields.platform = platform;
+    if (tone !== undefined) updateFields.tone = tone;
+    if (postType !== undefined) updateFields.postType = postType;
+    if (accountId !== undefined) updateFields.accountId = accountId;
+    if (competitors !== undefined) updateFields.competitors = competitors;
+    if (status !== undefined) updateFields.status = status;
+    updateFields.updatedAt = new Date();
+
+    const result = await db.collection('ai_creators').updateOne(
+      { _id: new ObjectId(id), userId: session.user.id },
+      { $set: updateFields }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json({ error: "Creator not found" }, { status: 404 });
+    }
     
     return NextResponse.json({ ...body, _id: id, updatedAt: new Date(), userId: session.user.id });
   } catch (error) {
+    console.error("PUT AI Creator Error:", error);
     return NextResponse.json({ error: "Failed to update creator" }, { status: 500 });
   }
 }
@@ -34,12 +49,20 @@ export async function DELETE(req, { params }) {
 
   try {
     const { id } = await params;
+    const db = await getDb();
     
-    // Simulating DB delete with user check
-    // In a real scenario: await db.collection('creators').deleteOne({ _id: id, userId: session.user.id })
+    const result = await db.collection('ai_creators').deleteOne({
+      _id: new ObjectId(id),
+      userId: session.user.id
+    });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: "Creator not found" }, { status: 404 });
+    }
 
     return NextResponse.json({ message: "Creator deleted" });
   } catch (error) {
+    console.error("DELETE AI Creator Error:", error);
     return NextResponse.json({ error: "Failed to delete creator" }, { status: 500 });
   }
 }

@@ -25,7 +25,7 @@ import {
 export default function DashboardPage() {
   const sections = [
     {
-      label: "Your Success Today",
+      label: "Today's Work",
       icon: <Activity size={18} />,
       cards: [
         {
@@ -37,7 +37,7 @@ export default function DashboardPage() {
           color: "copper"
         },
         {
-          title: "New Leads Found",
+          title: "People Found",
           value: "723",
           trend: "+5.2%",
           trendUp: true,
@@ -45,7 +45,7 @@ export default function DashboardPage() {
           color: "rose"
         },
         {
-          title: "Reply Rate",
+          title: "Replies",
           value: "05%",
           trend: "-1.2%",
           trendUp: false,
@@ -55,17 +55,17 @@ export default function DashboardPage() {
       ]
     },
     {
-      label: "Facebook Work",
+      label: "Facebook",
       icon: <Facebook size={18} />,
       cards: [
         {
-          title: "Accounts Connected",
+          title: "Accounts",
           value: "02",
           icon: <Facebook size={24} />,
           color: "blue"
         },
         {
-          title: "Messages Sent",
+          title: "Messages",
           value: "145",
           trend: "+8.4%",
           trendUp: true,
@@ -73,7 +73,7 @@ export default function DashboardPage() {
           color: "blue"
         },
         {
-          title: "Reply Chance",
+          title: "Replies",
           value: "03%",
           icon: <Users size={24} />,
           color: "blue"
@@ -81,17 +81,17 @@ export default function DashboardPage() {
       ]
     },
     {
-      label: "Instagram Work",
+      label: "Instagram",
       icon: <Instagram size={18} />,
       cards: [
         {
-          title: "Accounts Connected",
+          title: "Accounts",
           value: "04",
           icon: <Instagram size={24} />,
           color: "purple"
         },
         {
-          title: "Messages Sent",
+          title: "Messages",
           value: "256",
           trend: "+15.2%",
           trendUp: true,
@@ -99,7 +99,7 @@ export default function DashboardPage() {
           color: "purple"
         },
         {
-          title: "Reply Chance",
+          title: "Replies",
           value: "02%",
           icon: <Users size={24} />,
           color: "purple"
@@ -107,17 +107,17 @@ export default function DashboardPage() {
       ]
     },
     {
-      label: "LinkedIn Work",
+      label: "LinkedIn",
       icon: <Linkedin size={18} />,
       cards: [
         {
-          title: "Accounts Connected",
+          title: "Accounts",
           value: "01",
           icon: <Linkedin size={24} />,
           color: "sky"
         },
         {
-          title: "Invites Sent",
+          title: "Invites",
           value: "78",
           trend: "+2.1%",
           trendUp: true,
@@ -125,7 +125,7 @@ export default function DashboardPage() {
           color: "sky"
         },
         {
-          title: "Acceptance Rate",
+          title: "Accepted",
           value: "15%",
           icon: <Users size={24} />,
           color: "sky"
@@ -133,17 +133,17 @@ export default function DashboardPage() {
       ]
     },
     {
-      label: "Email Work",
+      label: "Email",
       icon: <Mail size={18} />,
       cards: [
         {
-          title: "Accounts Connected",
+          title: "Accounts",
           value: "02",
           icon: <Mail size={24} />,
           color: "emerald"
         },
         {
-          title: "Emails Sent",
+          title: "Emails",
           value: "190",
           trend: "+12.5%",
           trendUp: true,
@@ -151,7 +151,7 @@ export default function DashboardPage() {
           color: "emerald"
         },
         {
-          title: "Reply Rate",
+          title: "Replies",
           value: "01%",
           icon: <Users size={24} />,
           color: "emerald"
@@ -196,13 +196,13 @@ export default function DashboardPage() {
               <Hexagon size={40} className="text-[#8245EF]" />
            </div>
            <div>
-              <h1 className="text-5xl font-black text-[#161932] tracking-tighter uppercase leading-tight">Your <span className="text-[#8245EF]">Overview</span></h1>
-              <p className="text-[#64748b] mt-2 text-xl font-medium">See how many messages were sent and who wrote back.</p>
+               <h1 className="text-4xl font-bold text-gray-900">Overview</h1>
+               <p className="text-gray-500 mt-2 text-xl">See how many messages were sent and who replied.</p>
            </div>
         </div>
-        <div className="flex items-center gap-4 px-6 py-3 bg-[#8245EF]/10 text-[#8245EF] rounded-2xl text-[10px] font-black border border-[#8245EF]/20 shadow-sm transition-all hover:bg-[#8245EF]/20 font-mono tracking-widest uppercase">
+        <div className="flex items-center gap-3 px-6 py-3 bg-green-50 text-green-600 rounded-2xl text-[10px] font-bold border border-green-100 shadow-sm transition-all hover:bg-green-100">
           <Zap size={18} className="animate-pulse" />
-          Everything is working fine
+          Active
         </div>
       </div>
 
@@ -210,8 +210,8 @@ export default function DashboardPage() {
       <div className="space-y-28">
         {sections.map((section, sIdx) => (
           <div key={sIdx} className="space-y-10">
-            <div className="flex items-center gap-6 text-[#94a3b8] font-black text-[11px] uppercase tracking-[0.4em] font-mono px-4">
-              <div className="p-2 rounded-xl bg-white border border-[#8245EF]/10 shadow-sm">{section.icon}</div>
+            <div className="flex items-center gap-4 text-gray-400 font-bold text-xs uppercase tracking-widest px-4">
+              <div className="p-2 rounded-xl bg-white border border-gray-100 shadow-sm">{section.icon}</div>
               {section.label}
             </div>
 
@@ -228,16 +228,16 @@ export default function DashboardPage() {
                       {card.icon}
                     </div>
                     {card.trend && (
-                      <div className={`flex items-center gap-2 text-[10px] font-black px-4 py-2 rounded-xl border font-mono tracking-widest ${card.trendUp ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'}`}>
-                        {card.trendUp ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                      <div className={`flex items-center gap-1.5 text-[10px] font-bold px-3 py-1.5 rounded-lg border tracking-wider ${card.trendUp ? 'bg-green-50 text-green-600 border-green-100' : 'bg-rose-50 text-rose-600 border-rose-100'}`}>
+                        {card.trendUp ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                         {card.trend}
                       </div>
                     )}
                   </div>
 
                   <div className="relative z-10 w-full">
-                    <p className="text-[#94a3b8] text-[11px] font-black uppercase tracking-[0.3em] font-mono mb-3">{card.title}</p>
-                    <h2 className="text-6xl font-black text-[#161932] tracking-tighter uppercase font-sans leading-none">{card.value}</h2>
+                    <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2">{card.title}</p>
+                    <h2 className="text-5xl font-bold text-gray-900 leading-none">{card.value}</h2>
                     
                     {/* Visual Meter */}
                     <div className="mt-12 overflow-hidden relative">

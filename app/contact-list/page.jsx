@@ -142,18 +142,16 @@ export default function ContactsPage() {
           )}
           <div>
             <div className="flex items-center gap-4 mb-4">
-               <span className="px-5 py-2 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono shadow-sm">
+               <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
                  <ShieldCheck size={14} className="opacity-80" />
-                 Safe & Working
+                 Active
                </span>
             </div>
-            <h1 className="text-5xl font-black text-[#161932] tracking-tighter uppercase leading-tight">
-              My <span className="text-[#8245EF]">People</span>
-            </h1>
-            <p className="text-[#64748b] mt-4 text-xl font-medium leading-relaxed">
+            <h1>My People</h1>
+            <p className="text-gray-500 mt-2 text-xl">
               {viewMode === "lists" 
-                ? `This is a list of everyone you want to talk to.` 
-                : `Showing people in your list: [${selectedList?.name}].`}
+                ? `This is a list of everyone you want to message.` 
+                : `People in your list: ${selectedList?.name}`}
             </p>
           </div>
         </div>
@@ -161,19 +159,19 @@ export default function ContactsPage() {
         <div className="flex items-center gap-6">
           <button
             onClick={() => setIsUploadModalOpen(true)}
-            className="px-10 py-5 bg-white border border-[#8245EF]/15 text-[#64748b] text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.75rem] hover:text-[#8245EF] hover:bg-[#FCF8FE] transition-all shadow-sm flex items-center justify-center gap-4 group font-mono"
+            className="px-8 py-4 bg-white border border-gray-100 text-gray-500 text-xs font-bold rounded-xl hover:text-[#8245EF] hover:bg-gray-50 transition-all shadow-sm flex items-center justify-center gap-2"
           >
-            <Upload size={20} className="text-[#8245EF] group-hover:-translate-y-1 transition-transform" />
+            <Upload size={18} className="text-[#8245EF]" />
             Upload List
           </button>
           
           {viewMode === "contacts" ? (
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="px-12 py-5 bg-[#8245EF] text-white text-[11px] font-black rounded-[1.75rem] hover:bg-[#6d28d9] transition-all shadow-[0_20px_40px_rgba(130, 69, 239,0.3)] flex items-center justify-center gap-4 active:scale-95 border border-white/10 font-mono uppercase tracking-[0.4em]"
+              className="px-8 py-4 bg-[#8245EF] text-white text-xs font-bold rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg flex items-center justify-center gap-2 active:scale-95 border border-white/10"
             >
-              <Plus size={24} />
-              Add a Person
+              <Plus size={20} />
+              Add Person
             </button>
           ) : (
              <div className="hidden md:flex items-center bg-white border border-[#8245EF]/10 p-2 rounded-2xl shadow-sm">
@@ -199,16 +197,16 @@ export default function ContactsPage() {
          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
             <div className="relative flex-1 max-w-2xl group/search">
                <input
-                 placeholder={viewMode === "lists" ? "SEARCH YOUR LISTS..." : "SEARCH FOR PEOPLE..."}
+                 placeholder={viewMode === "lists" ? "Search lists..." : "Search people..."}
                  value={searchQuery}
                  onInput={(e) => setSearchQuery(e.target.value)}
-                 className="w-full bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-3xl py-6 px-16 text-[12px] font-black text-[#161932] outline-none shadow-inner focus:border-[#8245EF]/40 transition-all placeholder:text-[#94a3b8] font-mono tracking-widest uppercase"
+                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl py-4 px-14 text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 transition-all placeholder:text-gray-400"
                />
-               <Search size={24} className="absolute left-6 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/search:text-[#8245EF] transition-colors" />
+               <Search size={20} className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/search:text-[#8245EF] transition-colors" />
             </div>
             
-            <button className="px-12 py-5 bg-white border border-[#8245EF]/15 rounded-2xl text-[#64748b] text-[10px] font-black uppercase tracking-[0.4em] flex items-center gap-4 hover:border-[#8245EF]/40 hover:text-[#8245EF] transition-all font-mono">
-              <Filter size={20} className="group-hover:rotate-12 transition-transform" />
+            <button className="px-6 py-3 bg-white border border-gray-100 rounded-xl text-gray-500 text-xs font-bold flex items-center gap-2 hover:border-[#8245EF]/40 hover:text-[#8245EF] transition-all">
+              <Filter size={18} />
               Filters
             </button>
          </div>
@@ -225,7 +223,7 @@ export default function ContactsPage() {
                  </div>
               </div>
            </div>
-           <p className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono">Loading data...</p>
+           <p className="text-xs font-bold text-gray-400">Loading...</p>
         </div>
       ) : (
         <div className="animate-in fade-in duration-700">
@@ -235,13 +233,13 @@ export default function ContactsPage() {
               <div className="bg-white rounded-[4rem] shadow-sm border border-[#8245EF]/10 overflow-hidden relative group/table">
                 <div className="overflow-x-auto custom-scrollbar">
                   <table className="w-full text-left">
-                    <thead className="bg-[#FCF8FE]/50 text-[10px] font-black uppercase text-[#94a3b8] tracking-[0.4em] font-mono border-b border-[#8245EF]/10">
+                    <thead className="bg-gray-50/50 text-[10px] font-bold uppercase text-gray-400 tracking-widest border-b border-gray-100">
                       <tr>
-                        <th className="p-10 pl-14">List Name</th>
-                        <th className="p-10">Category</th>
-                        <th className="p-10 text-center">People Count</th>
-                        <th className="p-10">Created On</th>
-                        <th className="p-10 pr-14 text-right">Actions</th>
+                        <th className="p-8 pl-12">List Name</th>
+                        <th className="p-8">Category</th>
+                        <th className="p-8 text-center">Total People</th>
+                        <th className="p-8">Date Added</th>
+                        <th className="p-8 pr-12 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#8245EF]/5">
@@ -264,24 +262,24 @@ export default function ContactsPage() {
                                   <Folder size={28} />
                                 </div>
                                 <div>
-                                  <p className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none group-hover:text-[#8245EF] transition-colors">{list.name}</p>
-                                  <p className="text-[10px] text-[#94a3b8] font-black uppercase tracking-[0.3em] mt-3 font-mono">ID: {list._id.slice(-8).toUpperCase()}</p>
+                                  <p className="text-lg font-bold text-gray-900 group-hover:text-[#8245EF] transition-colors">{list.name}</p>
+                                  <p className="text-[10px] text-gray-400 font-bold mt-1">ID: {list._id.slice(-8).toUpperCase()}</p>
                                 </div>
                               </div>
                             </td>
                             <td className="p-10">
-                              <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white border border-[#8245EF]/10 text-[#94a3b8] text-[10px] font-black uppercase tracking-[0.3em] group-hover:border-[#8245EF]/30 group-hover:text-[#8245EF] transition-all font-mono shadow-sm">
-                                <Tag size={14} />
+                               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-gray-100 text-gray-400 text-[10px] font-bold transition-all shadow-sm">
+                                <Tag size={12} />
                                 {list.segment || 'General'}
                               </div>
                             </td>
-                            <td className="p-10 text-center">
-                              <span className="text-3xl font-black text-[#161932] tracking-tighter font-sans group-hover:text-[#8245EF] transition-colors leading-none">{list.count || 0}</span>
-                            </td>
+                             <td className="p-10 text-center">
+                               <span className="text-2xl font-bold text-gray-900 group-hover:text-[#8245EF] transition-colors leading-none">{list.count || 0}</span>
+                             </td>
                             <td className="p-10">
-                              <div className="flex items-center gap-4 text-[#94a3b8] font-black font-mono text-[10px] uppercase tracking-widest">
-                                <Calendar size={16} className="text-[#8245EF]/40" />
-                                <span>{new Date(list.createdAt).toLocaleDateString().toUpperCase()}</span>
+                               <div className="flex items-center gap-3 text-gray-400 font-bold text-[10px]">
+                                <Calendar size={14} className="text-[#8245EF]/40" />
+                                <span>{new Date(list.createdAt).toLocaleDateString()}</span>
                               </div>
                             </td>
                             <td className="p-10 pr-14 text-right">
@@ -323,23 +321,23 @@ export default function ContactsPage() {
                        <div className="w-20 h-20 bg-[#FCF8FE] border border-[#8245EF]/15 text-[#94a3b8] rounded-[2rem] flex items-center justify-center shadow-inner group-hover:rotate-12 group-hover:scale-110 group-hover:bg-white group-hover:text-[#8245EF] transition-all duration-700">
                          <Folder size={40} />
                        </div>
-                       <div className="px-6 py-2 bg-white border border-[#8245EF]/10 text-[10px] font-black uppercase text-[#94a3b8] tracking-[0.4em] rounded-full font-mono shadow-sm">
-                         {list.segment || 'General'}
-                       </div>
+                        <div className="px-4 py-1 bg-white border border-gray-100 text-[10px] font-bold text-gray-400 rounded-full shadow-sm">
+                          {list.segment || 'General'}
+                        </div>
                     </div>
 
-                    <h3 className="text-3xl font-black text-[#161932] mb-4 truncate group-hover:text-[#8245EF] transition-colors tracking-tighter uppercase leading-tight font-sans">{list.name}</h3>
+                     <h3 className="text-2xl font-bold text-gray-900 mb-4 truncate group-hover:text-[#8245EF] transition-colors">{list.name}</h3>
                     
-                    <div className="flex items-center gap-10 mt-12 pt-12 border-t border-[#8245EF]/10 relative z-10">
-                      <div className="flex-1">
-                        <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] mb-3 font-mono">People</p>
-                        <p className="text-4xl font-black text-[#161932] leading-none tracking-tighter">{list.count || 0}</p>
-                      </div>
-                      <div className="flex-1 border-l border-[#8245EF]/10 pl-10">
-                        <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] mb-3 font-mono">Status</p>
-                        <p className="text-[11px] font-black text-[#8245EF] uppercase tracking-[0.3em] font-mono leading-none">All Good</p>
-                      </div>
-                    </div>
+                     <div className="flex items-center gap-8 mt-10 pt-10 border-t border-gray-100 relative z-10">
+                       <div className="flex-1">
+                         <p className="text-[10px] font-bold text-gray-400 mb-2">People</p>
+                         <p className="text-3xl font-bold text-gray-900 leading-none">{list.count || 0}</p>
+                       </div>
+                       <div className="flex-1 border-l border-gray-100 pl-8">
+                         <p className="text-[10px] font-bold text-gray-400 mb-2">Status</p>
+                         <p className="text-[10px] font-bold text-[#8245EF] uppercase">Active</p>
+                       </div>
+                     </div>
 
                     <div className="mt-12 flex justify-end relative z-10">
                        <div className="w-16 h-16 bg-[#FCF8FE] rounded-[1.75rem] border border-[#8245EF]/10 flex items-center justify-center text-[#94a3b8] group-hover:bg-[#8245EF] group-hover:text-white group-hover:translate-x-1 transition-all shadow-md group-hover:shadow-[0_15px_30px_rgba(130, 69, 239,0.2)]">
@@ -356,26 +354,26 @@ export default function ContactsPage() {
             /* Contacts View */
             <div className="space-y-12 animate-in fade-in slide-in-from-right-8 duration-700">
                <div className="p-8 bg-white border border-[#8245EF]/15 rounded-[3rem] shadow-sm flex flex-col md:flex-row items-center justify-between gap-10">
-                   <div className="flex items-center gap-8 pl-4">
-                      <div className="w-16 h-16 bg-[#8245EF]/10 rounded-2xl flex items-center justify-center text-[#8245EF] shadow-inner">
-                         <Activity size={32} />
-                      </div>
-                      <div>
-                         <p className="text-[11px] font-black text-[#161932] uppercase tracking-[0.4em] font-mono leading-none">List Active</p>
-                         <p className="text-[9px] text-[#94a3b8] font-black uppercase tracking-[0.2em] font-mono mt-3 leading-relaxed">Everything is ready and looking good.</p>
-                      </div>
-                   </div>
-                   <div className="flex gap-4 pr-4">
-                      <div className="px-8 py-4 bg-[#FCF8FE] border border-[#8245EF]/10 rounded-2xl text-[10px] font-black text-[#94a3b8] font-mono uppercase tracking-widest text-center">
-                         Current List: <span className="text-[#161932]">{selectedList?.name.toUpperCase()}</span>
-                      </div>
-                   </div>
+                    <div className="flex items-center gap-6 pl-4">
+                       <div className="w-14 h-14 bg-[#8245EF]/10 rounded-2xl flex items-center justify-center text-[#8245EF] shadow-inner">
+                          <Activity size={28} />
+                       </div>
+                       <div>
+                          <p className="text-xs font-bold text-gray-900 leading-none">Active</p>
+                          <p className="text-[10px] text-gray-400 font-bold mt-2 leading-relaxed">Everything is ready.</p>
+                       </div>
+                    </div>
+                    <div className="flex gap-3 pr-4">
+                       <div className="px-6 py-3 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-400 text-center">
+                          List: <span className="text-gray-900">{selectedList?.name}</span>
+                       </div>
+                    </div>
                </div>
 
-               <div className="bg-white rounded-[4.5rem] border border-[#8245EF]/10 shadow-sm overflow-hidden relative group/records">
-                  <div className="overflow-x-auto custom-scrollbar">
-                    <table className="w-full text-left hidden lg:table">
-                      <thead className="bg-[#FCF8FE]/50 text-[10px] font-black uppercase text-[#94a3b8] tracking-[0.4em] font-mono border-b border-[#8245EF]/10">
+                <div className="bg-white rounded-[4.5rem] border border-gray-100 shadow-sm overflow-hidden relative group/records">
+                   <div className="overflow-x-auto custom-scrollbar">
+                     <table className="w-full text-left hidden lg:table">
+                       <thead className="bg-gray-50/50 text-[10px] font-bold uppercase text-gray-400 tracking-widest border-b border-gray-100">
                         <tr className="border-b border-[#8245EF]/5">
                           {contacts.length > 0 &&
                             Object.keys(contacts[0])
@@ -419,9 +417,9 @@ export default function ContactsPage() {
                                   </td>
                                 ))}
 
-                              <td className="p-10 text-[#94a3b8] font-black whitespace-nowrap font-mono text-[10px] uppercase tracking-widest group-hover:text-[#161932] transition-colors">
-                                {contact.createdAt ? new Date(contact.createdAt).toLocaleDateString() : "-"}
-                              </td>
+                               <td className="p-10 text-gray-400 font-bold whitespace-nowrap text-[10px] group-hover:text-gray-900 transition-colors">
+                                 {contact.createdAt ? new Date(contact.createdAt).toLocaleDateString() : "-"}
+                               </td>
 
                               <td className="p-10 text-right pr-14">
                                 <button
@@ -450,10 +448,10 @@ export default function ContactsPage() {
                               <div className="w-16 h-16 bg-white border border-[#8245EF]/10 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:rotate-12 transition-all duration-700">
                                  <UserCircle2 size={36} className="text-[#8245EF]/60 group-hover:text-[#8245EF] transition-colors" />
                               </div>
-                              <div>
-                                 <p className="font-black text-[#161932] text-xl tracking-tighter uppercase leading-none">{contact.full_name || contact.name || "Unknown Person"}</p>
-                                 <p className="text-[10px] font-black uppercase tracking-widest text-[#94a3b8] font-mono mt-3">{new Date(contact.createdAt).toLocaleDateString()}</p>
-                              </div>
+                               <div>
+                                  <p className="font-bold text-gray-900 text-lg uppercase leading-none">{contact.full_name || contact.name || "Unknown Person"}</p>
+                                  <p className="text-[10px] font-bold text-gray-400 mt-2">{new Date(contact.createdAt).toLocaleDateString()}</p>
+                               </div>
                            </div>
                            
                            <div className="grid grid-cols-1 gap-6 pt-10 border-t border-[#8245EF]/10 relative z-10">

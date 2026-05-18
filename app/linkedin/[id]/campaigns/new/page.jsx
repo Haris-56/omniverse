@@ -25,15 +25,20 @@ import {
   Activity,
   ArrowRight,
   Globe,
-  Loader2
+  Loader2,
+  Bot,
+  ChevronRight
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
   const params = use(paramsPromise);
   const accountId = params.id;
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("editId");
+  const isEdit = !!editId;
 
   const [account, setAccount] = useState(null);
   const [contactLists, setContactLists] = useState([]);
@@ -45,6 +50,7 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
   const [listId, setListId] = useState("");
   const [message, setMessage] = useState("");
   const [dailyLimit, setDailyLimit] = useState(20);
+  const [weeklyLimit, setWeeklyLimit] = useState(100);
   const [minDelay, setMinDelay] = useState(10);
   const [maxDelay, setMaxDelay] = useState(40);
   const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
@@ -57,7 +63,10 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
   // LinkedIn Specific
   const [connectionNote, setConnectionNote] = useState("");
   const [sendAfterAccepted, setSendAfterAccepted] = useState(true);
-  const [runWithoutProxy, setRunWithoutProxy] = useState(false);
+  const [aiAgents, setAiAgents] = useState([]);
+  const [aiCloserId, setAiCloserId] = useState("");
+  const [aiAgentTargetType, setAiAgentTargetType] = useState("leads_only");
+  const [availableVariables, setAvailableVariables] = useState(["First Name", "Last Name", "Company", "Title"]);
 
   // Templates State
   const [templates, setTemplates] = useState([]);
@@ -68,7 +77,15 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
   useEffect(() => {
     fetchData();
     fetchTemplates();
-  }, [accountId]);
+    fetchAiAgents();
+    if (isEdit) fetchCampaignToEdit();
+  }, [accountId, editId]);
+
+  useEffect(() => {
+    if (listId) {
+      fetchListVariables(listId);
+    }
+  }, [listId]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -87,12 +104,69 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
     }
   };
 
+  const fetchCampaignToEdit = async () => {
+    try {
+      const res = await fetch(`/api/linkedin/campaigns?id=${editId}`);
+      if (res.ok) {
+        const data = await res.json();
+        // Pre-fill form
+        setName(data.name || "");
+        setListId(data.listId || "");
+        setMessage(data.message || "");
+        setDailyLimit(data.dailyLimit || 20);
+        setWeeklyLimit(data.weeklyLimit || 100);
+        setMinDelay(data.minDelay || 10);
+        setMaxDelay(data.maxDelay || 40);
+        setTimezone(data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone);
+        setStartTime(data.hours?.start || "09:00");
+        setEndTime(data.hours?.end || "17:00");
+        setStopOnReply(data.stopOnReply !== false);
+        setBlacklist(data.blacklist?.join(", ") || "");
+        setFollowUps(data.sequences || []);
+        setConnectionNote(data.connectionNote || "");
+        setSendAfterAccepted(data.sendAfterAccepted !== false);
+        setAiCloserId(data.aiCloserId || "");
+        setAiAgentTargetType(data.aiAgentTargetType || "leads_only");
+      }
+    } catch (error) {
+      console.error("Failed to fetch campaign for editing", error);
+    }
+  };
+
   const fetchTemplates = async () => {
     try {
       const res = await fetch("/api/templates?platform=linkedin");
       if (res.ok) setTemplates(await res.json());
     } catch (error) {
       console.error("Failed to fetch templates", error);
+    }
+  };
+
+  const fetchAiAgents = async () => {
+    try {
+      const res = await fetch("/api/ai-agents");
+      if (res.ok) {
+        const data = await res.json();
+        // Filter for LinkedIn agents (case-insensitive)
+        setAiAgents(data.filter(a => a.platform?.toLowerCase() === "linkedin"));
+      }
+    } catch (error) {
+      console.error("Failed to fetch AI agents", error);
+    }
+  };
+
+  const fetchListVariables = async (id) => {
+    try {
+      const res = await fetch(`/api/contacts?listId=${id}&limit=1`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const keys = Object.keys(data[0]).filter(k => !["_id", "listId", "createdAt", "updatedAt", "__v"].includes(k));
+          setAvailableVariables(keys.map(k => k.replace(/_/g, ' ')));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch list variables", error);
     }
   };
 
@@ -183,20 +257,22 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
         blacklist: blacklist.split(",").map(s => s.trim()).filter(Boolean),
         connectionNote,
         sendAfterAccepted,
-        runWithoutProxy
+        weeklyLimit,
+        aiCloserId,
+        aiAgentTargetType
       };
 
       const res = await fetch("/api/linkedin/campaigns", {
-        method: "POST",
+        method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(isEdit ? { id: editId, ...payload } : payload)
       });
 
       if (res.ok) {
         router.push(`/linkedin/${accountId}/campaigns`);
       } else {
         const err = await res.json();
-        alert(err.error || "Failed to create campaign");
+        alert(err.error || `Failed to ${isEdit ? 'update' : 'create'} campaign`);
       }
     } catch (error) {
       console.error("Error creating campaign", error);
@@ -207,101 +283,101 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
   };
 
   if (loading) return (
-     <div className="h-screen w-full flex flex-col items-center justify-center bg-[#FCF8FE] space-y-10 text-center px-10 font-sans">
+     <div className="h-screen w-full flex flex-col items-center justify-center bg-[#FCF8FE] space-y-6 text-center px-10">
         <div className="relative">
-           <div className="w-20 h-20 border-4 border-[#8245EF]/10 border-t-[#8245EF] rounded-full animate-spin shadow-sm" />
+           <div className="w-16 h-16 border-4 border-[#8245EF]/10 border-t-[#8245EF] rounded-full animate-spin shadow-sm" />
            <div className="absolute inset-0 flex items-center justify-center">
-              <Linkedin size={32} className="text-[#8245EF]" fill="currentColor" />
+              <Linkedin size={24} className="text-[#8245EF]" fill="currentColor" />
            </div>
         </div>
-        <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono">Initializing_Sequence_Inception...</p>
+         <p className="font-bold text-gray-400">Loading...</p>
      </div>
   );
 
   return (
-    <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 font-sans pb-32 px-6 lg:px-20">
-      <div className="max-w-[1700px] mx-auto space-y-16">
+    <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 pb-32 px-6 lg:px-20">
+      <div className="max-w-[1200px] mx-auto space-y-12">
         
-        {/* Header Sector */}
-        <div className="flex items-center gap-10 border-b border-[#8245EF]/15 pb-12">
-          <Link href={`/linkedin/${accountId}/campaigns`} className="p-5 bg-white border border-[#8245EF]/10 rounded-[1.5rem] text-[#94a3b8] hover:text-[#8245EF] transition-all shadow-sm hover:bg-[#FCF8FE] group">
-            <ChevronLeft size={28} className="group-hover:-translate-x-1 transition-transform" />
+        {/* Header Section */}
+        <div className="flex items-center gap-6 border-b border-gray-100 pb-8">
+          <Link href={`/linkedin/${accountId}/campaigns`} className="p-3 bg-white border border-gray-200 rounded-xl text-gray-400 hover:text-[#8245EF] transition-all shadow-sm">
+            <ChevronLeft size={24} />
           </Link>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-4 mb-4">
-               <span className="px-5 py-2 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono">
-                 <Briefcase size={14} className="opacity-80" />
-                 LinkedIn_Sector::Sequence_Deployment
+               <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
+                 <ShieldCheck size={14} className="opacity-80" />
+                 Active
                </span>
             </div>
-            <h1 className="text-5xl font-black text-[#161932] tracking-tighter uppercase leading-tight">Create_New_Sequence</h1>
-            <p className="text-[#64748b] mt-4 text-xl font-medium italic">Configuring autonomous outreach for handler: <span className="text-[#8245EF] font-black">{account?.email}</span></p>
+            <h1 className="text-3xl font-bold text-gray-900">{isEdit ? "Edit" : "Create"} LinkedIn Campaign</h1>
+            <p className="text-gray-500 mt-2 text-lg">Set up your messages and when to send them. Using: <span className="text-[#8245EF] font-bold">{account?.email || account?.username}</span></p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-16">
+        <form onSubmit={handleSubmit} className="space-y-12">
           
-          {/* Phase 1: Core Target Identity */}
-          <div className="bg-white rounded-[4rem] border border-[#8245EF]/15 shadow-sm overflow-hidden relative group hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.05)] transition-all">
-            <div className="p-12 border-b border-[#8245EF]/10 flex items-center gap-8 bg-[#FCF8FE]/30">
-              <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 text-[#8245EF] rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-700">
-                <Target size={32} />
+          {/* Phase 1: Plan Details */}
+          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden transition-all hover:shadow-md">
+            <div className="p-8 border-b border-gray-50 flex items-center gap-4 bg-gray-50/30">
+              <div className="w-12 h-12 bg-white border border-gray-100 text-[#8245EF] rounded-xl flex items-center justify-center shadow-sm">
+                <Target size={24} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-[#161932] tracking-tighter uppercase leading-none">Sequence_Registry</h2>
-                <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono mt-3 italic">Core Designation & Targeting</p>
+                <h2 className="text-xl font-bold text-gray-900">Campaign Details</h2>
+                <p className="text-sm text-gray-500">Set a name for your campaign and choose your target list.</p>
               </div>
             </div>
-            <div className="p-12 md:p-16 grid grid-cols-1 md:grid-cols-2 gap-12">
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Designation_UID</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. HIGH_TRUST_OUTREACH_V1"
-                  className="form-input"
-                  required
-                />
+            <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-400 ml-2">Plan Name</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Sales Outreach"
+                    className="form-input h-12"
+                    required
+                  />
               </div>
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Authorized_Contact_List</label>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-400 ml-2">People to Message</label>
                 <div className="relative">
                   <select
                     value={listId}
                     onChange={(e) => setListId(e.target.value)}
-                    className="form-input appearance-none cursor-pointer pr-16"
+                    className="form-input appearance-none cursor-pointer pr-12 h-12"
                     required
                   >
-                    <option value="" disabled>SELECT_IDENTITY_LIST...</option>
+                    <option value="" disabled>-- Choose List --</option>
                     {contactLists.map(list => (
-                      <option key={list._id} value={list._id}>{list.name.toUpperCase()} — [{list.count} UNITS]</option>
+                      <option key={list._id} value={list._id}>{list.name} ({list.count} people)</option>
                     ))}
                   </select>
-                  <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#94a3b8]">
-                    <Layers size={22} />
+                  <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <Layers size={18} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Phase 2: Handshake Protocol */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-             <div className="bg-white rounded-[3.5rem] border border-[#8245EF]/15 shadow-sm p-12 flex flex-col justify-between group hover:shadow-[0_20px_40px_rgba(130, 69, 239,0.05)] transition-all">
-                <div className="flex items-center gap-8 mb-10">
-                   <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 text-emerald-500 rounded-[1.75rem] flex items-center justify-center shadow-inner">
-                      <ShieldCheck size={32} />
+          {/* Phase 2: Settings */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+             {/* Automation */}
+             <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 flex flex-col justify-between hover:shadow-md transition-all">
+                <div className="flex items-center gap-4 mb-6">
+                   <div className="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center">
+                      <ShieldCheck size={24} />
                    </div>
                    <div>
-                      <h4 className="text-xl font-black text-[#161932] tracking-tighter uppercase">Connection_Logic</h4>
-                      <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mt-2 italic">Wait For Handshake Acceptance</p>
+                      <h3 className="text-lg font-bold text-gray-900">Automation</h3>
+                      <p className="text-sm text-gray-500">Wait for acceptance.</p>
                    </div>
                 </div>
-                <div className="flex items-center justify-between p-10 bg-[#FCF8FE]/30 rounded-[2.5rem] border border-[#8245EF]/10 hover:border-emerald-500/20 transition-all shadow-inner">
-                  <div className="pr-8">
-                    <p className="text-[11px] font-black text-[#161932] uppercase tracking-widest font-mono">Conditional_Broadcasting</p>
-                    <p className="text-[9px] text-[#64748b] font-black mt-3 uppercase tracking-widest font-mono italic leading-relaxed">Only execute messages post verification.</p>
+                <div className="flex items-center justify-between p-6 bg-gray-50/50 rounded-2xl border border-gray-100">
+                  <div className="pr-4">
+                    <p className="font-bold text-gray-900 text-xs">Wait for Accept</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input 
@@ -310,299 +386,339 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                       checked={sendAfterAccepted}
                       onChange={(e) => setSendAfterAccepted(e.target.checked)}
                     />
-                    <div className="w-16 h-8 bg-white border border-[#8245EF]/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-[#94a3b8] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 peer-checked:after:bg-white shadow-sm"></div>
+                    <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500 shadow-sm"></div>
                   </label>
                 </div>
              </div>
 
-             <div className="bg-white rounded-[3.5rem] border border-[#8245EF]/15 shadow-sm p-12 flex flex-col justify-between group hover:shadow-[0_20px_40px_rgba(130, 69, 239,0.05)] transition-all">
-                <div className="flex items-center gap-8 mb-10">
-                   <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 text-rose-500 rounded-[1.75rem] flex items-center justify-center shadow-inner">
-                      <Zap size={32} />
+             {/* AI Closer */}
+             <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 flex flex-col justify-between hover:shadow-md transition-all gap-4">
+                <div className="flex items-center gap-4 mb-2">
+                   <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                      <Bot size={24} />
                    </div>
                    <div>
-                      <h4 className="text-xl font-black text-[#161932] tracking-tighter uppercase">Bypass_Matrix</h4>
-                      <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mt-2 italic">Execute Insecure Local Route</p>
+                      <h3 className="text-lg font-bold text-gray-900">AI Closer</h3>
+                      <p className="text-sm text-gray-500">Select an AI agent.</p>
                    </div>
                 </div>
-                <div className="flex items-center justify-between p-10 bg-[#FCF8FE]/30 rounded-[2.5rem] border border-[#8245EF]/10 hover:border-rose-500/20 transition-all shadow-inner">
-                  <div className="pr-8">
-                    <p className="text-[11px] font-black text-[#161932] uppercase tracking-widest font-mono">Infrastructure_Bypass</p>
-                    <p className="text-[9px] text-[#64748b] font-black mt-3 uppercase tracking-widest font-mono italic leading-relaxed">Run operations from host platform IP.</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      className="sr-only peer" 
-                      checked={runWithoutProxy}
-                      onChange={(e) => setRunWithoutProxy(e.target.checked)}
-                    />
-                    <div className="w-16 h-8 bg-white border border-[#8245EF]/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-[#94a3b8] after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500 peer-checked:after:bg-white shadow-sm"></div>
-                  </label>
+                
+                <div className="space-y-4">
+                   <div className="relative">
+                      <select
+                        value={aiCloserId}
+                        onChange={(e) => setAiCloserId(e.target.value)}
+                        className="form-input h-10 py-0 appearance-none pr-10 text-sm"
+                      >
+                        <option value="">No AI Closer</option>
+                        {aiAgents.map(agent => (
+                          <option key={agent._id} value={agent._id}>{agent.name}</option>
+                        ))}
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                         <ChevronRight size={14} className="rotate-90" />
+                      </div>
+                   </div>
+
+                   <div className="relative">
+                      <select
+                        value={aiAgentTargetType}
+                        onChange={(e) => setAiAgentTargetType(e.target.value)}
+                        className="form-input h-10 py-0 appearance-none pr-10 text-sm"
+                      >
+                        <option value="leads_only">Only Leads Chat AI Agent</option>
+                        <option value="all_chats">AI Agent for All Chats</option>
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                         <ChevronRight size={14} className="rotate-90" />
+                      </div>
+                   </div>
                 </div>
              </div>
           </div>
 
-          <div className="bg-white rounded-[4rem] border border-[#8245EF]/15 shadow-sm p-12 md:p-16 space-y-12 group hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.05)] transition-all">
-             <div className="flex items-center justify-between pl-4">
-                <div>
-                   <h4 className="text-2xl font-black text-[#161932] uppercase tracking-[0.2em] font-mono">Handshake_Inception_Note</h4>
-                   <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono mt-4 italic">Optional message during node connection</p>
-                </div>
-                <div className="px-8 py-3 bg-[#FCF8FE] border border-[#8245EF]/15 rounded-2xl font-mono text-[#8245EF] text-[12px] font-black shadow-inner">
+          {/* Invite Message */}
+          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 md:p-10 space-y-6 hover:shadow-md transition-all">
+             <div className="flex items-center justify-between">
+                 <div>
+                    <h3 className="text-lg font-bold text-gray-900">Connection Note</h3>
+                    <p className="text-sm text-gray-500">Add a short message to send with your connection request.</p>
+                 </div>
+                <div className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-gray-500 text-xs font-bold">
                    {connectionNote.length} / 300
                 </div>
              </div>
              
-             <div className="flex flex-wrap gap-4 pl-4">
-                {["$$f_name$$", "$$full_name$$"].map(v => (
-                  <button key={v} type="button" onClick={() => insertVariable("note", v)} className="px-10 py-4 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-2xl text-[10px] font-black text-[#8245EF] hover:text-white hover:bg-[#8245EF] transition-all font-mono uppercase tracking-widest shadow-sm">
+             <div className="flex flex-wrap gap-2">
+                 <p className="text-xs font-bold text-gray-400 mr-2 flex items-center uppercase tracking-widest">Insert Tags:</p>
+                {availableVariables.map(v => (
+                  <button key={v} type="button" onClick={() => insertVariable("note", `[[${v}]]`)} className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-[#8245EF] hover:bg-[#8245EF] hover:text-white transition-all">
                     {v}
                   </button>
                 ))}
              </div>
 
              <textarea
-              value={connectionNote}
-              onChange={(e) => setConnectionNote(e.target.slice(0, 300))}
-              placeholder="Inject introduction note for handshake request..."
-              rows={5}
-              className="form-input bg-[#FCF8FE]/20 border-[#8245EF]/15 min-h-[150px] pt-10 text-lg italic active-input shadow-inner"
-            />
+                value={connectionNote}
+                onChange={(e) => setConnectionNote(e.target.value)}
+                placeholder="Write your note here (max 300 characters)..."
+                rows={4}
+                maxLength={300}
+                className="form-input min-h-[120px] p-6 text-base font-medium"
+              />
           </div>
 
-          {/* Phase 3: Payload Construction */}
-          <div className="bg-white rounded-[4.5rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.05)] transition-all">
-            <div className="p-12 border-b border-[#8245EF]/10 flex items-center justify-between bg-[#FCF8FE]/30">
-              <div className="flex items-center gap-10">
-                <div className="w-20 h-20 bg-white border border-[#8245EF]/10 text-[#8245EF] rounded-[2.5rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
-                   <Cpu size={40} />
+          {/* Main Message */}
+          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all">
+            <div className="p-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white border border-gray-100 text-[#8245EF] rounded-xl flex items-center justify-center">
+                   <Cpu size={24} />
                 </div>
-                <div>
-                  <h2 className="text-3xl font-black text-[#161932] tracking-tighter uppercase leading-none">Sequence_Payload</h2>
-                  <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono mt-4 italic">Core Broadcaster Configuration</p>
+                 <div>
+                  <h3 className="text-lg font-bold text-gray-900">First Message</h3>
+                  <p className="text-sm text-gray-500">What message should we send after they connect?</p>
                 </div>
               </div>
               
               {!showSaveTemplate ? (
-                 <button
-                   type="button"
-                   onClick={() => setShowSaveTemplate(true)}
-                   className="px-10 py-5 bg-white border border-dashed border-[#8245EF]/30 text-[#94a3b8] font-black text-[10px] uppercase tracking-[0.3em] rounded-[1.5rem] hover:text-[#8245EF] hover:border-[#8245EF]/50 transition-all font-mono flex items-center gap-4 shadow-sm"
-                 >
-                   <Save size={18} /> Cache_As_Preset
-                 </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowSaveTemplate(true)}
+                    className="px-6 py-3 bg-gray-50 border border-dashed border-gray-200 text-gray-400 font-bold text-xs rounded-xl hover:text-[#8245EF] hover:border-[#8245EF]/50 transition-all flex items-center gap-2"
+                  >
+                    <Save size={18} /> Save this message
+                  </button>
               ) : (
-                 <div className="flex items-center gap-6 animate-in slide-in-from-right duration-500">
-                    <input
-                      type="text"
-                      value={templateName}
-                      onChange={(e) => setTemplateName(e.target.value)}
-                      placeholder="PRESET_ID"
-                      className="px-8 py-4 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-2xl text-[10px] font-black text-[#161932] font-mono uppercase tracking-widest outline-none focus:border-[#8245EF] w-48 shadow-inner"
-                    />
-                    <div className="flex gap-4">
-                      <button type="button" onClick={handleSaveAsTemplate} className="px-8 py-4 bg-[#8245EF] text-white text-[10px] font-black uppercase rounded-xl shadow-lg font-mono">Commit</button>
-                      <button type="button" onClick={() => setShowSaveTemplate(false)} className="px-8 py-4 bg-white text-[#94a3b8] text-[10px] font-black uppercase rounded-xl font-mono border border-[#8245EF]/10">Cancel</button>
-                    </div>
-                 </div>
+                 <div className="flex items-center gap-2 animate-in slide-in-from-right duration-500">
+                     <input
+                       type="text"
+                       value={templateName}
+                       onChange={(e) => setTemplateName(e.target.value)}
+                       placeholder="Name"
+                       className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs font-bold text-gray-900 outline-none focus:border-[#8245EF]"
+                     />
+                     <button type="button" onClick={handleSaveAsTemplate} className="px-5 py-2 bg-[#8245EF] text-white text-xs font-bold rounded-lg shadow-md">Save</button>
+                     <button type="button" onClick={() => setShowSaveTemplate(false)} className="px-5 py-2 bg-white text-gray-400 text-xs font-bold rounded-lg">Cancel</button>
+                  </div>
               )}
             </div>
             
-            <div className="p-12 md:p-20 space-y-16">
-               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                  <div className="space-y-4">
-                     <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Neural_Presets</label>
-                     <div className="relative">
-                        <select
-                          onChange={(e) => handleApplyTemplate(e.target.value)}
-                          className="form-input appearance-none cursor-pointer pr-16 bg-[#FCF8FE]/30"
-                        >
-                          <option value="">MANUAL_ENTRY_PROTOCOL...</option>
-                          {templates.map(t => (
-                            <option key={t._id} value={t._id}>LOAD_PRESET::{t.name.toUpperCase()}</option>
-                          ))}
-                        </select>
-                        <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#94a3b8]">
-                           <MessageSquare size={22} />
-                        </div>
-                     </div>
-                  </div>
+            <div className="p-8 space-y-8">
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="flex-1 space-y-2">
+                      <label className="text-xs font-bold text-gray-400 ml-2">Use a saved message</label>
+                      <div className="relative">
+                         <select
+                           onChange={(e) => handleApplyTemplate(e.target.value)}
+                           className="form-input appearance-none cursor-pointer pr-12 bg-gray-50/50 h-12"
+                         >
+                           <option value="">Manual Input</option>
+                           {templates.map(t => (
+                             <option key={t._id} value={t._id}>{t.name}</option>
+                           ))}
+                         </select>
+                         <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                            <Layers size={18} />
+                         </div>
+                      </div>
+                   </div>
                   
-                  <div className="space-y-4">
-                     <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Variable_Injection</label>
-                     <div className="flex flex-wrap gap-4">
-                        {["$$f_name$$", "$$full_name$$", "$$company$$"].map(v => (
-                          <button
-                            key={v}
-                            type="button"
-                            onClick={() => insertVariable("main", v)}
-                            className="px-8 py-4 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-2xl text-[10px] font-black text-[#8245EF] hover:text-white hover:bg-[#8245EF] transition-all font-mono uppercase tracking-widest shadow-sm"
-                          >
-                            {v}
-                          </button>
-                        ))}
-                     </div>
-                  </div>
+                   <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-400 ml-2">Add details</label>
+                <div className="flex flex-wrap gap-2">
+                   {availableVariables.map(v => (
+                     <button
+                       key={v}
+                       type="button"
+                       onClick={() => insertVariable("main", `[[${v}]]`)}
+                       className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs font-bold text-[#8245EF] hover:text-white hover:bg-[#8245EF] transition-all"
+                     >
+                       {v}
+                     </button>
+                   ))}
+                </div>
+              </div>
                </div>
 
-               <div className="space-y-4">
+               <div className="space-y-2">
                  <textarea
-                   value={message}
-                   onChange={(e) => setMessage(e.target.value)}
-                   placeholder="Enter main sequence broadcasting payload..."
-                   rows={8}
-                   className="form-input min-h-[300px] pt-12 text-lg font-bold italic active-input shadow-inner"
-                   required
-                 />
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Write your message here..."
+                  rows={6}
+                  className="form-input min-h-[200px] p-6 text-base font-medium"
+                  required
+                />
                </div>
             </div>
           </div>
 
-          {/* Phase 4: Chronos & Load Protocols */}
-          <div className="bg-white rounded-[4rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.05)] transition-all">
-            <div className="p-12 border-b border-[#8245EF]/10 flex items-center gap-8 bg-[#FCF8FE]/30">
-              <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 text-amber-500 rounded-[1.75rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
-                <Clock size={32} />
+          {/* Execution Schedule */}
+          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all">
+            <div className="p-8 border-b border-gray-50 flex items-center gap-4 bg-gray-50/30">
+              <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center">
+                <Clock size={24} />
               </div>
-              <div>
-                <h2 className="text-2xl font-black text-[#161932] tracking-tighter uppercase leading-none">Execution_Schedule</h2>
-                <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono mt-3 italic">Temporal Filters & Load Management</p>
+               <div>
+                <h2 className="text-xl font-bold text-gray-900">Daily Limits</h2>
+                <p className="text-sm text-gray-500">Set how many and when to send messages.</p>
               </div>
             </div>
-            <div className="p-12 md:p-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Node_Inbound_Limit</label>
+            <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+               <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-400 ml-2">Limit per day (Max 20)</label>
                 <div className="relative">
                   <input
                     type="number"
                     min="1"
-                    max="40"
+                    max="20"
                     value={dailyLimit}
-                    onChange={(e) => setDailyLimit(e.target.value)}
-                    className="form-input text-center text-5xl font-black py-12 bg-[#FCF8FE]/30"
+                    onChange={(e) => setDailyLimit(Math.min(20, parseInt(e.target.value) || 0))}
+                    className="form-input text-center text-3xl font-bold py-6"
                   />
-                  <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col items-end opacity-40 pointer-events-none">
-                     <span className="text-[9px] font-black text-[#8245EF] uppercase tracking-widest font-mono">Safe_Limit</span>
-                     <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest font-mono">UNITS/D</span>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-right opacity-40 pointer-events-none">
+                     <span className="text-[10px] font-bold block">messages / day</span>
                   </div>
                 </div>
               </div>
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Interstitial_Delay (Sec)</label>
-                <div className="flex items-center gap-8">
-                  <div className="flex-1 relative">
-                    <input type="number" min="5" value={minDelay} onChange={(e) => setMinDelay(e.target.value)} className="form-input text-center text-xl font-black font-mono shadow-inner bg-[#FCF8FE]/30" />
-                    <span className="absolute left-1/2 -bottom-6 -translate-x-1/2 text-[8px] font-black text-[#94a3b8] uppercase font-mono">MIN_ST</span>
-                  </div>
-                  <ArrowRight size={24} className="text-[#94a3b8] shrink-0" />
-                  <div className="flex-1 relative">
-                     <input type="number" max="180" value={maxDelay} onChange={(e) => setMaxDelay(e.target.value)} className="form-input text-center text-xl font-black font-mono shadow-inner bg-[#FCF8FE]/30" />
-                     <span className="absolute left-1/2 -bottom-6 -translate-x-1/2 text-[8px] font-black text-[#94a3b8] uppercase font-mono">MAX_ST</span>
-                  </div>
-                </div>
-              </div>
-               <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4">Neural_Grid_Timezone</label>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-400 ml-2">Limit per week (Max 100)</label>
                 <div className="relative">
-                   <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="form-input appearance-none pr-16 bg-[#FCF8FE]/30 text-[#8245EF]">
-                     {Intl.supportedValuesOf('timeZone').map(tz => (
-                         <option key={tz} value={tz}>SECTOR::{tz.toUpperCase()}</option>
-                      ))}
-                   </select>
-                   <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#94a3b8]">
-                      <Globe size={22} />
-                   </div>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={weeklyLimit}
+                    onChange={(e) => setWeeklyLimit(Math.min(100, parseInt(e.target.value) || 0))}
+                    className="form-input text-center text-3xl font-bold py-6"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-right opacity-40 pointer-events-none">
+                     <span className="text-[10px] font-bold block">messages / week</span>
+                  </div>
                 </div>
               </div>
+               <div className="space-y-2">
+                 <label className="text-xs font-bold text-gray-400 ml-2">Time between messages</label>
+                 <div className="flex items-center gap-4">
+                   <input type="number" min="10" value={minDelay} onChange={(e) => setMinDelay(e.target.value)} className="form-input text-center text-lg font-bold py-4 bg-gray-50/50" />
+                   <ArrowRight size={20} className="text-gray-300 shrink-0" />
+                   <input type="number" max="600" value={maxDelay} onChange={(e) => setMaxDelay(e.target.value)} className="form-input text-center text-lg font-bold py-4 bg-gray-50/50" />
+                 </div>
+               </div>
+               <div className="space-y-2">
+                 <label className="text-xs font-bold text-gray-400 ml-2">Your Timezone</label>
+                 <div className="relative">
+                    <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="form-input appearance-none pr-12 bg-gray-50/50 text-[#8245EF] h-14">
+                       {Intl.supportedValuesOf('timeZone').map(tz => (
+                          <option key={tz} value={tz}>{tz}</option>
+                       ))}
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                       <Globe size={20} />
+                    </div>
+                 </div>
+               </div>
             </div>
           </div>
 
-          {/* Phase 5: Layered Sequences */}
-          <div className="bg-white rounded-[4.5rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.05)] transition-all">
-            <div className="p-12 border-b border-[#8245EF]/10 flex items-center justify-between bg-[#FCF8FE]/30">
-              <div className="flex items-center gap-10">
-                <div className="w-20 h-20 bg-white border border-[#8245EF]/10 text-purple-500 rounded-[2.5rem] flex items-center justify-center shadow-inner group-hover:rotate-12 duration-700">
-                  <Layers size={40} />
+          {/* Follow Ups */}
+          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all">
+            <div className="p-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center">
+                  <Layers size={24} />
                 </div>
-                <div>
-                  <h2 className="text-3xl font-black text-[#161932] tracking-tighter uppercase leading-none">Neural_Follow_Ups</h2>
-                  <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono mt-4 italic">Recursive Multi-Phase Cycles</p>
+                 <div>
+                  <h2 className="text-xl font-bold text-gray-900">Sequence Steps</h2>
+                  <p className="text-sm text-gray-500">Add follow-up messages to send automatically.</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={addFollowUp}
-                className="px-12 py-6 bg-[#8245EF]/10 text-[#8245EF] font-black text-[11px] uppercase tracking-[0.5em] rounded-[2rem] hover:bg-[#8245EF] hover:text-white transition-all flex items-center gap-4 font-mono shadow-sm border border-[#8245EF]/10 active:scale-95"
+                className="px-6 py-3 bg-[#8245EF]/10 text-[#8245EF] font-bold text-xs rounded-xl hover:bg-[#8245EF] hover:text-white transition-all flex items-center gap-2 border border-[#8245EF]/10 active:scale-95"
               >
-                <Plus size={24} /> Add_Recursive_Cycle
+                <Plus size={18} /> Add a follow-up
               </button>
             </div>
-            <div className="p-12 md:p-20 space-y-16">
+            <div className="p-8 space-y-8">
               {followUps.length === 0 ? (
-                <div className="bg-[#FCF8FE]/50 rounded-[4rem] border border-dashed border-[#8245EF]/30 py-32 flex flex-col items-center justify-center text-center opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-                  <Activity size={72} className="text-[#94a3b8] mb-10" />
-                  <p className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono italic">Zero_Recursive_Layers_Active</p>
-                </div>
+                  <div className="bg-gray-50/50 rounded-[2.5rem] border border-dashed border-gray-200 py-16 flex flex-col items-center justify-center text-center">
+                    <Activity size={40} className="text-gray-300 mb-4" />
+                    <p className="text-sm font-bold text-gray-400">You haven't added any follow-ups.</p>
+                  </div>
               ) : (
-                <div className="space-y-12">
+                <div className="space-y-8">
                   {followUps.map((step, idx) => (
-                    <div key={idx} className="bg-[#FCF8FE]/30 rounded-[4rem] border border-[#8245EF]/10 p-12 relative group/step hover:border-[#8245EF]/30 transition-all shadow-sm animate-in slide-in-from-left duration-500">
+                    <div key={idx} className="bg-gray-50/50 rounded-3xl border border-gray-100 p-8 relative group/step hover:border-gray-200 transition-all shadow-sm">
                        <button
                         type="button"
                         onClick={() => removeFollowUp(idx)}
-                        className="absolute top-12 right-12 p-5 bg-white text-[#94a3b8] hover:text-rose-500 hover:bg-rose-50 rounded-2xl border border-[#8245EF]/10 shadow-sm transition-all opacity-0 group-hover/step:opacity-100 active:scale-90"
+                        className="absolute top-6 right-6 p-2 bg-white text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg border border-gray-100 shadow-sm transition-all opacity-0 group-hover/step:opacity-100"
                       >
-                        <Trash2 size={24} />
+                        <Trash2 size={18} />
                       </button>
-                      <div className="flex flex-col xl:flex-row gap-12 items-center mb-12">
-                         <div className="w-24 h-24 bg-white border border-[#8245EF]/20 rounded-[2.5rem] flex items-center justify-center font-black text-[#8245EF] text-3xl shadow-md ring-8 ring-[#8245EF]/5 group-hover/step:scale-110 transition-transform duration-500 font-mono">
+                      <div className="flex flex-col xl:flex-row gap-8 items-center mb-8">
+                         <div className="w-16 h-16 bg-white border border-gray-100 rounded-2xl flex items-center justify-center font-bold text-[#8245EF] text-xl shadow-sm">
                             {(idx + 1).toString().padStart(2, '0')}
                          </div>
-                         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
-                            <div className="space-y-4">
-                               <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono ml-6">Modular_Action</label>
+                         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                             <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-400 ml-2">Select Action</label>
                                <div className="relative">
                                   <select
                                     value={step.type || "message"}
                                     onChange={(e) => updateFollowUp(idx, "type", e.target.value)}
-                                    className="form-input appearance-none py-5 text-[11px] bg-white border-[#8245EF]/10 pr-16 shadow-sm"
+                                    className="form-input appearance-none py-3 text-sm bg-white"
                                   >
-                                    <option value="message">BROADCAST_MESSAGE</option>
-                                    <option value="visit_profile">NETWORK_NODE_VISIT</option>
-                                    <option value="withdraw">WITHDRAW_HANDSHAKE</option>
+                                     <option value="message">Send a message</option>
+                                    <option value="visit_profile">Visit their profile</option>
+                                    <option value="withdraw">Cancel Request</option>
                                   </select>
-                                  <div className="absolute right-8 top-1/2 -translate-y-1/2 pointer-events-none text-[#8245EF]">
-                                     <ArrowRight size={20} />
+                                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                     <ArrowRight size={16} />
                                   </div>
                                </div>
                             </div>
-                            <div className="space-y-4">
-                               <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono ml-6">Temporal_Shift</label>
-                               <div className="flex items-center gap-8 bg-white border border-[#8245EF]/10 p-5 rounded-[1.75rem] shadow-sm">
-                                  <div className="flex-1 relative">
-                                    <input
-                                      type="number"
-                                      min="1"
-                                      value={step.delayDays}
-                                      onChange={(e) => updateFollowUp(idx, "delayDays", e.target.value)}
-                                      className="bg-transparent text-[#161932] font-black text-2xl w-full text-center outline-none font-mono"
-                                    />
-                                  </div>
-                                  <div className="w-[1px] h-8 bg-[#8245EF]/20" />
-                                  <span className="text-[10px] font-black text-[#8245EF] uppercase tracking-widest font-mono whitespace-nowrap pr-4">{step.type === 'withdraw' ? 'Days_Post_Connect' : 'Days_Post_Accept'}</span>
-                               </div>
-                            </div>
+                           <div className="flex items-center gap-4">
+                              <p className="text-xs font-bold text-gray-400">Wait for</p>
+                              <div className="flex items-center gap-3 bg-white border border-gray-100 p-3 rounded-xl shadow-sm">
+                                 <input
+                                    type="number"
+                                    min="1"
+                                    value={step.delayDays}
+                                    onChange={(e) => updateFollowUp(idx, "delayDays", e.target.value)}
+                                    className="bg-transparent text-gray-900 font-bold text-lg w-12 text-center outline-none"
+                                  />
+                                  <span className="text-[10px] font-bold text-[#8245EF] uppercase">Days</span>
+                              </div>
+                           </div>
                          </div>
                       </div>
                       {(!step.type || step.type === "message") && (
-                        <textarea
-                          value={step.message}
-                          onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
-                          placeholder="Inject recursive message payload..."
-                          rows={5}
-                          className="form-input bg-white border-[#8245EF]/10 focus:bg-white min-h-[200px] pt-10 text-lg italic shadow-sm"
-                        />
+                        <div className="space-y-4">
+                           <div className="flex flex-wrap gap-2">
+                              {availableVariables.map(v => (
+                                <button
+                                  key={v}
+                                  type="button"
+                                  onClick={() => insertVariable(idx, `[[${v}]]`)}
+                                  className="px-3 py-1.5 bg-white border border-gray-100 rounded-lg text-[10px] font-bold text-[#8245EF] hover:text-white hover:bg-[#8245EF] transition-all shadow-sm"
+                                >
+                                  {v}
+                                </button>
+                              ))}
+                           </div>
+                           <textarea
+                            value={step.message}
+                            onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
+                            placeholder="What should this follow-up message say?"
+                            rows={4}
+                            className="form-input bg-white border-gray-100 min-h-[120px] p-6 text-base font-medium"
+                            required
+                          />
+                        </div>
                       )}
                     </div>
                   ))}
@@ -611,22 +727,22 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
             </div>
           </div>
 
-          {/* Phase 6: Subsystem Termination & Submission */}
-          <div className="bg-[#8245EF] rounded-[4rem] shadow-[0_40px_100px_rgba(130, 69, 239,0.2)] p-12 md:p-24 flex flex-col xl:flex-row items-center justify-between gap-20 relative overflow-hidden group">
-             <div className="absolute -bottom-20 -right-20 p-10 opacity-10 grayscale group-hover:grayscale-0 transition-all duration-1000 rotate-12">
-                <Linkedin size={320} className="text-white" fill="currentColor" />
+          {/* Finish Section */}
+          <div className="bg-[#8245EF] rounded-[2.5rem] shadow-xl p-12 md:p-16 flex flex-col xl:flex-row items-center justify-between gap-12 relative overflow-hidden group">
+             <div className="absolute -bottom-10 -right-10 opacity-5 group-hover:opacity-10 transition-all duration-1000 rotate-12">
+                <Linkedin size={240} className="text-white" fill="currentColor" />
              </div>
              
              <div className="flex-1 relative z-10">
-                <div className="flex items-center gap-6 mb-6 text-white/90">
-                   <ShieldCheck size={36} className="animate-pulse" />
-                   <h3 className="text-[12px] font-black uppercase tracking-[0.6em] font-mono">End-To-End_Authority_Verification</h3>
-                </div>
-                <h2 className="text-6xl font-black text-white tracking-tighter uppercase mb-12 leading-none">Mission_Finalization</h2>
-                <div className="flex items-center justify-between p-12 bg-white/10 rounded-[3rem] border border-white/20 max-w-2xl backdrop-blur-sm transition-all hover:bg-white/15">
-                   <div className="pr-12 text-left">
-                      <p className="text-xl font-black text-white tracking-widest uppercase font-mono">Reply_Inhibitor</p>
-                      <p className="text-[11px] text-white/70 mt-3 uppercase font-black font-mono tracking-widest italic leading-relaxed">Instantly pause sequence if neural interaction is detected from terminal.</p>
+                 <div className="flex items-center gap-4 mb-4 text-white/90">
+                    <ShieldCheck size={28} />
+                    <h3 className="text-sm font-bold text-white uppercase tracking-widest">Almost Done</h3>
+                 </div>
+                 <h2 className="text-4xl font-bold text-white mb-8 tracking-tight">Launch Campaign</h2>
+                <div className="flex items-center justify-between p-8 bg-white/10 rounded-[2rem] border border-white/20 max-w-xl backdrop-blur-sm">
+                   <div className="pr-8">
+                      <p className="text-lg font-bold text-white">Stop if they reply</p>
+                      <p className="text-sm text-white/70 mt-1">The computer will stop sending messages to someone if they write back.</p>
                    </div>
                    <label className="relative inline-flex items-center cursor-pointer">
                     <input 
@@ -635,37 +751,29 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
                       checked={stopOnReply}
                       onChange={(e) => setStopOnReply(e.target.checked)}
                     />
-                    <div className="w-20 h-10 bg-white/20 border border-white/30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white/60 after:rounded-full after:h-7 after:w-7 after:transition-all peer-checked:bg-white peer-checked:after:bg-[#8245EF] shadow-xl"></div>
+                    <div className="w-16 h-8 bg-white/20 border border-white/30 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-7 after:w-7 after:transition-all peer-checked:bg-white peer-checked:after:bg-[#8245EF]"></div>
                   </label>
                 </div>
              </div>
 
-             <div className="w-full xl:w-auto flex flex-col gap-8 shrink-0 relative z-10 items-center">
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full xl:w-[480px] px-20 py-10 bg-white text-[#8245EF] font-black text-xl uppercase tracking-[0.5em] rounded-[2.5rem] hover:scale-[1.02] transition-all shadow-2xl flex items-center justify-center gap-8 active:scale-95 disabled:opacity-70 font-mono border border-white/20 group/submit shadow-[0_30px_60px_rgba(0,0,0,0.1)]"
-                >
-                  {submitting ? (
-                     <div className="flex items-center gap-6">
-                        <Loader2 size={32} className="animate-spin" />
-                        <span>Broadcasting...</span>
-                     </div>
-                  ) : (
-                     <div className="flex items-center gap-6">
-                        <span>Execute_Sequence</span>
-                        <Rocket size={32} className="group-hover/submit:translate-x-2 group-hover/submit:-translate-y-2 transition-transform duration-700" />
-                     </div>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.back()}
-                  className="text-white/60 hover:text-white transition-all text-[11px] font-black uppercase tracking-[0.5em] font-mono italic underline-offset-8 hover:underline"
-                >
-                  Terminate_Initialization_Sequence
-                </button>
-             </div>
+              <div className="w-full xl:w-auto flex flex-col sm:flex-row gap-4 shrink-0 relative z-10">
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="px-10 py-5 bg-white text-[#8245EF] font-bold text-lg rounded-2xl hover:bg-gray-50 transition-all shadow-xl flex items-center justify-center gap-3 disabled:opacity-50 active:scale-95"
+                  >
+                    {submitting ? (isEdit ? "Updating..." : "Launching...") : (isEdit ? "Save Changes" : "Launch Campaign")}
+                    <Rocket size={20} />
+                  </button>
+                 <button
+                   type="button"
+                   onClick={() => router.back()}
+                   className="px-10 py-5 text-white/50 hover:text-white font-bold text-sm uppercase transition-all"
+                 >
+                   Cancel
+                 </button>
+              </div>
+
           </div>
 
         </form>
@@ -677,28 +785,19 @@ export default function NewLinkedInCampaignPage({ params: paramsPromise }) {
        <style jsx>{`
         .form-input {
           width: 100%;
-          padding: 1.75rem 2.5rem;
+          padding: 1rem 1.5rem;
           background-color: white;
-          border: 1px solid #8245EF25;
-          border-radius: 2rem;
-          font-weight: 800;
-          color: #161932;
+          border: 1px solid #e2e8f0;
+          border-radius: 1rem;
+          font-weight: 500;
+          color: #1e293b;
           outline: none;
-          transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-          font-family: inherit;
-          letter-spacing: 0.05em;
-          box-shadow: 0 4px 10px rgba(130, 69, 239,0.02), inset 0 2px 4px rgba(0,0,0,0.01);
+          transition: all 0.2s;
           font-size: 1rem;
         }
         .form-input:focus {
-          border-color: #8245EF80;
-          background-color: #FCF8FE30;
-          box-shadow: 0 20px 40px rgba(130, 69, 239,0.04), inset 0 2px 4px rgba(0,0,0,0.01);
-          transform: translateY(-2px);
-        }
-        .active-input {
-           border-color: #8245EF40;
-           background-color: #FCF8FE20;
+          border-color: #8245EF;
+          box-shadow: 0 0 0 3px rgba(130, 69, 239, 0.1);
         }
       `}</style>
     </div>

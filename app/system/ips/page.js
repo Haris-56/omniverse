@@ -65,12 +65,12 @@ export default function IPManagement() {
   };
 
   const removeIP = async (id) => {
-    if (!confirm("Decommission this network node? This action is irreversible.")) return;
+    if (!confirm("Remove this proxy? This action cannot be undone.")) return;
     try {
       await fetch(`/api/system/proxies?id=${id}`, { method: "DELETE" });
       fetchIPs();
     } catch (e) {
-      alert("Nuclear option failed. Node still active.");
+      alert("Failed to remove proxy.");
     }
   };
 
@@ -86,63 +86,61 @@ export default function IPManagement() {
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 border-b border-[#8245EF]/10 pb-16">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
-                 <span className="px-5 py-2 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#8245EF]/20 flex items-center gap-3 font-mono">
-                 <Hexagon size={16} className="opacity-80" />
-                 Network_Grid::Authorized
+                 <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
+                 <Hexagon size={14} className="opacity-80" />
+                 Proxy Management
                </span>
             </div>
-            <h1 className="text-5xl md:text-6xl font-black text-[#161932] tracking-tighter uppercase leading-none">
-              IP <span className="text-[#8245EF]">Registry</span>
-            </h1>
-            <p className="text-[#64748b] text-lg md:text-xl font-medium max-w-3xl leading-relaxed italic">Administer secure inbound proxy clusters and modulate geo-location distribution.</p>
+            <h1 className="text-5xl font-bold text-gray-900 tracking-tight">Proxies</h1>
+            <p className="text-gray-500 text-xl font-medium">Manage your proxy servers and monitor their performance.</p>
           </div>
           <div className="flex items-center gap-4">
             <button 
               onClick={fetchIPs}
-              className="px-6 md:px-10 py-4 md:py-6 bg-white text-[#161932] font-black uppercase text-[11px] tracking-[0.3em] rounded-[1.75rem] flex items-center justify-center gap-5 transition-all shadow-sm hover:bg-[#FCF8FE] active:scale-95 font-mono border border-[#8245EF]/10"
+              className="px-8 py-4 bg-white text-gray-900 font-bold uppercase text-xs tracking-widest rounded-xl flex items-center justify-center gap-3 transition-all shadow-sm hover:bg-gray-50 active:scale-95 border border-gray-100"
             >
-              <RefreshCw size={20} className={loading ? "animate-spin" : ""} /> Sync_Grid
+              <RefreshCw size={18} className={loading ? "animate-spin" : ""} /> Refresh
             </button>
             <button 
               onClick={() => setShowAddModal(true)}
-              className="px-6 md:px-12 py-4 md:py-6 bg-[#8245EF] text-white font-black uppercase text-[11px] tracking-[0.4em] rounded-[2rem] flex items-center justify-center gap-5 transition-all shadow-xl hover:bg-[#6d28d9] active:scale-95 font-mono border border-white/10"
+              className="px-8 py-4 bg-[#8245EF] text-white font-bold uppercase text-xs tracking-widest rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg hover:bg-[#6d28d9] active:scale-95 border border-white/10"
             >
-              <Plus size={20} /> Provision_Node
+              <Plus size={18} /> Add Proxy
             </button>
           </div>
         </div>
 
         {/* Metrics Bar */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-full">
-          <MetricCard icon={Server} label="Grid_Clusters" value={ips.length} accent="#8245EF" sub="Active Nodes" />
-          <MetricCard icon={Shield} label="Safe_Residency" value={ips.filter(i => i.type === 'residential').length} accent="#8245EF" sub="Verified Residential" />
-          <MetricCard icon={Activity} label="Pulse_Sync" value="98.4%" accent="#8245EF" sub="Health Multiplier" />
-          <MetricCard icon={Zap} label="Load_Balance" value={`${ips.reduce((a,b) => a + (b.usage?.today || 0), 0)}`} accent="#8245EF" sub="Daily Requests" />
+          <MetricCard icon={Server} label="Total Proxies" value={ips.length} accent="#8245EF" sub="Active Nodes" />
+          <MetricCard icon={Shield} label="Residential" value={ips.filter(i => i.type === 'residential').length} accent="#8245EF" sub="Verified Residential" />
+          <MetricCard icon={Activity} label="Success Rate" value="98.4%" accent="#8245EF" sub="Health Multiplier" />
+          <MetricCard icon={Zap} label="Daily Usage" value={`${ips.reduce((a,b) => a + (b.usage?.today || 0), 0)}`} accent="#8245EF" sub="Requests" />
         </div>
 
         {/* Search Matrix */}
-        <div className="bg-white p-6 md:p-8 rounded-[3rem] border border-[#8245EF]/15 shadow-sm relative overflow-hidden group">
-          <div className="relative z-10 flex flex-col md:flex-row gap-8">
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+          <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1 relative">
-              <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-[#94a3b8]" size={28} />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={24} />
               <input 
                 type="text" 
-                placeholder="Locate node by host signature, protocol, or tag..." 
-                className="w-full pl-20 pr-8 py-7 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-[2.5rem] outline-none focus:border-[#8245EF] font-bold text-[#161932] transition-all shadow-sm italic placeholder:text-[#94a3b8]"
+                placeholder="Search by host, protocol, or type..." 
+                className="w-full pl-16 pr-8 py-4 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:border-[#8245EF]/40 font-bold text-gray-900 transition-all placeholder:text-gray-300"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex gap-6">
+            <div className="flex gap-4">
                <div className="relative">
-                 <select className="px-6 md:px-10 py-5 bg-white border border-[#8245EF]/15 rounded-[1.75rem] outline-none font-black text-[#64748b] text-[11px] uppercase tracking-widest font-mono appearance-none min-w-[200px] hover:border-[#8245EF]/30 transition-all cursor-pointer shadow-sm">
-                   <option>Filter::All_Nodes</option>
-                   <option>Filter::Residential</option>
-                   <option>Filter::Datacenter</option>
+                 <select className="px-6 py-4 bg-white border border-gray-100 rounded-xl outline-none font-bold text-gray-500 text-xs uppercase tracking-widest appearance-none min-w-[200px] hover:border-gray-200 transition-all cursor-pointer">
+                   <option>All Proxies</option>
+                   <option>Residential</option>
+                   <option>Datacenter</option>
                  </select>
-                 <Settings size={18} className="absolute right-8 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none" />
+                 <Settings size={16} className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                </div>
             </div>
           </div>
@@ -150,23 +148,23 @@ export default function IPManagement() {
 
         {/* IP Nodes Hub */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-48 space-y-10 animate-pulse text-center">
-             <div className="w-24 h-24 border-8 border-[#FCF8FE] border-t-[#8245EF] rounded-full animate-spin shadow-inner" />
-             <p className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono">Verifying_Optical_Links...</p>
+          <div className="flex flex-col items-center justify-center py-40 space-y-4 text-center">
+             <div className="w-16 h-16 border-4 border-gray-100 border-t-[#8245EF] rounded-full animate-spin" />
+             <p className="text-xs font-bold text-gray-400">Checking proxies...</p>
           </div>
         ) : (
           <div className="bg-white rounded-[3rem] overflow-hidden relative border border-[#8245EF]/10 shadow-sm max-w-full">
              <div className="absolute inset-x-0 bottom-0 h-[3px] bg-gradient-to-r from-transparent via-[#8245EF]/30 to-transparent" />
             <div className="overflow-x-auto custom-scrollbar w-full">
               <table className="w-full text-left min-w-[800px]">
-                <thead className="bg-[#FCF8FE]/50 text-[11px] font-black uppercase text-[#94a3b8] tracking-[0.4em] font-mono border-b border-[#8245EF]/10">
+                <thead className="bg-gray-50/50 text-[10px] font-bold uppercase text-gray-400 tracking-widest border-b border-gray-100">
                   <tr>
-                    <th className="p-6 md:p-8">Endpoint_Protocol</th>
-                    <th className="p-6 md:p-8">Classification</th>
-                    <th className="p-6 md:p-8">Type</th>
-                    <th className="p-6 md:p-8">Usage_Load</th>
-                    <th className="p-6 md:p-8 text-right">Integrity</th>
-                    <th className="p-6 md:p-8 text-right px-8">Operations</th>
+                    <th className="p-8">Server & Protocol</th>
+                    <th className="p-8">Type</th>
+                    <th className="p-8">Protocol</th>
+                    <th className="p-8">Daily Usage</th>
+                    <th className="p-8 text-right">Status</th>
+                    <th className="p-8 text-right px-12">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#8245EF]/5">
@@ -174,55 +172,55 @@ export default function IPManagement() {
                     <tr key={ip._id} className="hover:bg-[#FCF8FE]/30 transition-all group cursor-default">
                       <td className="p-6 md:p-8">
                         <div className="flex items-center gap-4">
-                          <div className="p-4 bg-[#FCF8FE] border border-[#8245EF]/10 rounded-2xl text-[#94a3b8] group-hover:text-[#8245EF] group-hover:border-[#8245EF]/30 transition-all font-mono shadow-sm">
-                            <MapPin size={22}/>
+                          <div className="p-4 bg-gray-50 border border-gray-100 rounded-xl text-gray-400 group-hover:text-[#8245EF] transition-all">
+                            <MapPin size={20}/>
                           </div>
                           <div>
-                            <span className="font-black text-[#161932] text-base md:text-lg font-mono tracking-tighter leading-none break-all">{ip.host || ip.ip}</span>
-                            <span className="text-[#94a3b8] font-mono text-base md:text-lg"> : {ip.port}</span>
-                            {ip.auth && <p className="text-[10px] font-black text-[#8245EF] uppercase tracking-widest mt-2 font-mono flex items-center gap-3">
-                               <Shield size={12} /> Secure_Handshake_Enabled
+                            <span className="font-bold text-gray-900 text-base leading-none">{ip.host || ip.ip}</span>
+                            <span className="text-gray-400 font-bold text-base"> : {ip.port}</span>
+                            {ip.auth && <p className="text-[10px] font-bold text-[#8245EF] uppercase tracking-widest mt-1 flex items-center gap-2">
+                               <Shield size={10} /> Encrypted
                             </p>}
                           </div>
                         </div>
                       </td>
                       <td className="p-6 md:p-8">
-                        <span className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] font-mono border ${
+                        <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border ${
                           ip.type === 'residential' 
                             ? 'bg-[#8245EF]/10 text-[#8245EF] border-[#8245EF]/20' 
-                            : 'bg-white text-[#64748b] border-[#8245EF]/10'
-                        } shadow-sm`}>
+                            : 'bg-gray-50 text-gray-500 border-gray-100'
+                        }`}>
                           {ip.type}
                         </span>
                       </td>
                       <td className="p-6 md:p-8">
-                        <div className="flex items-center gap-4">
-                           <Shield size={16} className="text-[#94a3b8]" />
-                           <span className="font-black text-[#64748b] text-[12px] uppercase tracking-widest font-mono">{ip.protocol}</span>
+                        <div className="flex items-center gap-3">
+                           <Shield size={14} className="text-gray-300" />
+                           <span className="font-bold text-gray-500 text-[11px] uppercase tracking-widest">{ip.protocol}</span>
                         </div>
                       </td>
                       <td className="p-6 md:p-8">
-                        <div className="flex items-center gap-8">
-                           <div className="flex-1 h-3.5 w-40 bg-[#FCF8FE] rounded-full overflow-hidden border border-[#8245EF]/10 shadow-inner">
+                        <div className="flex items-center gap-6">
+                           <div className="flex-1 h-2 w-32 bg-gray-100 rounded-full overflow-hidden">
                               <div 
                                 className="h-full bg-[#8245EF] rounded-full transition-all duration-1000" 
                                 style={{ width: `${Math.min(100, ((ip.usage?.today || 0) / (ip.limits?.daily || 1000)) * 100)}%` }} 
                               />
                            </div>
-                           <span className="text-[12px] font-black font-mono text-[#161932] tracking-widest">{ip.usage?.today || 0} U</span>
+                           <span className="text-[11px] font-bold text-gray-900 tracking-wider">{ip.usage?.today || 0} req</span>
                         </div>
                       </td>
                       <td className="p-6 md:p-8 text-right">
-                        <span className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#FCF8FE] text-[#8245EF] text-[11px] font-black uppercase tracking-widest border border-[#8245EF]/10 shadow-sm font-mono">
-                          <CheckCircle2 size={16} /> Synchronized
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-widest border border-green-100">
+                          <CheckCircle2 size={14} /> Active
                         </span>
                       </td>
                       <td className="p-6 md:p-8 text-right px-8">
                         <button 
                           onClick={() => removeIP(ip._id)} 
-                          className="px-6 py-3 bg-[#FCF8FE] text-[#94a3b8] hover:text-white hover:bg-rose-500 rounded-2xl border border-[#8245EF]/10 hover:border-rose-600 transition-all opacity-0 group-hover:opacity-100 uppercase text-[10px] font-black font-mono tracking-widest"
+                          className="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                         >
-                          <Trash2 size={24} className="mx-auto" />
+                          <Trash2 size={18} />
                         </button>
                       </td>
                     </tr>
@@ -232,7 +230,7 @@ export default function IPManagement() {
                        <td colSpan="6" className="py-48 text-center opacity-30">
                           <div className="flex flex-col items-center gap-8 max-w-sm mx-auto">
                             <Globe size={80} className="text-[#94a3b8]" />
-                            <p className="text-[12px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono italic">Void_Cluster_Identified</p>
+                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">No proxies found</p>
                           </div>
                        </td>
                     </tr>
@@ -252,50 +250,50 @@ export default function IPManagement() {
              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-gradient-to-r from-transparent via-[#8245EF]/40 to-transparent" />
             
             <div className="mb-10 relative z-10">
-               <div className="w-16 h-16 bg-[#FCF8FE] text-[#8245EF] rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-sm border border-[#8245EF]/10">
-                 <Server size={32} />
-               </div>
-               <h2 className="text-3xl font-bold text-[#161932] tracking-tight uppercase leading-none">Provision Grid Node</h2>
-               <p className="text-[#64748b] font-bold text-xs uppercase tracking-wider mt-4">Identify and bridge new infrastructure fabric.</p>
+                <div className="w-12 h-12 bg-[#FCF8FE] text-[#8245EF] rounded-xl flex items-center justify-center mx-auto mb-4 border border-[#8245EF]/10">
+                  <Server size={24} />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Add Proxy Server</h2>
+                <p className="text-gray-400 font-bold text-xs uppercase tracking-widest mt-2">Connect a new proxy server to the system.</p>
             </div>
 
             <form onSubmit={handleRegister} className="space-y-8 relative z-10 text-left">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <FormGroup label="Node Classification">
-                   <div className="relative group">
-                     <select 
-                       value={form.type} 
-                       onChange={e => setForm({...form, type: e.target.value})}
-                       className="w-full p-4 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-xl text-sm font-bold text-[#161932] outline-none focus:border-[#8245EF] transition-all appearance-none cursor-pointer tracking-wider uppercase shadow-sm"
-                     >
-                       <option value="residential">Residential Trust</option>
-                       <option value="shared">Datacenter Bulk</option>
-                     </select>
-                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#94a3b8]">
-                        <Settings size={18} />
-                     </div>
-                   </div>
-                 </FormGroup>
-                 <FormGroup label="Handshake Protocol">
+                  <FormGroup label="Proxy Type">
                     <div className="relative group">
-                     <select 
-                       value={form.protocol} 
-                       onChange={e => setForm({...form, protocol: e.target.value})}
-                       className="w-full p-4 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-xl text-sm font-bold text-[#161932] outline-none focus:border-[#8245EF] transition-all appearance-none cursor-pointer tracking-wider uppercase shadow-sm"
-                     >
-                       <option value="socks5">SOCKS5</option>
-                       <option value="http">HTTP SECURE</option>
-                     </select>
-                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#94a3b8]">
-                        <Settings size={18} />
-                     </div>
-                   </div>
-                 </FormGroup>
+                      <select 
+                        value={form.type} 
+                        onChange={e => setForm({...form, type: e.target.value})}
+                        className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 transition-all appearance-none cursor-pointer"
+                      >
+                        <option value="residential">Residential Trust</option>
+                        <option value="shared">Datacenter Bulk</option>
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                         <Settings size={16} />
+                      </div>
+                    </div>
+                  </FormGroup>
+                  <FormGroup label="Protocol">
+                     <div className="relative group">
+                      <select 
+                        value={form.protocol} 
+                        onChange={e => setForm({...form, protocol: e.target.value})}
+                        className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 transition-all appearance-none cursor-pointer"
+                      >
+                        <option value="socks5">SOCKS5</option>
+                        <option value="http">HTTP SECURE</option>
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                         <Settings size={16} />
+                      </div>
+                    </div>
+                  </FormGroup>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="md:col-span-3">
-                  <FormGroup label="Access_Endpoint / Host">
+                  <FormGroup label="Host / IP">
                     <input 
                       required 
                       placeholder="e.g. 0.0.0.0" 
@@ -319,28 +317,30 @@ export default function IPManagement() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                <FormGroup label="Operator Identity">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <FormGroup label="Username">
                   <input 
-                    placeholder="Admin ID" 
+                    placeholder="Proxy username" 
                     value={form.username}
                     onChange={e => setForm({...form, username: e.target.value})}
-                    className="form-input text-sm px-4 py-3 rounded-xl" 
+                    className="form-input" 
                   />
                 </FormGroup>
-                <FormGroup label="Security Key">
+                <FormGroup label="Password">
                   <input 
                     type="password" 
                     placeholder="••••••••••••" 
                     value={form.password}
                     onChange={e => setForm({...form, password: e.target.value})}
-                    className="form-input text-sm px-4 py-3 rounded-xl" 
+                    className="form-input" 
                   />
                 </FormGroup>
               </div>
+              </div>
 
               <div className="pt-8 flex flex-col md:flex-row gap-4">
-                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 py-4 bg-[#FCF8FE] text-[#94a3b8] font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#e2e8f0] transition-all border border-[#8245EF]/10 shadow-sm">Cancel</button>
-                <button type="submit" className="flex-[2] py-4 bg-[#8245EF] text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#6d28d9] transition-all shadow-md active:scale-95 border border-white/10">Execute Provisioning</button>
+                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 py-4 bg-gray-50 text-gray-400 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-gray-100 transition-all border border-gray-200">Cancel</button>
+                <button type="submit" className="flex-[2] py-4 bg-[#8245EF] text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg active:scale-95 border border-white/10">Save Proxy</button>
               </div>
             </form>
           </div>
@@ -351,27 +351,23 @@ export default function IPManagement() {
       <style jsx>{`
         .form-input {
           width: 100%;
-          padding: 1.5rem 2rem;
-          background-color: rgba(248, 244, 242, 0.5);
-          border: 1px solid rgba(130, 69, 239, 0.2);
-          border-radius: 2rem;
-          font-weight: 800;
-          color: #161932;
+          padding: 0.75rem 1rem;
+          background-color: #f9fafb;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.75rem;
+          font-weight: 600;
+          color: #111827;
           outline: none;
-          transition: all 0.3s;
-          font-family: monospace;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          font-size: 0.9rem;
-          box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+          transition: all 0.2s;
+          font-size: 0.875rem;
         }
         .form-input:focus {
           border-color: #8245EF;
           background-color: #ffffff;
-          box-shadow: 0 4px 20px rgba(130, 69, 239, 0.1);
+          box-shadow: 0 0 0 4px rgba(130, 69, 239, 0.1);
         }
         .form-input::placeholder {
-            color: #94a3b8;
+            color: #d1d5db;
         }
       `}</style>
     </div>
@@ -386,9 +382,9 @@ function MetricCard({ icon: Icon, label, value, accent, sub }) {
           <Icon size={24} />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.3em] mb-2 font-mono leading-none truncate">{label}</p>
-          <p className="text-2xl font-black text-[#161932] tracking-tighter leading-none truncate">{value}</p>
-          <p className="text-[9px] font-black text-[#64748b] uppercase tracking-widest mt-2 font-mono leading-none italic truncate">{sub}</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 truncate">{label}</p>
+          <p className="text-2xl font-bold text-gray-900 tracking-tight leading-none truncate">{value}</p>
+          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-2 leading-none truncate">{sub}</p>
         </div>
       </div>
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
@@ -399,7 +395,7 @@ function MetricCard({ icon: Icon, label, value, accent, sub }) {
 function FormGroup({ label, children }) {
   return (
     <div className="space-y-2">
-      <label className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider ml-1">{label}</label>
+      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">{label}</label>
       {children}
     </div>
   );

@@ -48,7 +48,7 @@ export default function SystemAdminPage() {
   };
 
   const removeProxy = async (id) => {
-    if(!confirm("Are you sure you want to decommission this network node?")) return;
+    if(!confirm("Are you sure you want to remove this proxy?")) return;
     await fetch(`/api/system/proxies?id=${id}`, { method: "DELETE" });
     fetchProxies();
   };
@@ -61,33 +61,33 @@ export default function SystemAdminPage() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12 border-b border-[#8245EF]/15 pb-8">
           <div>
             <div className="flex items-center gap-3 mb-4">
-               <span className="px-4 py-1.5 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-bold uppercase tracking-widest rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono leading-none shadow-sm">
-                 <Lock size={14} className="animate-spin-slow" />
-                 Secure Sector
+               <span className="px-4 py-1.5 bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-green-100 flex items-center gap-2">
+                 <Lock size={14} />
+                 Secure Admin
                </span>
             </div>
-            <h1 className="text-4xl font-bold text-[#161932] tracking-tight uppercase leading-none">
-              Network <span className="text-[#8245EF]">Inbound</span>
+            <h1 className="text-4xl font-bold text-gray-900 tracking-tight leading-none">
+              Network <span className="text-[#8245EF]">Overview</span>
             </h1>
-            <p className="text-[#64748b] mt-4 text-base leading-relaxed max-w-xl">
-              Manage IP pools and proxy node distribution for global autonomous orchestration and proxy evasion stealth.
+            <p className="text-gray-500 mt-4 text-base leading-relaxed max-w-xl font-medium">
+              Monitor and manage your network proxies and IP pools here.
             </p>
           </div>
           <button 
             onClick={() => setShowModal(true)}
-            className="group px-6 py-3 bg-[#8245EF] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#6d28d9] transition-all shadow-md flex items-center justify-center gap-3 active:scale-95"
+            className="group px-6 py-3 bg-[#8245EF] text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95"
           >
-            <Plus size={18} className="group-hover:rotate-90 transition-transform duration-300" /> 
-            <span>Deploy New Node</span>
+            <Plus size={18} /> 
+            <span>Add Proxy</span>
           </button>
         </div>
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-           <StatCard icon={Globe} label="Unified IPs" value={proxies.length} sub="Active Fleet Nodes" active={true} />
-           <StatCard icon={Shield} label="Residential" value={proxies.filter(p => p.type === 'residential').length} sub="High Trust Stream" active={true} />
-           <StatCard icon={Server} label="Pooled Clusters" value={proxies.filter(p => p.type === 'shared').length} sub="Bulk Operations" active={true} />
-           <StatCard icon={Zap} label="Throughput" value={proxies.reduce((a,b) => a + (b.usage?.today || 0), 0)} sub="Signals Processed" active={true} />
+           <StatCard icon={Globe} label="Total Proxies" value={proxies.length} sub="Active Nodes" active={true} />
+           <StatCard icon={Shield} label="Residential" value={proxies.filter(p => p.type === 'residential').length} sub="Verified" active={true} />
+           <StatCard icon={Server} label="Shared Proxies" value={proxies.filter(p => p.type === 'shared').length} sub="Standard" active={true} />
+           <StatCard icon={Zap} label="Usage Today" value={proxies.reduce((a,b) => a + (b.usage?.today || 0), 0)} sub="Total Signals" active={true} />
         </div>
 
         {/* IP Registry Sector */}
@@ -97,10 +97,10 @@ export default function SystemAdminPage() {
                  <div className="w-12 h-12 bg-white border border-[#8245EF]/15 rounded-xl flex items-center justify-center text-[#8245EF] shadow-sm group-hover:rotate-12 transition-transform duration-500">
                     <Network size={24} />
                  </div>
-                 <div>
-                    <h2 className="text-xl font-bold text-[#161932] uppercase leading-none">Proxy Nodes</h2>
-                    <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider font-mono mt-1 leading-none">Live Monitoring</p>
-                 </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 tracking-tight">Proxies</h2>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Live Monitoring</p>
+                  </div>
               </div>
               <div className="flex items-center gap-4">
                  <div className="px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-lg text-xs font-bold text-emerald-600 tracking-wider flex items-center gap-3 uppercase leading-none">
@@ -113,14 +113,14 @@ export default function SystemAdminPage() {
            <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full text-left">
                  <thead className="bg-[#FCF8FE]/50 text-[10px] font-bold uppercase text-[#94a3b8] tracking-wider border-b border-[#8245EF]/10">
-                    <tr>
-                       <th className="p-6">Endpoint</th>
-                       <th className="p-6">Classification</th>
-                       <th className="p-6">Protocol</th>
-                       <th className="p-6">Usage</th>
-                       <th className="p-6">Limit</th>
-                       <th className="p-6 text-right">Ops</th>
-                    </tr>
+                     <tr>
+                        <th className="p-6">Endpoint</th>
+                        <th className="p-6">Type</th>
+                        <th className="p-6">Protocol</th>
+                        <th className="p-6">Usage</th>
+                        <th className="p-6">Limit</th>
+                        <th className="p-6 text-right">Actions</th>
+                     </tr>
                  </thead>
                  <tbody className="divide-y divide-[#8245EF]/5 text-sm text-[#5E5A59] relative z-10">
                     {proxies.length === 0 ? (
@@ -136,22 +136,22 @@ export default function SystemAdminPage() {
                               <div className="w-10 h-10 bg-[#FCF8FE] rounded-lg flex items-center justify-center border border-[#8245EF]/15 text-[#94a3b8] group-hover/row:text-[#8245EF] group-hover/row:bg-white transition-all shadow-sm">
                                  <Key size={16} />
                               </div>
-                              <div>
-                                 <span className="font-bold text-sm text-[#161932]">{p.host}</span>
-                                 <span className="text-[#94a3b8] text-xs"> : {p.port}</span>
-                                 <div className="text-[10px] text-[#94a3b8] mt-1 uppercase font-bold tracking-wider flex items-center gap-2 leading-none">
-                                    {p.auth ? <span className="text-emerald-600">Secured</span> : <span className="text-rose-600">Open</span>}
+                               <div>
+                                 <span className="font-bold text-sm text-gray-900">{p.host}</span>
+                                 <span className="text-gray-400 text-xs"> : {p.port}</span>
+                                 <div className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest flex items-center gap-2 leading-none">
+                                    {p.auth ? <span className="text-green-600">Secured</span> : <span className="text-rose-600">Open</span>}
                                     <span className="opacity-30">•</span>
                                     <span>ID: {p._id.slice(-6).toUpperCase()}</span>
                                  </div>
                               </div>
                            </td>
                            <td className="p-6">
-                              <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border leading-none inline-block ${p.type === 'residential' ? 'bg-[#8245EF] text-white border-[#8245EF]' : 'bg-[#FCF8FE] text-[#8245EF] border-[#8245EF]/20'}`}>
-                                {p.type === 'residential' ? 'Residential' : 'Shared Data'}
-                              </span>
-                           </td>
-                           <td className="p-6 uppercase text-xs font-bold text-[#94a3b8] tracking-wider font-mono">{p.protocol}</td>
+                               <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border leading-none inline-block ${p.type === 'residential' ? 'bg-[#8245EF] text-white border-[#8245EF]' : 'bg-gray-50 text-gray-500 border-gray-100'}`}>
+                                 {p.type === 'residential' ? 'Residential' : 'Shared Data'}
+                               </span>
+                            </td>
+                            <td className="p-6 uppercase text-xs font-bold text-gray-400 tracking-widest">{p.protocol}</td>
                            <td className="p-6">
                               <div className="flex items-center gap-4">
                                  <div className="flex-1 h-2 w-32 bg-[#FCF8FE] rounded-full overflow-hidden border border-[#8245EF]/10">
@@ -160,8 +160,8 @@ export default function SystemAdminPage() {
                                  <span className="text-[11px] font-bold text-[#161932]">{p.usage.today}</span>
                               </div>
                            </td>
-                           <td className="p-6 text-xs text-[#161932] font-bold">
-                              {p.limits.daily} <span className="text-[#94a3b8] ml-1 opacity-50 uppercase tracking-widest text-[10px]">/DAY</span>
+                           <td className="p-6 text-xs text-gray-900 font-bold">
+                               {p.limits.daily} <span className="text-gray-400 ml-1 opacity-50 uppercase tracking-widest text-[10px]">/Day</span>
                            </td>
                            <td className="p-6 text-right">
                               <button onClick={() => removeProxy(p._id)} className="p-2 bg-[#FCF8FE] rounded-lg text-[#94a3b8] hover:text-rose-500 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all opacity-0 group-hover/row:opacity-100 active:scale-95 shadow-sm">
@@ -189,16 +189,16 @@ export default function SystemAdminPage() {
                   <div className="w-12 h-12 bg-[#8245EF] rounded-xl flex items-center justify-center text-white shadow-md shadow-[#8245EF]/20">
                      <Plus size={24} />
                   </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-[#161932] uppercase tracking-wide">Provision Node</h2>
-                    <p className="text-[10px] font-bold text-[#8245EF] uppercase tracking-widest mt-1.5">Initialize Interface</p>
+                   <div>
+                    <h2 className="text-xl font-bold text-gray-900 tracking-tight">Add New Proxy</h2>
+                    <p className="text-[10px] font-bold text-[#8245EF] uppercase tracking-widest mt-1.5">New Configuration</p>
                   </div>
                </div>
 
                <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest ml-2">Node Classification</label>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Proxy Type</label>
                         <select 
                           value={form.type} onChange={e => setForm({...form, type: e.target.value})}
                           className="w-full bg-[#FCF8FE]/50 border border-[#8245EF]/15 rounded-xl px-4 py-3 text-sm font-bold text-[#161932] outline-none focus:border-[#8245EF] focus:bg-white transition-all appearance-none cursor-pointer"
@@ -207,8 +207,8 @@ export default function SystemAdminPage() {
                            <option value="shared">Datacenter / Shared</option>
                         </select>
                      </div>
-                     <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest ml-2">Protocol</label>
+                      <div className="space-y-2">
+                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Protocol</label>
                         <select 
                           value={form.protocol} onChange={e => setForm({...form, protocol: e.target.value})}
                           className="w-full bg-[#FCF8FE]/50 border border-[#8245EF]/15 rounded-xl px-4 py-3 text-sm font-bold text-[#161932] outline-none focus:border-[#8245EF] focus:bg-white transition-all appearance-none cursor-pointer uppercase"
@@ -218,38 +218,37 @@ export default function SystemAdminPage() {
                         </select>
                      </div>
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                     <div className="md:col-span-3 space-y-2">
-                        <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest ml-2">Host Address</label>
-                        <input required placeholder="192.168.1.1" value={form.host} onChange={e => setForm({...form, host: e.target.value})} className="w-full bg-[#FCF8FE]/50 border border-[#8245EF]/15 rounded-xl px-4 py-3 text-sm font-bold text-[#161932] outline-none focus:border-[#8245EF] focus:bg-white transition-all font-mono" />
-                     </div>
-                     <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest ml-2">Port</label>
-                        <input required placeholder="1080" value={form.port} onChange={e => setForm({...form, port: e.target.value})} className="w-full bg-[#FCF8FE]/50 border border-[#8245EF]/15 rounded-xl px-4 py-3 text-sm font-bold text-[#161932] outline-none focus:border-[#8245EF] focus:bg-white transition-all font-mono" />
-                     </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      <div className="md:col-span-3 space-y-2">
+                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Host Address</label>
+                         <input required placeholder="192.168.1.1" value={form.host} onChange={e => setForm({...form, host: e.target.value})} className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 focus:bg-white transition-all" />
+                      </div>
+                      <div className="space-y-2">
+                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Port</label>
+                         <input required placeholder="1080" value={form.port} onChange={e => setForm({...form, port: e.target.value})} className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 focus:bg-white transition-all" />
+                      </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest ml-2">Username (Optional)</label>
-                        <input value={form.username} onChange={e => setForm({...form, username: e.target.value})} className="w-full bg-[#FCF8FE]/50 border border-[#8245EF]/15 rounded-xl px-4 py-3 text-sm font-bold text-[#161932] outline-none focus:border-[#8245EF] focus:bg-white transition-all font-mono" placeholder="username" />
-                     </div>
-                     <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest ml-2">Password (Optional)</label>
-                        <input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} className="w-full bg-[#FCF8FE]/50 border border-[#8245EF]/15 rounded-xl px-4 py-3 text-sm font-bold text-[#161932] outline-none focus:border-[#8245EF] focus:bg-white transition-all font-mono" placeholder="••••••••" />
-                     </div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Username (Optional)</label>
+                         <input value={form.username} onChange={e => setForm({...form, username: e.target.value})} className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 focus:bg-white transition-all" placeholder="username" />
+                      </div>
+                      <div className="space-y-2">
+                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Password (Optional)</label>
+                         <input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 focus:bg-white transition-all" placeholder="••••••••" />
+                      </div>
                   </div>
 
-                  <div className="space-y-2">
-                     <label className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest ml-2">Daily Limits</label>
-                     <input type="number" value={form.dailyLimit} onChange={e => setForm({...form, dailyLimit: e.target.value})} className="w-full bg-[#FCF8FE]/50 border border-[#8245EF]/15 rounded-xl px-4 py-3 text-sm font-bold text-[#161932] outline-none focus:border-[#8245EF] focus:bg-white transition-all font-mono" />
-                  </div>
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Daily Limit</label>
+                      <input type="number" value={form.dailyLimit} onChange={e => setForm({...form, dailyLimit: e.target.value})} className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 focus:bg-white transition-all" />
+                   </div>
 
-                  <div className="flex flex-col md:flex-row gap-4 pt-6">
-                     <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-white text-[#94a3b8] border border-[#8245EF]/20 font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-rose-50 hover:text-rose-500 transition-all shadow-sm active:scale-95">Cancel</button>
-                     <button type="submit" className="flex-[2] py-3 bg-[#8245EF] text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-[#6d28d9] transition-all shadow-md active:scale-95 border border-white/10">Deploy Node</button>
-                  </div>
+                   <div className="flex flex-col md:flex-row gap-4 pt-6">
+                      <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-white text-gray-400 border border-gray-200 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-rose-50 hover:text-rose-500 transition-all active:scale-95">Cancel</button>
+                      <button type="submit" className="flex-[2] py-3 bg-[#8245EF] text-white font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg active:scale-95">Add Proxy</button>
+                   </div>
                </form>
             </div>
          </div>
@@ -269,10 +268,10 @@ function StatCard({ icon: Icon, label, value, sub, active }) {
           <div className="p-3 rounded-xl bg-[#FCF8FE] text-[#8245EF] border border-[#8245EF]/10 transition-all duration-500 shadow-sm group-hover:rotate-6 group-hover:scale-105">
              <Icon size={20} />
           </div>
-          <div>
-             <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider leading-none">{label}</span>
-             <p className="text-[10px] font-bold text-[#8245EF] mt-1 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-1 group-hover:translate-y-0 leading-none">{sub}</p>
-          </div>
+           <div>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">{label}</span>
+              <p className="text-[10px] font-bold text-[#8245EF] mt-1 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-1 group-hover:translate-y-0 leading-none">{sub}</p>
+           </div>
        </div>
        <div className="text-3xl font-bold text-[#161932] tracking-tight relative z-10 leading-none">{value}</div>
        

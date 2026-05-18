@@ -41,22 +41,22 @@ export default async function SystemLayout({ children }) {
                <ShieldCheck size={24} strokeWidth={2.5} />
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-[#161932] uppercase tracking-wide">Omniverse</h1>
-              <p className="text-[10px] font-bold text-[#8245EF] uppercase tracking-widest font-mono mt-1">System Admin</p>
+              <h1 className="text-xl font-bold text-gray-900 tracking-tight">Omniverse</h1>
+              <p className="text-[10px] font-bold text-[#8245EF] uppercase tracking-widest mt-1">System Admin</p>
             </div>
           </div>
 
           <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
-            <h3 className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest mb-4 ml-4">Pages & Nav</h3>
+            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 ml-4">Navigation</h3>
             <SidebarLink href="/" icon={<Globe size={18} />} label="Return to App" />
             <div className="h-4"></div>
-            <h3 className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest mb-4 ml-4">System Settings</h3>
-            <SidebarLink href="/system" icon={<LayoutDashboard size={18} />} label="Dashboard Hub" />
-            <SidebarLink href="/system/users" icon={<Users size={18} />} label="User Registry" />
-            <SidebarLink href="/system/plans" icon={<CreditCard size={18} />} label="Service Matrix" />
-            <SidebarLink href="/system/ips" icon={<MapPin size={18} />} label="Proxy Ingress" />
-            <SidebarLink href="/system/settings" icon={<Shield size={18} />} label="Safety Protocol" />
-            <SidebarLink href="/system/logs" icon={<Activity size={18} />} label="Audit Records" />
+            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 ml-4">Management</h3>
+            <SidebarLink href="/system" icon={<LayoutDashboard size={18} />} label="Dashboard" />
+            <SidebarLink href="/system/users" icon={<Users size={18} />} label="Users" />
+            <SidebarLink href="/system/plans" icon={<CreditCard size={18} />} label="Subscription Plans" />
+            <SidebarLink href="/system/ips" icon={<MapPin size={18} />} label="Proxy Management" />
+            <SidebarLink href="/system/settings" icon={<Shield size={18} />} label="Security Settings" />
+            <SidebarLink href="/system/logs" icon={<Activity size={18} />} label="System Logs" />
           </nav>
 
           <div className="mt-auto pt-6 border-t border-[#8245EF]/10">
@@ -82,10 +82,10 @@ export default async function SystemLayout({ children }) {
             <div className="h-8 w-[1px] bg-[#8245EF]/20 hidden xl:block" />
 
             <div>
-              <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider mb-1">Status</p>
-              <h2 className="text-sm font-bold text-[#161932] uppercase tracking-wide flex items-center gap-2">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Status</p>
+              <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest flex items-center gap-2">
                  <Cpu size={16} className="text-[#8245EF]" />
-                 Authority Mode
+                 Admin Mode
               </h2>
             </div>
           </div>

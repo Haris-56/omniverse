@@ -65,23 +65,23 @@ export default function InstagramPage() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#8245EF]/15 pb-8">
           <div>
             <div className="flex items-center gap-3 mb-4">
-                 <span className="px-4 py-1.5 bg-[#8245EF]/10 text-[#8245EF] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono">
+                 <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
                  <Camera size={14} className="opacity-80" />
-                 Verified
+                 Active
                </span>
             </div>
-            <h1 className="text-3xl font-black text-[#161932] tracking-tighter uppercase leading-tight">Instagram</h1>
-            <p className="text-[#64748b] mt-3 text-lg font-medium max-w-2xl leading-relaxed">Connect and manage your Instagram accounts to automate your engagement.</p>
+            <h1>Instagram Accounts</h1>
+            <p className="text-gray-500 mt-2 text-lg">Add and manage your Instagram accounts here.</p>
           </div>
           <button
             onClick={() => {
                 setSelectedAccount(null);
                 setIsConnectModalOpen(true);
             }}
-            className="group px-10 py-5 bg-[#8245EF] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#6d28d9] transition-all shadow-[0_15px_30px_rgba(130, 69, 239,0.2)] flex items-center justify-center gap-3 active:scale-95 border border-white/10 font-mono"
+            className="px-8 py-4 bg-[#8245EF] text-white text-xs font-bold rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg flex items-center justify-center gap-2 active:scale-95 border border-white/10"
           >
-            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" />
-            Connect Account
+            <Plus size={20} />
+            Add Account
           </button>
         </div>
 
@@ -93,7 +93,7 @@ export default function InstagramPage() {
                    <Image size={20} className="text-[#8245EF] animate-pulse" />
                 </div>
              </div>
-             <p className="text-[#94a3b8] font-black uppercase tracking-[0.3em] font-mono text-[9px]">Syncing accounts...</p>
+             <p className="text-gray-400 font-bold text-xs">Looking for accounts...</p>
           </div>
         ) : accounts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2.5rem] border border-dashed border-[#8245EF]/20 text-center shadow-sm p-12 max-w-3xl mx-auto relative overflow-hidden group">
@@ -101,16 +101,16 @@ export default function InstagramPage() {
             <div className="w-20 h-20 bg-[#FCF8FE] text-[#8245EF] rounded-[1.5rem] flex items-center justify-center mb-10 shadow-inner group-hover:rotate-6 transition-all duration-700">
                <Instagram size={44} />
             </div>
-            <h2 className="text-2xl font-black text-[#161932] uppercase tracking-tighter">No Accounts Found</h2>
-            <p className="text-[#64748b] mt-4 max-w-md mx-auto leading-relaxed text-lg">Connect your first Instagram account to start automating your visual outreach and engagement.</p>
+            <h2 className="text-2xl font-bold text-gray-900">No accounts added yet</h2>
+            <p className="text-gray-500 mt-2 max-w-md mx-auto text-lg">Add your first Instagram account to start sending messages.</p>
             <button
               onClick={() => {
                 setSelectedAccount(null);
                 setIsConnectModalOpen(true);
               }}
-              className="mt-10 px-10 py-5 bg-[#8245EF]/10 text-[#8245EF] rounded-xl font-black text-[10px] uppercase tracking-[0.4em] hover:bg-[#8245EF] hover:text-white transition-all border border-[#8245EF]/20"
+              className="mt-8 px-8 py-4 bg-[#8245EF] text-white rounded-xl font-bold text-xs uppercase transition-all shadow-md"
             >
-              Get Started Now
+              Add Account
             </button>
           </div>
         ) : (
@@ -136,47 +136,47 @@ export default function InstagramPage() {
                     </button>
                   </div>
 
-                  <h3 className="font-black text-xl text-[#161932] mb-1 truncate tracking-tighter uppercase group-hover:text-[#8245EF] transition-colors">{account.email}</h3>
-                  <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] mb-10 font-mono">ID: {account._id.slice(-8).toUpperCase()}</p>
+                  <h3 className="font-bold text-xl text-gray-900 mb-1 truncate">{account.email}</h3>
+                  <p className="text-xs text-gray-400 mb-6">Account: {account._id.slice(-8).toUpperCase()}</p>
                   
                   <div className="flex items-center justify-between mb-8">
                      <div className="flex items-center gap-3">
-                        <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest border shadow-sm font-mono leading-none ${account.status === "Connected" ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-rose-50 text-rose-600 border-rose-100"}`}>
+                        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-[10px] font-bold border shadow-sm ${account.status === "Connected" ? "bg-green-50 text-green-600 border-green-100" : "bg-rose-50 text-rose-600 border-rose-100"}`}>
                            {account.status === "Connected" ? <CheckCircle size={10} /> : <AlertCircle size={10} />}
-                           {account.status === "Connected" ? "Active" : account.status || "Error"}
+                           {account.status === "Connected" ? "Connected" : account.status || "Error"}
                         </span>
                      </div>
                     
                     {account.status !== "Connected" && (
                         <button 
                             onClick={(e) => handleReconnect(e, account)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#8245EF] text-white text-[8px] font-black uppercase tracking-widest border border-white/10 hover:bg-[#6d28d9] transition-all shadow-md font-mono active:scale-95"
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#8245EF] text-white text-[10px] font-bold border border-white/10 hover:bg-[#6d28d9] transition-all shadow-md active:scale-95"
                         >
                             <RefreshCw size={10} className="animate-spin-slow" />
-                            Reconnect
+                            Fix Connection
                         </button>
                     )}
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4 p-6 bg-[#FCF8FE]/50 rounded-[1.5rem] border border-[#8245EF]/10 group-hover:bg-white transition-all duration-500 shadow-inner mt-auto">
-                    <div className="text-center">
-                      <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-[0.3em] mb-2 font-mono">Posts</p>
-                      <p className="font-black text-[#161932] text-2xl tracking-tighter leading-none">--</p>
-                    </div>
-                    <div className="text-center border-l border-[#8245EF]/10">
-                      <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-[0.3em] mb-2 font-mono">Replies</p>
-                      <p className="font-black text-[#161932] text-2xl tracking-tighter leading-none">--</p>
-                    </div>
+                     <div className="text-center">
+                       <p className="text-[10px] font-bold text-gray-400 mb-1">Posts</p>
+                       <p className="font-bold text-gray-900 text-xl">--</p>
+                     </div>
+                     <div className="text-center border-l border-gray-100">
+                       <p className="text-[10px] font-bold text-gray-400 mb-1">Replies</p>
+                       <p className="font-bold text-gray-900 text-xl">--</p>
+                     </div>
                   </div>
                 </div>
 
                 <div className="px-8 py-6 bg-[#FCF8FE]/30 border-t border-[#8245EF]/10 flex justify-between items-center group-hover:bg-[#FCF8FE]/70 transition-all relative z-10">
-                  <span className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] flex items-center gap-2 font-mono">
+                   <span className="text-[10px] font-bold text-gray-400 flex items-center gap-2">
                     <Activity size={14} className="text-[#8245EF] animate-pulse" />
-                    Verified
+                    Running
                   </span>
-                  <span className="text-[9px] font-black text-[#8245EF] uppercase tracking-[0.3em] flex items-center gap-3 font-mono">
-                    Dashboard <ChevronRight size={14} />
+                  <span className="text-[10px] font-bold text-[#8245EF] flex items-center gap-2">
+                    View Plans <ChevronRight size={14} />
                   </span>
                 </div>
               </div>

@@ -301,13 +301,13 @@ export default function NewEmailCampaignPage({ params: paramsPromise }) {
             </button>
             <div>
                <div className="flex items-center gap-3 mb-3">
-                  <span className="px-4 py-1.5 bg-[#8245EF]/10 text-[#8245EF] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono">
+                  <span className="px-4 py-1.5 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
                     <Mail size={12} />
-                    {isEditMode ? 'Edit Plan' : 'New Plan'}
+                    Active
                   </span>
                </div>
-               <h1 className="text-3xl font-black text-[#161932] tracking-tighter uppercase leading-tight">{isEditMode ? 'Update Email Plan' : 'Create Email Plan'}</h1>
-               <p className="text-[#64748b] mt-3 text-lg font-medium">Set up your email sequence. Sending from: <span className="text-[#8245EF] font-black">{account?.email}</span></p>
+               <h1>{isEditMode ? 'Update Email Plan' : 'Create Email Plan'}</h1>
+               <p className="text-gray-500 mt-2 text-lg">Set up your messages and when to send them. Using: <span className="text-[#8245EF] font-bold">{account?.email}</span></p>
             </div>
           </div>
         </div>
@@ -315,85 +315,85 @@ export default function NewEmailCampaignPage({ params: paramsPromise }) {
         <form onSubmit={handleSubmit} className="space-y-16">
            <div className="bg-white rounded-[2.5rem] border border-[#8245EF]/15 p-10 md:p-12 space-y-12 shadow-sm">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                 <div className="space-y-4">
-                    <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Plan Name</label>
-                    <input type="text" required value={name} onChange={e => setName(e.target.value)} className="form-input text-lg font-black" placeholder="e.g. My First Plan" />
+                 <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-400 ml-2">Plan Name</label>
+                    <input type="text" required value={name} onChange={e => setName(e.target.value)} className="form-input text-lg font-bold" placeholder="Plan Name" />
                  </div>
-                 <div className="space-y-4">
-                    <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Target People</label>
-                    <select required value={listId} onChange={e => setListId(e.target.value)} className="form-input bg-[#FCF8FE]/30 text-lg font-black cursor-pointer">
-                       <option value="" disabled>Select a list...</option>
-                       {contactLists.map(list => <option key={list._id} value={list._id}>{list.name.toUpperCase()} ({list.count} people)</option>)}
+                 <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-400 ml-2">People to Message</label>
+                    <select required value={listId} onChange={e => setListId(e.target.value)} className="form-input bg-gray-50/50 text-lg font-bold cursor-pointer">
+                       <option value="" disabled>-- Choose List --</option>
+                       {contactLists.map(list => <option key={list._id} value={list._id}>{list.name} ({list.count} people)</option>)}
                     </select>
                  </div>
               </div>
               
-              <div className="pt-10 border-t border-[#8245EF]/10">
-                 <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mb-8 block ml-4">Accounts to use</label>
+              <div className="pt-10 border-t border-gray-100">
+                  <label className="text-xs font-bold text-gray-400 mb-6 block ml-2">Accounts to use</label>
                  <div className="flex flex-wrap gap-4">
                     {allAccounts.map(acc => (
-                       <label key={acc._id} className={`flex items-center gap-3 px-6 py-3 rounded-xl border cursor-pointer font-black text-[9px] uppercase tracking-widest font-mono transition-all ${selectedAccountIds.includes(acc._id) ? 'bg-[#8245EF]/10 border-[#8245EF]/30 text-[#8245EF]' : 'bg-[#FCF8FE]/50 border-[#8245EF]/10 text-[#94a3b8]'}`}>
-                          <input type="checkbox" className="sr-only" checked={selectedAccountIds.includes(acc._id)} onChange={(e) => {
-                             if (e.target.checked) setSelectedAccountIds([...selectedAccountIds, acc._id]);
-                             else if (selectedAccountIds.length > 1) setSelectedAccountIds(selectedAccountIds.filter(id => id !== acc._id));
-                          }} />
-                          <div className={`w-3 h-3 rounded-full border-2 ${selectedAccountIds.includes(acc._id) ? 'bg-[#8245EF] border-[#8245EF]' : 'bg-white border-[#94a3b8]/20'}`}></div>
-                          {acc.email}
-                       </label>
+                       <label key={acc._id} className={`flex items-center gap-3 px-5 py-2.5 rounded-xl border cursor-pointer font-bold text-[10px] transition-all ${selectedAccountIds.includes(acc._id) ? 'bg-[#8245EF]/10 border-[#8245EF]/30 text-[#8245EF]' : 'bg-gray-50 border-gray-100 text-gray-400'}`}>
+                           <input type="checkbox" className="sr-only" checked={selectedAccountIds.includes(acc._id)} onChange={(e) => {
+                              if (e.target.checked) setSelectedAccountIds([...selectedAccountIds, acc._id]);
+                              else if (selectedAccountIds.length > 1) setSelectedAccountIds(selectedAccountIds.filter(id => id !== acc._id));
+                           }} />
+                           <div className={`w-3 h-3 rounded-full border-2 ${selectedAccountIds.includes(acc._id) ? 'bg-[#8245EF] border-[#8245EF]' : 'bg-white border-gray-200'}`}></div>
+                           {acc.email}
+                        </label>
                     ))}
                  </div>
               </div>
            </div>
 
            <div className="bg-white rounded-[2.5rem] border border-[#8245EF]/15 overflow-hidden shadow-sm">
-              <div className="p-8 border-b border-[#8245EF]/10 bg-[#FCF8FE]/30 flex items-center justify-between">
-                 <h2 className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none">Draft your message</h2>
-                 <div className="flex gap-4">
-                    <button type="button" onClick={() => setAbTesting(!abTesting)} className={`px-6 py-3 rounded-lg text-[9px] font-black uppercase tracking-widest font-mono border transition-all ${abTesting ? 'bg-[#8245EF] border-transparent text-white shadow-md' : 'bg-white border-[#8245EF]/20 text-[#94a3b8]'}`}>
-                       {abTesting ? 'A/B Test: ON' : 'Try A/B Test'}
-                    </button>
-                 </div>
-              </div>
+               <div className="p-8 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-gray-900">Your Message</h2>
+                  <div className="flex gap-3">
+                     <button type="button" onClick={() => setAbTesting(!abTesting)} className={`px-5 py-2.5 rounded-lg text-[10px] font-bold border transition-all ${abTesting ? 'bg-[#8245EF] border-transparent text-white shadow-md' : 'bg-white border-gray-200 text-gray-400'}`}>
+                        {abTesting ? 'Testing two versions' : 'Test two versions'}
+                     </button>
+                  </div>
+               </div>
               <div className="p-10 md:p-12 space-y-10">
-                 {abTesting && (
-                    <div className="flex gap-3 mb-2">
-                       <button type="button" onClick={() => setCurrentVariant('A')} className={`px-6 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest font-mono transition-all ${currentVariant === 'A' ? 'bg-[#8245EF] text-white' : 'bg-[#FCF8FE] text-[#94a3b8]'}`}>Email A</button>
-                       <button type="button" onClick={() => setCurrentVariant('B')} className={`px-6 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest font-mono transition-all ${currentVariant === 'B' ? 'bg-[#8245EF] text-white' : 'bg-[#FCF8FE] text-[#94a3b8]'}`}>Email B</button>
-                    </div>
-                 )}
-                 <div className="space-y-4">
-                    <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">The Subject Line</label>
-                    <input value={abTesting && currentVariant === 'B' ? subjectB : subjectA} onChange={e => abTesting && currentVariant === 'B' ? setSubjectB(e.target.value) : setSubjectA(e.target.value)} className="form-input text-lg font-black" placeholder="Hello!" />
-                 </div>
-                 <div className="space-y-4">
-                    <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Message Body</label>
-                    <textarea rows={8} value={abTesting && currentVariant === 'B' ? messageB : messageA} onChange={e => abTesting && currentVariant === 'B' ? setMessageB(e.target.value) : setMessageA(e.target.value)} className="form-input min-h-[250px] text-base font-bold" placeholder="Write your message here..." />
-                 </div>
+                  {abTesting && (
+                     <div className="flex gap-2 mb-4">
+                        <button type="button" onClick={() => setCurrentVariant('A')} className={`px-5 py-2 rounded-lg text-[10px] font-bold transition-all ${currentVariant === 'A' ? 'bg-[#8245EF] text-white' : 'bg-gray-100 text-gray-400'}`}>Version A</button>
+                        <button type="button" onClick={() => setCurrentVariant('B')} className={`px-5 py-2 rounded-lg text-[10px] font-bold transition-all ${currentVariant === 'B' ? 'bg-[#8245EF] text-white' : 'bg-gray-100 text-gray-400'}`}>Version B</button>
+                     </div>
+                  )}
+                  <div className="space-y-2">
+                     <label className="text-xs font-bold text-gray-400 ml-2">Subject Line</label>
+                     <input value={abTesting && currentVariant === 'B' ? subjectB : subjectA} onChange={e => abTesting && currentVariant === 'B' ? setSubjectB(e.target.value) : setSubjectA(e.target.value)} className="form-input text-lg font-bold" placeholder="Hello!" />
+                  </div>
+                  <div className="space-y-2">
+                     <label className="text-xs font-bold text-gray-400 ml-2">Message</label>
+                     <textarea rows={8} value={abTesting && currentVariant === 'B' ? messageB : messageA} onChange={e => abTesting && currentVariant === 'B' ? setMessageB(e.target.value) : setMessageA(e.target.value)} className="form-input min-h-[200px] p-6 text-base font-medium" placeholder="Write your message here..." />
+                  </div>
               </div>
            </div>
 
             {/* Email Timing & Limits */}
             <div className="bg-white rounded-[2.5rem] border border-[#8245EF]/15 overflow-hidden group shadow-sm">
-               <div className="p-8 border-b border-[#8245EF]/10 bg-[#FCF8FE]/30">
-                  <h2 className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none">Timing & Limits</h2>
-                  <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] mt-2 font-mono">Control your sending volume.</p>
+               <div className="p-8 border-b border-gray-100 bg-gray-50/50">
+                  <h2 className="text-xl font-bold text-gray-900">Timing</h2>
+                  <p className="text-sm text-gray-500 mt-1">Pick the speed and timezone.</p>
                </div>
                <div className="p-10 md:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                  <div className="space-y-4">
-                     <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Emails per Day</label>
-                     <input type="number" value={dailyLimit} onChange={e => setDailyLimit(e.target.value)} className="form-input text-2xl font-black py-6 text-center h-20" />
+                  <div className="space-y-2">
+                     <label className="text-xs font-bold text-gray-400 ml-2">How many per day</label>
+                     <input type="number" value={dailyLimit} onChange={e => setDailyLimit(e.target.value)} className="form-input text-2xl font-bold py-6 text-center h-16 bg-gray-50/50" />
                   </div>
-                  <div className="space-y-4">
-                     <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Wait Time (SEC)</label>
+                  <div className="space-y-2">
+                     <label className="text-xs font-bold text-gray-400 ml-2">Time between messages</label>
                      <div className="flex items-center gap-4">
-                        <input type="number" value={minDelay} onChange={e => setMinDelay(e.target.value)} className="form-input text-center h-20 text-lg font-black" placeholder="Min" />
-                        <ArrowRight size={20} className="text-[#94a3b8]" />
-                        <input type="number" value={maxDelay} onChange={e => setMaxDelay(e.target.value)} className="form-input text-center h-20 text-lg font-black" placeholder="Max" />
+                        <input type="number" value={minDelay} onChange={e => setMinDelay(e.target.value)} className="form-input text-center h-16 text-lg font-bold bg-gray-50/50" placeholder="Min" />
+                        <ArrowRight size={20} className="text-gray-300" />
+                        <input type="number" value={maxDelay} onChange={e => setMaxDelay(e.target.value)} className="form-input text-center h-16 text-lg font-bold bg-gray-50/50" placeholder="Max" />
                      </div>
                   </div>
-                  <div className="space-y-4">
-                     <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Timezone</label>
-                     <select value={timezone} onChange={e => setTimezone(e.target.value)} className="form-input bg-[#FCF8FE]/30 h-20 text-lg font-black cursor-pointer">
+                  <div className="space-y-2">
+                     <label className="text-xs font-bold text-gray-400 ml-2">Timezone</label>
+                     <select value={timezone} onChange={e => setTimezone(e.target.value)} className="form-input bg-gray-50/50 h-16 text-lg font-bold cursor-pointer">
                         {Intl.supportedValuesOf('timeZone').map(tz => (
                            <option key={tz} value={tz}>{tz}</option>
                         ))}
@@ -402,8 +402,8 @@ export default function NewEmailCampaignPage({ params: paramsPromise }) {
                </div>
                <div className="p-10 border-t border-[#8245EF]/10 flex items-center justify-between bg-[#FCF8FE]/5">
                   <div>
-                     <p className="text-lg font-black text-[#161932] uppercase tracking-tighter">Stop if they reply</p>
-                     <p className="text-[10px] font-bold text-[#64748b] italic">We will pause if they write back.</p>
+                     <p className="text-lg font-bold text-gray-900 uppercase">Stop on reply</p>
+                     <p className="text-sm text-gray-500 mt-1">Auto-stop if they message you back.</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                      <input type="checkbox" className="sr-only peer" checked={stopOnReply} onChange={e => setStopOnReply(e.target.checked)} />
@@ -413,10 +413,10 @@ export default function NewEmailCampaignPage({ params: paramsPromise }) {
             </div>
 
             <div className="flex justify-end pt-8">
-               <button type="submit" disabled={submitting} className="group/submit px-12 py-6 bg-[#8245EF] text-white font-black text-xl uppercase tracking-[0.3em] rounded-[1.5rem] hover:bg-[#6d28d9] transition-all shadow-2xl flex items-center justify-center gap-6 active:scale-95 disabled:opacity-70 font-mono">
-                  {submitting ? <Loader2 className="animate-spin" size={32} /> : <div className="flex items-center gap-4"><span>{isEditMode ? 'Save Changes' : 'Start Plan'}</span> <ArrowRight size={24} className="group-hover/submit:translate-x-2 transition-transform duration-700" /></div>}
-               </button>
-            </div>
+                <button type="submit" disabled={submitting} className="px-10 py-5 bg-[#8245EF] text-white font-bold text-lg rounded-2xl hover:bg-[#6d28d9] transition-all shadow-xl flex items-center justify-center gap-4 disabled:opacity-70">
+                   {submitting ? <Loader2 className="animate-spin" size={24} /> : <div className="flex items-center gap-3"><span>{isEditMode ? 'Save Changes' : 'Start Plan'}</span> <ArrowRight size={20} /></div>}
+                </button>
+             </div>
         </form>
       </div>
     </div>

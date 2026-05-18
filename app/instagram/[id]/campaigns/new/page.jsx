@@ -62,8 +62,6 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
   const [isMessageRequest, setIsMessageRequest] = useState(true);
   const [executionPriority, setExecutionPriority] = useState(['story', 'highlight', 'message']);
   const [availableVariables, setAvailableVariables] = useState(["{{firstName}}", "{{lastName}}", "{{company}}", "{{username}}", "{{location}}"]);
-  const [media, setMedia] = useState(null);
-  const [mediaScanning, setMediaScanning] = useState(false);
 
   // Templates State
   const [templates, setTemplates] = useState([]);
@@ -174,32 +172,7 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
     setFollowUps(newFollowUps);
   };
 
-  const handleMediaUpload = async (e, targetIndex = -1) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    // Limits: Max 100MB for video, 15MB for audio/image
-    if (file.type.startsWith('video/') && file.size > 100 * 1024 * 1024) return alert("Video exceeds Instagram 100MB limit.");
-    if (!file.type.startsWith('video/') && file.size > 15 * 1024 * 1024) return alert("File exceeds 15MB limit.");
 
-    if (targetIndex === -1) setMediaScanning(true);
-    else updateFollowUp(targetIndex, "mediaScanning", true);
-
-    // Simulated Content Moderation Network Delay (18+ NSFW check)
-    await new Promise(r => setTimeout(r, 1500)); 
-    
-    const url = URL.createObjectURL(file);
-    const mediaObj = { type: file.type, url, name: file.name };
-
-    // You would map file uploads to a real backend in production.
-    if (targetIndex === -1) {
-      setMedia(mediaObj);
-      setMediaScanning(false);
-    } else {
-      updateFollowUp(targetIndex, "media", mediaObj);
-      updateFollowUp(targetIndex, "mediaScanning", false);
-    }
-  };
 
   const hasLink = (text) => /https?:\/\/[^\s]+/.test(text || "");
 
@@ -337,13 +310,13 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
             </Link>
             <div>
                <div className="flex items-center gap-3 mb-3">
-                  <span className="px-4 py-1.5 bg-[#8245EF]/10 text-[#8245EF] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono">
+                  <span className="px-3 py-1 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-bold rounded-full border border-[#8245EF]/20 flex items-center gap-2">
                     <Instagram size={12} />
-                    New Plan
+                    New Instagram Plan
                   </span>
                </div>
-               <h1 className="text-3xl font-black text-[#161932] tracking-tighter uppercase leading-tight">Create Instagram Plan</h1>
-               <p className="text-[#64748b] mt-3 text-lg font-medium">Set up your messages and when to send them. Using: <span className="text-[#8245EF] font-black">{account?.username}</span></p>
+               <h1>Create Instagram Plan</h1>
+               <p>Set up your messages and when to send them. Using: <span className="text-[#8245EF] font-bold">{account?.username}</span></p>
             </div>
           </div>
         </div>
@@ -357,13 +330,13 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                 <Target size={24} />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none">Plan Details</h2>
-                <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mt-2">Basic name and target list.</p>
+                <h2 className="text-xl font-bold text-gray-900">Plan Name</h2>
+                <p className="text-sm text-gray-500">Give your plan a name and pick who to message.</p>
               </div>
             </div>
             <div className="p-10 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] font-mono ml-4">Plan Name</label>
+              <div className="space-y-2">
+                <label>Plan Name</label>
                 <input
                   type="text"
                   value={name}
@@ -373,8 +346,8 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                   required
                 />
               </div>
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] font-mono ml-4">People to Message</label>
+              <div className="space-y-2">
+                <label>People to Message</label>
                 <div className="relative">
                   <select
                     value={listId}
@@ -399,15 +372,15 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                 <Rocket size={24} />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none">Settings</h2>
-                <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mt-2">How you want to reach out.</p>
+                <h2 className="text-xl font-bold text-gray-900">How to send</h2>
+                <p className="text-sm text-gray-500">Pick how you want to message people.</p>
               </div>
             </div>
             <div className="p-10 md:p-12 space-y-10">
               <div className="space-y-4">
-                 <div className="flex items-center justify-between ml-4">
-                    <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono">Priority Order</label>
-                 </div>
+                  <div className="flex items-center justify-between ml-2">
+                    <label>First to last</label>
+                  </div>
                  <div className="flex flex-col xl:flex-row gap-4">
                     {['story', 'highlight', 'message'].map((method) => {
                       const isActive = executionPriority.includes(method);
@@ -427,12 +400,12 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                           className={`flex-1 p-6 rounded-[1.5rem] border transition-all cursor-pointer flex items-center justify-between ${isActive ? 'bg-[#8245EF]/5 border-[#8245EF]/20 shadow-md' : 'bg-[#FCF8FE]/30 border-transparent hover:border-[#8245EF]/10'}`}
                         >
                            <div className="flex items-center gap-4">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black font-mono ${isActive ? 'bg-[#8245EF] text-white' : 'bg-[#94a3b8]/20 text-[#94a3b8]'}`}>
+                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isActive ? 'bg-[#8245EF] text-white' : 'bg-gray-100 text-gray-400'}`}>
                                  {isActive ? (priorityIndex + 1).toString().padStart(2, '0') : '--'}
-                              </div>
-                              <span className="font-black text-[#161932] text-[10px] uppercase tracking-widest font-mono">
-                                {method === 'story' ? 'Story Reply' : method === 'highlight' ? 'Highlight Reply' : 'Direct Message'}
-                              </span>
+                               </div>
+                               <span className="font-bold text-gray-700 text-sm">
+                                 {method === 'story' ? 'Reply to Story' : method === 'highlight' ? 'Reply to Highlight' : 'Send a Message'}
+                               </span>
                            </div>
                            {isActive && <Check size={16} className="text-[#8245EF]" />}
                         </div>
@@ -443,43 +416,43 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div onClick={() => setWatchStory(!watchStory)} className={`p-6 rounded-[1.5rem] border-2 transition-all cursor-pointer flex flex-col items-center text-center gap-3 ${watchStory ? 'bg-[#8245EF]/10 border-[#8245EF] shadow-lg' : 'bg-[#FCF8FE]/30 border-transparent hover:border-[#8245EF]/10'}`}>
-                   <span className="text-3xl">👁️</span>
+                    <span className="text-3xl">👁️</span>
                    <div>
-                    <h3 className="font-black text-[#161932] text-[10px] uppercase tracking-widest font-mono mb-1">Watch Stories</h3>
-                    <p className="text-[8px] font-bold text-[#64748b] uppercase tracking-widest leading-relaxed">Engage before DM.</p>
+                    <h3 className="font-bold text-gray-900 text-sm mb-1">Watch Stories first</h3>
+                    <p className="text-xs text-gray-500">Look at their stories before messaging.</p>
                    </div>
                 </div>
 
                 <div onClick={() => setWatchHighlights(!watchHighlights)} className={`p-6 rounded-[1.5rem] border-2 transition-all cursor-pointer flex flex-col items-center text-center gap-4 ${watchHighlights ? 'bg-[#8245EF]/10 border-[#8245EF] shadow-xl' : 'bg-[#FCF8FE]/30 border-transparent hover:border-[#8245EF]/10'}`}>
-                   <span className="text-3xl">🌟</span>
+                    <span className="text-3xl">🌟</span>
                    <div>
-                    <h3 className="font-black text-[#161932] text-[10px] uppercase tracking-widest font-mono mb-1">Watch Highlights</h3>
-                    <p className="text-[8px] font-bold text-[#64748b] uppercase tracking-widest leading-relaxed">Mimic organic interest.</p>
+                    <h3 className="font-bold text-gray-900 text-sm mb-1">Watch Highlights first</h3>
+                    <p className="text-xs text-gray-500">Look at their highlights first.</p>
                    </div>
                 </div>
 
                 <div onClick={() => setEnableAiAgent(!enableAiAgent)} className={`p-6 rounded-[1.5rem] border-2 transition-all cursor-pointer flex flex-col items-center text-center gap-3 ${enableAiAgent ? 'bg-indigo-50 border-indigo-200 shadow-lg' : 'bg-[#FCF8FE]/30 border-transparent hover:border-indigo-400/10'}`}>
                    <span className="text-3xl text-indigo-500"><Bot size={30} /></span>
                    <div>
-                    <h3 className="font-black text-[#161932] text-[10px] uppercase tracking-widest font-mono mb-1">AI Auto-Reply</h3>
-                    <p className="text-[8px] font-bold text-indigo-600/70 uppercase tracking-widest leading-relaxed">AI take-over on reply.</p>
+                    <h3 className="font-bold text-gray-900 text-sm mb-1">AI Assistant</h3>
+                    <p className="text-xs text-indigo-600/70">Let AI talk if they reply.</p>
                    </div>
                 </div>
               </div>
 
               {enableAiAgent && (
                 <div className="p-8 bg-indigo-50/30 rounded-[2rem] border border-indigo-100 flex items-center gap-10 animate-in slide-in-from-top-4 duration-500">
-                   <div className="flex-1 space-y-4">
-                      <label className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.3em] font-mono ml-4">Choose AI Person</label>
-                      <select value={selectedAgentId} onChange={(e) => setSelectedAgentId(e.target.value)} className="form-input bg-white border-indigo-200 text-indigo-900 h-14">
+                   <div className="flex-1 space-y-2">
+                      <label className="text-xs font-bold text-indigo-400 ml-2">Pick an AI helper</label>
+                      <select value={selectedAgentId} onChange={(e) => setSelectedAgentId(e.target.value)} className="form-input bg-white border-indigo-200 text-indigo-900 h-12">
                         <option value="">-- Choose Agent --</option>
                         {aiAgents.map(agent => (
                           <option key={agent._id} value={agent._id}>{agent.name}</option>
                         ))}
                       </select>
                    </div>
-                   <div className="w-1/3 text-[9px] font-bold text-indigo-400 font-mono tracking-widest leading-loose">
-                      AI will automatically engage after handshake.
+                   <div className="w-1/3 text-xs font-bold text-indigo-400">
+                      AI will start talking once they reply.
                    </div>
                 </div>
               )}
@@ -487,23 +460,23 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
           </div>
 
           {/* Phase 3: Content */}
-          <div className="bg-white rounded-[2.5rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group hover:shadow-[0_20px_40px_rgba(130, 69, 239,0.05)] transition-all">
+          <div className="bg-white rounded-[2.5rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group">
             <div className="p-8 border-b border-[#8245EF]/10 flex items-center gap-6 bg-[#FCF8FE]/30">
-              <div className="w-12 h-12 bg-[#FCF8FE] border border-[#8245EF]/10 text-[#8245EF] rounded-[1.25rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
+              <div className="w-12 h-12 bg-[#FCF8FE] border border-[#8245EF]/10 text-[#8245EF] rounded-[1.25rem] flex items-center justify-center shadow-inner">
                 <Cpu size={24} />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none">Message Body</h2>
-                <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mt-2">What you want to say.</p>
+                <h2 className="text-xl font-bold text-gray-900">Your Message</h2>
+                <p className="text-sm text-gray-500">Write what you want to send.</p>
               </div>
             </div>
             <div className="p-10 md:p-12 space-y-10">
               <div className="flex flex-col lg:flex-row gap-8 items-start">
-                 <div className="flex-1 w-full space-y-3">
-                    <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Apply Save Template</label>
+                 <div className="flex-1 w-full space-y-2">
+                    <label className="text-xs font-bold text-gray-400 ml-2">Use a saved message</label>
                     <select
                       onChange={(e) => handleApplyTemplate(e.target.value)}
-                      className="form-input bg-[#FCF8FE]/30 text-[#8245EF] h-14"
+                      className="form-input bg-gray-50 text-[#8245EF] h-12"
                     >
                       <option value="">Manual Input</option>
                       {templates.map(t => (
@@ -511,32 +484,32 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                       ))}
                     </select>
                  </div>
-                 <div className="flex-1 w-full space-y-3">
-                    <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Save Template</label>
+                 <div className="flex-1 w-full space-y-2">
+                    <label className="text-xs font-bold text-gray-400 ml-2">Save this message</label>
                     {!showSaveTemplate ? (
-                       <button type="button" onClick={() => setShowSaveTemplate(true)} className="form-input h-14 flex items-center justify-center gap-4 text-[#94a3b8] border-dashed border-2 hover:bg-[#8245EF]/5 hover:text-[#8245EF] group/save">
-                          <Plus size={18} className="group-hover:rotate-90 transition-transform" /> <span>Save current</span>
+                       <button type="button" onClick={() => setShowSaveTemplate(true)} className="form-input h-12 flex items-center justify-center gap-4 text-gray-400 border-dashed border-2 hover:bg-gray-50 hover:text-[#8245EF] transition-all">
+                          <Plus size={18} /> <span>Save this message</span>
                        </button>
                     ) : (
-                       <div className="flex gap-4">
-                          <input value={templateName} onChange={e => setTemplateName(e.target.value)} placeholder="Name" className="form-input h-14" />
-                          <button type="button" onClick={handleSaveAsTemplate} className="px-6 bg-[#8245EF] text-white rounded-[1rem] font-black text-[9px] uppercase tracking-widest">{savingTemplate ? '...' : 'Save'}</button>
-                          <button type="button" onClick={() => setShowSaveTemplate(false)} className="px-6 bg-[#FCF8FE] text-[#94a3b8] rounded-[1rem] font-black text-[9px] uppercase tracking-widest text-center">X</button>
+                       <div className="flex gap-2">
+                          <input value={templateName} onChange={e => setTemplateName(e.target.value)} placeholder="Name" className="form-input h-12" />
+                          <button type="button" onClick={handleSaveAsTemplate} className="px-4 bg-[#8245EF] text-white rounded-lg font-bold text-xs uppercase">{savingTemplate ? '...' : 'Save'}</button>
+                          <button type="button" onClick={() => setShowSaveTemplate(false)} className="px-4 bg-gray-100 text-gray-400 rounded-lg font-bold text-xs">X</button>
                        </div>
                     )}
                  </div>
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between ml-4">
-                   <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono">Your Message</label>
+                <div className="flex items-center justify-between ml-2">
+                   <label>Your Message</label>
                    <div className="flex items-center gap-2">
                       {availableVariables.map(v => (
                         <button
                           key={v}
                           type="button"
                           onClick={() => insertVariable("main", v)}
-                          className="px-3 py-1.5 bg-white border border-[#8245EF]/10 rounded-lg text-[8px] font-black text-[#8245EF] hover:bg-[#8245EF] hover:text-white transition-all shadow-sm font-mono"
+                          className="px-2 py-1 bg-white border border-gray-200 rounded text-[10px] font-bold text-[#8245EF] hover:bg-[#8245EF] hover:text-white transition-all shadow-sm"
                         >
                           {v}
                         </button>
@@ -544,82 +517,42 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                    </div>
                 </div>
                 <textarea
-                  value={media ? "" : message}
+                  value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  disabled={!!media}
-                  placeholder={media ? "Media file attached. Remove it to write text." : "Hello! How are you?"}
+                  placeholder="Hello! How are you?"
                   rows={6}
-                  className={`form-input text-lg font-bold min-h-[180px] p-8 ${media ? 'opacity-40 grayscale cursor-not-allowed' : ''} ${hasLink(message) ? 'border-amber-400' : ''}`}
-                  required={!media}
+                  className={`form-input text-base font-medium min-h-[150px] p-6 ${hasLink(message) ? 'border-amber-400' : ''}`}
+                  required
                 />
                 
                 {hasLink(message) && (
-                  <div className="p-6 bg-amber-50 rounded-[1.5rem] border border-amber-200 flex items-center gap-4">
-                    <AlertTriangle size={24} className="text-amber-500 shrink-0" />
+                  <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex items-center gap-3">
+                    <AlertTriangle size={20} className="text-amber-500 shrink-0" />
                     <div>
-                      <h5 className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1">Warning: URL Found</h5>
-                      <p className="text-[9px] font-bold text-amber-500/80 uppercase tracking-widest font-mono">Instagram might block messages with links.</p>
+                      <h5 className="text-xs font-bold text-amber-600 uppercase mb-1">Warning: Link Found</h5>
+                      <p className="text-[10px] text-amber-500">Instagram might block messages with links.</p>
                     </div>
                   </div>
                 )}
-
-                <div className="flex flex-col gap-6 mt-8 bg-[#FCF8FE]/30 p-8 rounded-[2rem] border border-[#8245EF]/10">
-                   <div className="flex items-center gap-6">
-                      <label className={`relative flex items-center justify-center gap-3 px-8 py-4 rounded-[1.5rem] border-2 border-dashed font-black text-[10px] uppercase tracking-[0.2em] transition-all cursor-pointer font-mono ${message.length > 0 ? 'opacity-30 cursor-not-allowed' : 'bg-white border-[#8245EF] text-[#8245EF] hover:bg-[#8245EF] hover:text-white'}`}>
-                         <Mic size={18} /> Voice
-                         <input type="file" disabled={message.length > 0} accept="audio/*" className="hidden" onChange={(e) => handleMediaUpload(e, -1)} />
-                      </label>
-                      <label className={`relative flex items-center justify-center gap-3 px-8 py-4 rounded-[1.5rem] border-2 border-dashed font-black text-[10px] uppercase tracking-[0.2em] transition-all cursor-pointer font-mono ${message.length > 0 ? 'opacity-30 cursor-not-allowed' : 'bg-white border-[#8245EF] text-[#8245EF] hover:bg-[#8245EF] hover:text-white'}`}>
-                         <Camera size={18} /> Media
-                         <input type="file" disabled={message.length > 0} accept="video/*,image/*" className="hidden" onChange={(e) => handleMediaUpload(e, -1)} />
-                      </label>
-                   </div>
-                   
-                   {mediaScanning && (
-                      <div className="flex items-center gap-4 text-amber-500 font-black text-[9px] uppercase tracking-widest">
-                         <div className="w-5 h-5 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
-                         Checking...
-                      </div>
-                   )}
-
-                   {media && !mediaScanning && (
-                      <div className="flex items-center gap-8 bg-white p-6 rounded-[2rem] border border-[#8245EF]/20 w-max shadow-lg animate-in fade-in zoom-in duration-500">
-                         <div className="relative group">
-                            {media.type.startsWith('audio/') && <div className="p-6 bg-amber-50 rounded-xl"><Mic size={32} className="text-amber-500" /></div>}
-                            {media.type.startsWith('video/') && <video src={media.url} className="w-40 rounded-xl border-4 border-white shadow-md" />}
-                            {media.type.startsWith('image/') && <img src={media.url} className="w-40 rounded-xl border-4 border-white shadow-md" />}
-                            <button type="button" onClick={() => setMedia(null)} className="absolute -top-3 -right-3 w-10 h-10 bg-white text-rose-500 rounded-full border-4 border-rose-50 shadow-xl flex items-center justify-center hover:scale-110">
-                               <Trash2 size={20} />
-                            </button>
-                         </div>
-                         <div>
-                            <p className="text-lg font-black text-[#161932] tracking-tighter uppercase mb-2">Attached</p>
-                            <div className="flex items-center gap-2 text-[9px] font-black text-emerald-500 uppercase tracking-widest">
-                               <ShieldCheck size={12} /> Safe
-                            </div>
-                         </div>
-                      </div>
-                   )}
-                </div>
               </div>
             </div>
           </div>
 
           {/* Phase 4: Schedule */}
-          <div className="bg-white rounded-[2.5rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group hover:shadow-[0_20px_40px_rgba(130, 69, 239,0.05)] transition-all">
+          <div className="bg-white rounded-[2.5rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group">
             <div className="p-8 border-b border-[#8245EF]/10 flex items-center gap-6 bg-[#FCF8FE]/30">
-              <div className="w-12 h-12 bg-[#FCF8FE] border border-[#8245EF]/10 text-amber-500 rounded-[1.25rem] flex items-center justify-center shadow-inner group-hover:scale-110 duration-700">
+              <div className="w-12 h-12 bg-[#FCF8FE] border border-[#8245EF]/10 text-amber-500 rounded-[1.25rem] flex items-center justify-center shadow-inner">
                 <Clock size={24} />
               </div>
               <div>
-                <h2 className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none">Schedule & Limits</h2>
-                <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mt-2">Control when messages go out.</p>
+                <h2 className="text-xl font-bold text-gray-900">When to send</h2>
+                <p className="text-sm text-gray-500">Set how many and when to send.</p>
               </div>
             </div>
             
             <div className="p-10 md:p-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-               <div className="space-y-4">
-                 <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] font-mono ml-4">Daily Limit</label>
+               <div className="space-y-2">
+                 <label className="ml-2">How many per day</label>
                  <div className="relative">
                    <input
                      type="number"
@@ -629,14 +562,14 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                      onChange={(e) => setDailyLimit(e.target.value)}
                      className="form-input text-center text-3xl font-black py-8 bg-[#FCF8FE]/30 h-20"
                    />
-                   <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-40 pointer-events-none">
-                      <span className="text-[9px] font-black text-[#94a3b8] uppercase tracking-widest font-mono">Day</span>
+                   <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-30">
+                      <span className="text-[10px] font-bold text-gray-400">Day</span>
                    </div>
                  </div>
                </div>
 
-               <div className="space-y-4">
-                 <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] font-mono ml-4">Hourly Limit</label>
+               <div className="space-y-2">
+                 <label className="ml-2">How many per hour</label>
                  <div className="relative">
                    <input
                      type="number"
@@ -646,23 +579,23 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                      onChange={(e) => setHourlyLimit(e.target.value)}
                      className="form-input text-center text-2xl font-black py-8 bg-[#FCF8FE]/30 h-20"
                    />
-                   <div className="absolute right-6 top-1/2 -translate-y-1/2 opacity-40 pointer-events-none">
-                      <span className="text-[9px] font-black text-[#94a3b8] uppercase tracking-widest font-mono">Hour</span>
+                   <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-30">
+                      <span className="text-[10px] font-bold text-gray-400">Hour</span>
                    </div>
                  </div>
                </div>
                
                <div className="space-y-4">
-                 <div className="flex items-center justify-between ml-4">
-                    <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono">Wait Time</label>
-                    <label className="flex items-center gap-2 cursor-pointer group/smart transition-colors">
+                 <div className="flex items-center justify-between ml-2">
+                    <label>Time between messages</label>
+                    <label className="flex items-center gap-2 cursor-pointer transition-colors">
                        <input 
                           type="checkbox" 
                           checked={smartDelay}
                           onChange={(e) => setSmartDelay(e.target.checked)}
-                          className="w-4 h-4 rounded-[0.25rem] text-[#8245EF] bg-white border-[#8245EF]/20 focus:ring-[#8245EF]"
+                          className="w-4 h-4 rounded text-[#8245EF] focus:ring-[#8245EF]"
                        />
-                       <span className="text-[8px] font-black text-[#8245EF] group-hover:text-[#6d28d9] uppercase tracking-widest transition-colors font-mono">Safe</span>
+                       <span className="text-[10px] font-bold text-[#8245EF]">Safe Mode</span>
                     </label>
                  </div>
                  <div className="flex items-center gap-4">
@@ -672,8 +605,8 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                  </div>
                </div>
 
-                <div className="space-y-4">
-                 <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] font-mono ml-4">Timezone</label>
+                <div className="space-y-2">
+                  <label className="ml-2">Your City Time</label>
                  <div className="relative">
                     <select value={timezone} onChange={(e) => setTimezone(e.target.value)} className="form-input appearance-none bg-[#FCF8FE]/30 text-[#8245EF] h-20">
                        {Intl.supportedValuesOf('timeZone').map(tz => (
@@ -688,54 +621,54 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
             </div>
 
             <div className="p-10 md:p-12 border-t border-[#8245EF]/10 grid grid-cols-1 md:grid-cols-2 gap-10">
-               <div className="space-y-4">
-                 <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] font-mono ml-4">Daily Schedule</label>
+               <div className="space-y-2">
+                 <label className="ml-2">Active Hours</label>
                  <div className="flex items-center gap-5">
-                    <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} className="form-input text-center text-xl font-black py-4 bg-[#FCF8FE]/30 h-16" />
-                    <span className="text-[#94a3b8] font-black text-sm uppercase tracking-widest font-mono">To</span>
-                    <input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} className="form-input text-center text-xl font-black py-4 bg-[#FCF8FE]/30 h-16" />
+                    <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} className="form-input text-center text-lg font-bold py-3 bg-gray-50/50" />
+                    <span className="text-gray-400 font-bold text-xs uppercase">until</span>
+                    <input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} className="form-input text-center text-lg font-bold py-3 bg-gray-50/50" />
                  </div>
                </div>
 
-               <div className="space-y-4">
-                 <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] font-mono ml-4">Blacklist</label>
-                 <textarea 
-                   placeholder="Usernames to ignore..." 
-                   value={blacklist} 
-                   onChange={e => setBlacklist(e.target.value)}
-                   className="form-input min-h-[100px] text-base font-bold bg-[#FCF8FE]/30 py-4"
-                 />
+                <div className="space-y-2">
+                  <label className="ml-2">People to skip</label>
+                  <textarea 
+                    placeholder="Type usernames you don't want to message..." 
+                    value={blacklist} 
+                    onChange={e => setBlacklist(e.target.value)}
+                    className="form-input min-h-[100px] text-base font-bold bg-gray-50/50 py-4"
+                  />
                </div>
             </div>
           </div>
 
           {/* Phase 5: Automatic Replies */}
-          <div className="bg-white rounded-[2.5rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group hover:shadow-[0_20px_40px_rgba(130, 69, 239,0.05)] transition-all">
+          <div className="bg-white rounded-[2.5rem] border border-[#8245EF]/15 shadow-sm overflow-hidden group">
             <div className="p-8 border-b border-[#8245EF]/10 flex items-center justify-between bg-[#FCF8FE]/30">
               <div className="flex items-center gap-8">
-                <div className="w-16 h-16 bg-white border border-[#8245EF]/10 text-purple-500 rounded-[1.5rem] flex items-center justify-center shadow-inner group-hover:rotate-12 duration-700">
-                  <Layers size={28} />
-                </div>
-                <div>
-                  <h2 className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none">Automatic Replies</h2>
-                  <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mt-2">Follow up messages.</p>
-                </div>
+                <div className="w-16 h-16 bg-white border border-gray-100 text-purple-500 rounded-2xl flex items-center justify-center shadow-inner transition-transform group-hover:rotate-6">
+                   <Layers size={28} />
+                 </div>
+                 <div>
+                   <h2 className="text-xl font-bold text-gray-900">Follow-up Messages</h2>
+                   <p className="text-sm text-gray-500">Messages to send if they don't reply.</p>
+                 </div>
               </div>
               <button
                 type="button"
                 onClick={addFollowUp}
-                className="px-8 py-4 bg-[#8245EF]/10 text-[#8245EF] font-black text-[10px] uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#8245EF] hover:text-white transition-all flex items-center gap-3 font-mono shadow-sm border border-[#8245EF]/10 active:scale-95"
+                className="px-6 py-3 bg-[#8245EF]/10 text-[#8245EF] font-bold text-xs rounded-xl hover:bg-[#8245EF] hover:text-white transition-all flex items-center gap-2 border border-[#8245EF]/10 active:scale-95"
               >
-                <Plus size={18} /> Add Follow-up
+                <Plus size={18} /> Add a follow-up
               </button>
             </div>
             
             <div className="p-10 md:p-12 space-y-10">
                {followUps.length === 0 ? (
-                 <div className="bg-[#FCF8FE]/50 rounded-[2.5rem] border border-dashed border-[#8245EF]/30 py-20 flex flex-col items-center justify-center text-center opacity-40">
-                   <Activity size={48} className="text-[#94a3b8] mb-6" />
-                   <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono">No follow-ups yet</p>
-                 </div>
+                  <div className="bg-gray-50/50 rounded-[2rem] border border-dashed border-gray-200 py-16 flex flex-col items-center justify-center text-center">
+                    <Activity size={40} className="text-gray-300 mb-4" />
+                    <p className="text-sm font-bold text-gray-400">You haven't added any follow-ups.</p>
+                  </div>
                ) : (
                 <div className="space-y-10">
                    {followUps.map((step, idx) => (
@@ -747,57 +680,57 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                       >
                         <Trash2 size={20} />
                       </button>
-                      <div className="flex flex-col xl:flex-row gap-8 items-center mb-10">
-                         <div className="w-16 h-16 bg-white border border-[#8245EF]/20 rounded-[1.25rem] flex items-center justify-center font-black text-[#8245EF] text-2xl font-mono">
+                      <div className="flex flex-col xl:flex-row gap-8 items-center mb-8">
+                         <div className="w-12 h-12 bg-white border border-gray-100 rounded-xl flex items-center justify-center font-bold text-[#8245EF] text-lg">
                             {(idx + 1).toString().padStart(2, '0')}
                          </div>
                          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-                            <div className="space-y-3">
-                               <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Timing Delay</label>
-                               <div className="flex items-center gap-4 bg-white border border-[#8245EF]/10 p-4 rounded-[1.25rem] shadow-sm">
-                                  <input
-                                    type="number"
-                                    min="1"
-                                    value={step.delayValue}
-                                    onChange={(e) => updateFollowUp(idx, "delayValue", e.target.value)}
-                                    className="bg-transparent text-[#161932] font-black text-xl w-16 text-center outline-none"
-                                  />
-                                  <div className="w-[1px] h-6 bg-[#8245EF]/20" />
-                                  <select 
-                                    value={step.delayUnit}
-                                    onChange={(e) => updateFollowUp(idx, "delayUnit", e.target.value)}
-                                    className="bg-transparent border-none text-[10px] font-black text-[#8245EF] outline-none uppercase tracking-widest cursor-pointer"
-                                  >
-                                    <option value="minutes">Minutes</option>
-                                    <option value="hours">Hours</option>
-                                    <option value="days">Days</option>
-                                  </select>
-                               </div>
-                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-400 ml-2">Wait for</label>
+                                <div className="flex items-center gap-3 bg-white border border-gray-100 p-3 rounded-xl shadow-sm">
+                                   <input
+                                     type="number"
+                                     min="1"
+                                     value={step.delayValue}
+                                     onChange={(e) => updateFollowUp(idx, "delayValue", e.target.value)}
+                                     className="bg-transparent text-gray-900 font-bold text-lg w-12 text-center outline-none"
+                                   />
+                                   <div className="w-[1px] h-5 bg-gray-100" />
+                                   <select 
+                                     value={step.delayUnit}
+                                     onChange={(e) => updateFollowUp(idx, "delayUnit", e.target.value)}
+                                     className="bg-transparent border-none text-[10px] font-bold text-[#8245EF] outline-none uppercase tracking-wider cursor-pointer"
+                                   >
+                                     <option value="minutes">Minutes</option>
+                                     <option value="hours">Hours</option>
+                                     <option value="days">Days</option>
+                                   </select>
+                                </div>
+                             </div>
                             
-                            <div className="space-y-3">
-                               <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Priority</label>
-                               <div className="flex gap-2">
-                                  {['story', 'highlight', 'message'].map((method) => {
-                                    const stepPriority = step.executionPriority || ['story', 'highlight', 'message'];
-                                    const isStepActive = stepPriority.includes(method);
-                                    const stepIdx = stepPriority.indexOf(method);
-                                    return (
-                                      <div 
-                                        key={method}
-                                        onClick={() => {
-                                          if (isStepActive) {
-                                              if (stepPriority.length > 1) {
-                                                  updateFollowUp(idx, "executionPriority", stepPriority.filter(m => m !== method));
-                                              }
-                                          } else {
-                                              updateFollowUp(idx, "executionPriority", [...stepPriority, method]);
-                                          }
-                                        }}
-                                        className={`flex-1 py-3 text-center rounded-lg border transition-all cursor-pointer font-black text-[8px] uppercase tracking-widest ${isStepActive ? 'bg-[#8245EF] border-[#8245EF] text-white' : 'bg-white border-[#8245EF]/10 text-[#94a3b8]'}`}
-                                      >
-                                         {isStepActive ? (stepIdx + 1) : '--'} {method === 'message' ? 'DM' : method}
-                                      </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-400 ml-2">How to send</label>
+                                <div className="flex gap-1.5">
+                                   {['story', 'highlight', 'message'].map((method) => {
+                                     const stepPriority = step.executionPriority || ['story', 'highlight', 'message'];
+                                     const isStepActive = stepPriority.includes(method);
+                                     const stepIdx = stepPriority.indexOf(method);
+                                     return (
+                                       <div 
+                                         key={method}
+                                         onClick={() => {
+                                           if (isStepActive) {
+                                               if (stepPriority.length > 1) {
+                                                   updateFollowUp(idx, "executionPriority", stepPriority.filter(m => m !== method));
+                                               }
+                                           } else {
+                                               updateFollowUp(idx, "executionPriority", [...stepPriority, method]);
+                                           }
+                                         }}
+                                         className={`flex-1 py-2 text-center rounded-lg border transition-all cursor-pointer font-bold text-[9px] uppercase tracking-wide ${isStepActive ? 'bg-[#8245EF] border-[#8245EF] text-white' : 'bg-white border-gray-100 text-gray-400'}`}
+                                       >
+                                          {isStepActive ? (stepIdx + 1) : '--'} {method === 'message' ? 'DM' : method}
+                                       </div>
                                     )
                                   })}
                                </div>
@@ -805,67 +738,53 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                          </div>
                       </div>
 
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between ml-4">
-                           <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono">Message Text</label>
-                        </div>
+                      <div className="space-y-2">
+                          <label className="ml-2 font-bold text-gray-700">Message Text</label>
+                       </div>
                         <textarea
-                          value={step.media || step.mediaUrl ? "" : step.message}
+                          value={step.message}
                           onChange={(e) => updateFollowUp(idx, "message", e.target.value)}
-                          disabled={!!(step.media || step.mediaUrl)}
-                          placeholder={step.media || step.mediaUrl ? "Media attached. Remove media to type message." : "Type follow-up message..."}
+                          placeholder="Type your message..."
                           rows={3}
-                          className={`form-input p-6 text-base font-bold ${step.media || step.mediaUrl ? 'opacity-40 grayscale cursor-not-allowed' : ''}`}
+                          className="form-input p-4 text-base font-medium"
+                          required
                         />
-                      </div>
-
-                      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mt-8 bg-white/50 p-6 rounded-[2rem] border border-[#8245EF]/5">
-                         <div className="flex gap-3">
-                            <label className={`flex items-center gap-2 cursor-pointer px-5 py-2.5 rounded-xl border-2 border-dashed font-black text-[9px] uppercase tracking-widest transition-all ${step.message.length > 0 ? 'opacity-20' : 'bg-white border-[#8245EF] text-[#8245EF] hover:bg-[#8245EF] hover:text-white'}`}>
-                               🎙️ Voice
-                               <input type="file" disabled={step.message.length > 0} accept="audio/*" className="hidden" onChange={(e) => handleMediaUpload(e, idx)} />
-                            </label>
-                            <label className={`flex items-center gap-2 cursor-pointer px-5 py-2.5 rounded-xl border-2 border-dashed font-black text-[9px] uppercase tracking-widest transition-all ${step.message.length > 0 ? 'opacity-20' : 'bg-white border-[#8245EF] text-[#8245EF] hover:bg-[#8245EF] hover:text-white'}`}>
-                               🎥 Media
-                               <input type="file" disabled={step.message.length > 0} accept="video/*,image/*" className="hidden" onChange={(e) => handleMediaUpload(e, idx)} />
-                            </label>
-                         </div>
-
-                         <button
-                           type="button"
-                           onClick={() => updateFollowUp(idx, "showAdvanced", !step.showAdvanced)}
-                           className="flex items-center gap-2 px-6 py-2.5 bg-[#161932] text-white rounded-[1rem] text-[9px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-md ml-auto"
-                         >
-                           <Settings size={14} /> Advanced {step.showAdvanced ? '▴' : '▾'}
-                         </button>
-                      </div>
+                       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-6 bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
+                          <button
+                            type="button"
+                            onClick={() => updateFollowUp(idx, "showAdvanced", !step.showAdvanced)}
+                            className="flex items-center gap-2 px-5 py-2 bg-gray-900 text-white rounded-lg text-xs font-bold hover:bg-black transition-all shadow-md ml-auto"
+                          >
+                            <Settings size={14} /> More Options {step.showAdvanced ? '▴' : '▾'}
+                          </button>
+                       </div>
 
                       {step.showAdvanced && (
                         <div className="mt-6 p-8 bg-white border border-[#8245EF]/10 rounded-[2rem] shadow-inner grid grid-cols-1 md:grid-cols-3 gap-6">
-                           <div className="space-y-3">
-                              <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Follow Action</label>
-                              <select value={step.followBehavior} onChange={e => updateFollowUp(idx, "followBehavior", e.target.value)} className="form-input bg-[#FCF8FE]/30 text-[10px] h-12">
-                                <option value="none">Disabled</option>
-                                <option value="before">Before Message</option>
-                                <option value="after">After Message</option>
-                              </select>
-                           </div>
-                           <div className="space-y-3">
-                              <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Like Post</label>
-                              <select value={step.likeBehavior} onChange={e => updateFollowUp(idx, "likeBehavior", e.target.value)} className="form-input bg-[#FCF8FE]/30 text-[10px] h-12">
-                                <option value="none">Disabled</option>
-                                <option value="before">Before Message</option>
-                                <option value="after">After Message</option>
-                              </select>
-                           </div>
-                           <div className="space-y-3">
-                              <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono ml-4">Comment Post</label>
-                              <select value={step.commentBehavior} onChange={e => updateFollowUp(idx, "commentBehavior", e.target.value)} className="form-input bg-[#FCF8FE]/30 text-[10px] h-12">
-                                <option value="none">Disabled</option>
-                                <option value="before">Before Message</option>
-                                <option value="after">After Message</option>
-                              </select>
-                           </div>
+                           <div className="space-y-2">
+                               <label className="text-xs font-bold text-gray-400 ml-2">Follow person</label>
+                               <select value={step.followBehavior} onChange={e => updateFollowUp(idx, "followBehavior", e.target.value)} className="form-input bg-gray-50/50 text-xs h-10">
+                                 <option value="none">Don't follow</option>
+                                 <option value="before">Before message</option>
+                                 <option value="after">After message</option>
+                               </select>
+                            </div>
+                           <div className="space-y-2">
+                               <label className="text-xs font-bold text-gray-400 ml-2">Like post</label>
+                               <select value={step.likeBehavior} onChange={e => updateFollowUp(idx, "likeBehavior", e.target.value)} className="form-input bg-gray-50/50 text-xs h-10">
+                                 <option value="none">Don't like</option>
+                                 <option value="before">Before message</option>
+                                 <option value="after">After message</option>
+                               </select>
+                            </div>
+                           <div className="space-y-2">
+                               <label className="text-xs font-bold text-gray-400 ml-2">Comment on post</label>
+                               <select value={step.commentBehavior} onChange={e => updateFollowUp(idx, "commentBehavior", e.target.value)} className="form-input bg-gray-50/50 text-xs h-10">
+                                 <option value="none">Don't comment</option>
+                                 <option value="before">Before message</option>
+                                 <option value="after">After message</option>
+                               </select>
+                            </div>
                         </div>
                       )}
                     </div>
@@ -875,23 +794,23 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
             </div>
           </div>
 
-          <div className="bg-[#161932] rounded-[3rem] border border-[#8245EF]/15 shadow-2xl p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden group/footer">
+          <div className="bg-[#161932] rounded-[3rem] border border-[#8245EF]/15 shadow-2xl p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden">
              <div className="absolute top-0 right-0 w-[300px] h-full bg-[#8245EF] opacity-[0.03] -rotate-12 translate-x-20" />
              <div className="flex-1 relative z-10 w-full">
                 <div className="flex items-center gap-5 mb-8">
-                   <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-[1rem] flex items-center justify-center text-[#8245EF]">
+                   <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-[#8245EF]">
                       <ShieldCheck size={28} />
                    </div>
                    <div>
-                      <h3 className="text-2xl font-black text-white tracking-tighter uppercase leading-none">Activate Plan</h3>
-                      <p className="text-[9px] font-black text-[#94a3b8] tracking-[0.3em] uppercase mt-2 font-mono">Control Activation</p>
+                      <h3 className="text-2xl font-bold text-white uppercase">Activate Plan</h3>
+                      <p className="text-xs text-gray-400">Ready to start?</p>
                    </div>
                 </div>
                 <div className="flex flex-col gap-6 mt-10">
-                   <div className="flex items-center justify-between p-8 bg-white/5 rounded-[2rem] border border-white/10 transition-all duration-700">
+                   <div className="flex items-center justify-between p-6 bg-white/5 rounded-2xl border border-white/10 transition-all">
                     <div className="pr-8 text-left">
-                       <p className="text-lg font-black text-white tracking-widest uppercase font-mono">Stop on reply</p>
-                       <p className="text-[10px] text-white/70 mt-2 uppercase font-black font-mono tracking-widest leading-relaxed">Auto-stop if they reply.</p>
+                       <p className="text-lg font-bold text-white">Stop on reply</p>
+                       <p className="text-sm text-white/50 mt-1">Auto-stop if they message you back.</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                      <input 
@@ -910,21 +829,21 @@ export default function NewInstagramCampaignPage({ params: paramsPromise }) {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="group/submit px-12 py-8 bg-[#8245EF] text-white font-black text-xl uppercase tracking-[0.2em] rounded-[2.5rem] hover:bg-[#6d28d9] transition-all shadow-2xl flex flex-col items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
+                  className="px-10 py-6 bg-[#8245EF] text-white font-bold text-lg rounded-2xl hover:bg-[#6d28d9] transition-all shadow-xl flex flex-col items-center justify-center gap-2 disabled:opacity-50"
                 >
                    {submitting ? (
-                      <Loader2 className="animate-spin" size={32} />
+                      <Loader2 className="animate-spin" size={24} />
                    ) : (
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3">
                          <span>Start Plan</span>
-                         <ArrowRight size={24} className="group-hover/submit:translate-x-2 transition-transform duration-700" />
+                         <ArrowRight size={20} />
                       </div>
                    )}
                 </button>
                 <button
                   type="button"
                   onClick={() => router.back()}
-                  className="px-12 py-5 bg-white/5 text-white/50 hover:text-white font-black text-[10px] uppercase tracking-[0.4em] rounded-[2rem] hover:bg-white/10 transition-all flex items-center justify-center border border-white/5 font-mono"
+                  className="px-10 py-4 text-white/40 hover:text-white font-bold text-xs uppercase transition-all"
                 >
                   Cancel Plan
                 </button>

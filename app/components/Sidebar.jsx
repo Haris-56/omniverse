@@ -36,7 +36,7 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
 
   const menu = [
     {
-      group: "Main",
+      group: "Core",
       items: [
         { label: "Dashboard", icon: <LayoutDashboard size={18} />, route: "/" },
         { label: "My People", icon: <Users size={18} />, route: "/contact-list" },
@@ -44,7 +44,7 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
       ]
     },
     {
-      group: "Social Media",
+      group: "Socials",
       items: [
         { label: "Facebook", icon: <Facebook size={18} />, route: "/facebook" },
         { label: "Instagram", icon: <Instagram size={18} />, route: "/instagram" },
@@ -53,14 +53,14 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
       ]
     },
     {
-      group: "AI Writing",
+      group: "AI Tools",
       items: [
         { label: "AI Writer", icon: <Bot size={18} />, route: "/ai-agent" },
-        { label: "AI Helper", icon: <PenTool size={18} />, route: "/ai-creator" },
+        { label: "AI Assistant", icon: <PenTool size={18} />, route: "/ai-creator" },
       ]
     },
     {
-      group: "Settings & Help",
+      group: "Help",
       items: [
         { label: "Guide", icon: <ShieldCheck size={18} />, route: "/documentation" },
         { label: "Support", icon: <HelpCircle size={18} />, route: "/support" },
@@ -95,7 +95,7 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
       <nav className="flex-1 overflow-y-auto px-4 py-2 space-y-8 custom-scrollbar relative z-10">
         {menu.map((section, sIdx) => (
           <div key={sIdx} className="space-y-3">
-             <h3 className="text-[8px] font-black text-slate-400 uppercase tracking-[0.4em] px-4 font-mono">
+             <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-4">
                {section.group}
              </h3>
              <div className="space-y-0.5">
@@ -105,10 +105,10 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
                      <Link
                      key={item.label}
                      href={item.route}
-                     className={`group w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all font-mono border-2 ${
+                     className={`group w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all border-2 ${
                        isActive
                          ? "bg-[#161932] text-white border-transparent shadow-lg"
-                         : "text-slate-500 hover:text-white hover:bg-[#161932] border-transparent"
+                         : "text-gray-500 hover:text-white hover:bg-[#161932] border-transparent"
                      }`}
                    >
                      <div className={`transition-all ${isActive ? "scale-110 text-[#8245EF]" : "text-slate-400 group-hover:text-[#8245EF] group-hover:scale-110"}`}>
@@ -127,8 +127,8 @@ export default function Sidebar({ onClose, isSidebarOpen }) {
       {/* FOOTER branding */}
       <div className="p-6 mt-auto relative z-10 text-center border-t border-[#161932]/10 bg-transparent">
         <div className="flex items-center justify-center gap-3">
-           <Activity size={12} className="text-slate-400 animate-pulse" />
-           <p className="text-[8px] font-black text-slate-400 tracking-[0.4em] uppercase font-mono">Everything is ready</p>
+           <Activity size={12} className="text-gray-400 animate-pulse" />
+           <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Active</p>
         </div>
       </div>
     </div>

@@ -76,41 +76,39 @@ export default function CampaignListPage() {
         {/* Header Sector */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 border-b border-[#8245EF]/15 pb-10">
           <div>
-            <div className="flex items-center gap-4 mb-6">
-                 <span className="px-5 py-2 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono shadow-sm">
-                 <ShieldCheck size={16} className="opacity-80" />
-                 Ready to work
+            <div className="flex items-center gap-4 mb-4">
+               <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
+                 <ShieldCheck size={14} className="opacity-80" />
+                 Active
                </span>
             </div>
-            <h1 className="text-5xl font-black text-[#161932] tracking-tighter uppercase leading-tight">
-              Make a <span className="text-[#8245EF]">Big Plan</span>
-            </h1>
-            <p className="text-[#64748b] mt-4 text-xl font-medium max-w-3xl leading-relaxed">Combine different ways to talk to people and grow your business.</p>
+            <h1>My Plans</h1>
+            <p className="text-gray-500 mt-2 text-xl">Create plans to message people on different platforms.</p>
           </div>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="group px-12 py-6 bg-[#8245EF] text-white text-[11px] font-black uppercase tracking-[0.5em] rounded-[1.75rem] hover:bg-[#6d28d9] transition-all shadow-[0_20px_40px_rgba(130, 69, 239,0.3)] flex items-center justify-center gap-4 active:scale-95 border border-white/10 font-mono"
+            className="group px-8 py-4 bg-[#8245EF] text-white text-xs font-bold rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg flex items-center justify-center gap-2 active:scale-95 border border-white/10"
           >
-            <Plus size={24} className="group-hover:rotate-90 transition-transform duration-500" />
-            Start a Big Plan
+            <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" />
+            New Plan
           </button>
         </div>
 
         {/* Toolbar Sector */}
         <div className="bg-white p-10 rounded-[3.5rem] border border-[#8245EF]/10 shadow-sm relative overflow-hidden group">
            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
-              <div className="relative flex-1 max-w-3xl group/search">
-                 <input
-                   placeholder="SEARCH YOUR PLANS..."
-                   className="w-full bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-3xl py-6 px-20 text-[12px] font-black text-[#161932] outline-none shadow-inner focus:border-[#8245EF]/40 transition-all placeholder:text-[#94a3b8] font-mono tracking-widest uppercase"
-                 />
-                 <Search size={28} className="absolute left-8 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/search:text-[#8245EF] transition-colors" />
-              </div>
-              
-              <button className="px-12 py-5 bg-white border border-[#8245EF]/15 rounded-2xl text-[#64748b] text-[10px] font-black uppercase tracking-[0.4em] flex items-center gap-4 hover:border-[#8245EF]/40 hover:text-[#8245EF] transition-all font-mono">
-                 <Filter size={20} className="group-hover:rotate-12 transition-transform" />
-                 Show Filters
-              </button>
+               <div className="relative flex-1 max-w-3xl group/search">
+                  <input
+                    placeholder="Search plans..."
+                    className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl py-4 px-16 text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 transition-all placeholder:text-gray-400"
+                  />
+                  <Search size={22} className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/search:text-[#8245EF] transition-colors" />
+               </div>
+               
+               <button className="px-6 py-3 bg-white border border-gray-100 rounded-xl text-gray-500 text-xs font-bold flex items-center gap-2 hover:border-[#8245EF]/40 hover:text-[#8245EF] transition-all">
+                  <Filter size={18} />
+                  Filters
+               </button>
            </div>
            <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#8245EF]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
         </div>
@@ -123,7 +121,7 @@ export default function CampaignListPage() {
                    <Target size={32} className="text-[#8245EF] animate-pulse" />
                 </div>
              </div>
-             <p className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono">Looking for your plans...</p>
+             <p className="text-xs font-bold text-gray-400">Loading...</p>
           </div>
         ) : campaigns.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-40 bg-white rounded-[4rem] border border-dashed border-[#8245EF]/20 text-center shadow-lg p-20 max-w-4xl mx-auto relative overflow-hidden group">
@@ -131,17 +129,17 @@ export default function CampaignListPage() {
             <div className="relative w-36 h-36 bg-[#FCF8FE] text-[#8245EF] border border-[#8245EF]/15 rounded-[3rem] flex items-center justify-center mb-12 rotate-3 shadow-inner group-hover:rotate-0 transition-transform duration-700">
               <Box size={72} />
             </div>
-            <h3 className="text-4xl font-black text-[#161932] mb-6 tracking-tighter relative z-10 uppercase leading-none">No Plans Yet</h3>
-            <p className="text-[#64748b] text-xl mb-16 max-w-md relative z-10 font-bold leading-relaxed">
-              Start your first big plan to talk to more customers.
-            </p>
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="px-14 py-6 bg-white border border-[#8245EF]/20 text-[#8245EF] font-black text-[11px] uppercase tracking-[0.4em] rounded-2xl hover:bg-[#FCF8FE] transition-all shadow-md flex items-center gap-5 relative z-10 font-mono active:scale-95"
-            >
-              <Plus size={24} />
-              Make your first plan
-            </button>
+             <h3 className="text-2xl font-bold text-gray-900 mb-4">No Plans Yet</h3>
+             <p className="text-gray-500 text-lg mb-12 max-w-md relative z-10 font-bold leading-relaxed">
+               Create your first plan to message people.
+             </p>
+             <button
+               onClick={() => setIsCreateModalOpen(true)}
+               className="px-10 py-5 bg-[#8245EF] text-white font-bold text-xs rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg flex items-center gap-3 relative z-10"
+             >
+               <Plus size={20} />
+               Create Plan
+             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-12">
@@ -173,44 +171,43 @@ export default function CampaignListPage() {
                     </button>
                   </div>
 
-                  <h3 className="font-black text-3xl text-[#161932] mb-6 tracking-tighter group-hover:text-[#8245EF] transition-colors leading-tight uppercase font-sans">{campaign.name}</h3>
-                  
-                  <div className="flex items-center gap-4 mb-14">
-                    <span className={`text-[9px] font-black uppercase px-6 py-3 rounded-2xl border tracking-[0.3em] font-mono leading-none ${
-                      campaign.status === 'Running' ? 'bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm' : 'bg-[#FCF8FE] text-[#94a3b8] border-[#8245EF]/10'
-                    }`}>
-                      Status: {campaign.status.toUpperCase()}
-                    </span>
-                    <span className="text-[9px] font-black uppercase text-[#8245EF] bg-[#8245EF]/10 border border-[#8245EF]/20 px-6 py-3 rounded-2xl tracking-[0.3em] font-mono shadow-inner leading-none">
-                       {campaign.platform === 'multi-channel' ? 'ALL CHANNELS' : campaign.platform.toUpperCase()}
-                    </span>
-                  </div>
+                   <h3 className="font-bold text-2xl text-gray-900 mb-6 group-hover:text-[#8245EF] transition-colors line-clamp-1">{campaign.name}</h3>
+                   
+                   <div className="flex items-center gap-3 mb-10">
+                     <span className={`text-[9px] font-bold uppercase px-4 py-2 rounded-xl border leading-none ${
+                       campaign.status === 'Running' ? 'bg-green-50 text-green-600 border-green-100 shadow-sm' : 'bg-gray-50 text-gray-400 border-gray-100'
+                     }`}>
+                       Status: {campaign.status}
+                     </span>
+                     <span className="text-[9px] font-bold uppercase text-[#8245EF] bg-[#8245EF]/10 border border-[#8245EF]/20 px-4 py-2 rounded-xl shadow-inner leading-none">
+                        {campaign.platform === 'multi-channel' ? 'All Channels' : campaign.platform}
+                     </span>
+                   </div>
 
-                  <div className="grid grid-cols-3 gap-8 p-10 bg-[#FCF8FE]/50 rounded-[3.5rem] border border-[#8245EF]/10 group-hover:bg-white group-hover:border-[#8245EF]/20 transition-all duration-700 shadow-inner relative overflow-hidden">
-                    <div className="text-center">
-                      <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.4em] mb-4 font-mono">Sent</p>
-                      <p className="font-black text-[#161932] text-3xl tracking-tighter leading-none">{campaign.stats?.sent || 0}</p>
-                    </div>
-                    <div className="text-center border-l border-[#8245EF]/10">
-                      <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.4em] mb-4 font-mono">Opened</p>
-                      <p className="font-black text-[#161932] text-3xl tracking-tighter leading-none">{campaign.stats?.opened || 0}</p>
-                    </div>
-                    <div className="text-center border-l border-[#8245EF]/10">
-                      <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.4em] mb-4 font-mono">Replies</p>
-                      <p className="font-black text-[#161932] text-3xl tracking-tighter leading-none">{campaign.stats?.replied || 0}</p>
-                    </div>
-                  </div>
+                   <div className="grid grid-cols-3 gap-6 p-8 bg-gray-50/50 rounded-3xl border border-gray-100">
+                     <div className="text-center">
+                       <p className="text-[10px] font-bold text-gray-400 mb-2">Sent</p>
+                       <p className="font-bold text-gray-900 text-2xl leading-none">{campaign.stats?.sent || 0}</p>
+                     </div>
+                     <div className="text-center border-l border-gray-200">
+                       <p className="text-[10px] font-bold text-gray-400 mb-2">Opened</p>
+                       <p className="font-bold text-gray-900 text-2xl leading-none">{campaign.stats?.opened || 0}</p>
+                     </div>
+                     <div className="text-center border-l border-gray-200">
+                       <p className="text-[10px] font-bold text-gray-400 mb-2">Replies</p>
+                       <p className="font-bold text-gray-900 text-2xl leading-none">{campaign.stats?.replied || 0}</p>
+                     </div>
+                   </div>
                 </div>
-                
-                <div className="px-14 py-10 bg-[#FCF8FE]/30 border-t border-[#8245EF]/10 flex justify-between items-center group-hover:bg-[#FCF8FE]/70 transition-all relative z-10">
-                  <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono flex items-center gap-4">
-                    <Calendar size={18} className="text-[#8245EF]/40" />
-                    Last worked: {new Date(campaign.updatedAt).toLocaleDateString()}
-                  </span>
-                  <span className="text-[11px] font-black text-[#8245EF] uppercase tracking-[0.5em] flex items-center gap-4 group-hover:gap-6 transition-all font-mono group-hover:text-[#8245EF]">
-                    Settings <ChevronRight size={20} strokeWidth={3} />
-                  </span>
-                </div>
+                                <div className="px-10 py-6 bg-gray-50/30 border-t border-gray-100 flex justify-between items-center relative z-10">
+                   <span className="text-[10px] font-bold text-gray-400 flex items-center gap-2">
+                     <Calendar size={16} className="text-[#8245EF]/40" />
+                     Last worked: {new Date(campaign.updatedAt).toLocaleDateString()}
+                   </span>
+                   <span className="text-[10px] font-bold text-[#8245EF] flex items-center gap-2 group-hover:text-[#6d28d9] transition-all">
+                     Settings <ChevronRight size={18} />
+                   </span>
+                 </div>
 
                 <div className="absolute inset-0 opacity-[0.015] pointer-events-none group-hover:opacity-[0.03] transition-opacity bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
                 <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-[#8245EF]/10 rounded-full blur-[100px] group-hover:scale-125 transition-transform duration-1000" />
@@ -242,41 +239,41 @@ export default function CampaignListPage() {
                <Cpu size={56} className="text-[#8245EF]" />
             </div>
             
-            <h2 className="text-6xl font-black text-[#161932] mb-8 tracking-tighter uppercase leading-[0.9]">New <br/> <span className="text-[#8245EF]">Plan</span></h2>
-            <p className="text-[#64748b] font-bold text-2xl mb-16 leading-relaxed border-l-4 border-[#8245EF]/20 pl-10">Give your plan a name to get started.</p>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">New Plan</h2>
+            <p className="text-gray-500 font-bold text-lg mb-12 leading-relaxed border-l-4 border-[#8245EF]/20 pl-6">Enter a name for your plan.</p>
             
             <form onSubmit={handleCreateCampaign} className="space-y-20">
-              <div className="space-y-6">
-                <label className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono px-10">Name your plan</label>
+              <div className="space-y-4">
+                <label className="text-xs font-bold text-gray-400 ml-4">Plan Name</label>
                 <div className="relative group/input">
                   <input
                     type="text"
                     value={newCampaignName}
                     onChange={(e) => setNewCampaignName(e.target.value)}
-                    className="w-full bg-[#FCF8FE] border border-[#8245EF]/15 rounded-[3.5rem] px-14 py-10 outline-none focus:border-[#8245EF]/40 focus:bg-white transition-all font-black text-[#161932] placeholder:text-[#94a3b8]/40 text-4xl shadow-inner uppercase tracking-tighter"
-                    placeholder="MY BIG PLAN"
+                    className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-8 py-6 outline-none focus:border-[#8245EF]/40 focus:bg-white transition-all font-bold text-gray-900 placeholder:text-gray-400 text-2xl shadow-inner"
+                    placeholder="Plan Name"
                     autoFocus
                   />
-                  <div className="absolute right-12 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/input:text-[#8245EF] transition-colors">
-                     <Target size={40} />
+                  <div className="absolute right-8 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/input:text-[#8245EF] transition-colors">
+                     <Target size={28} />
                   </div>
                 </div>
               </div>
 
-              <div className="flex gap-10">
+              <div className="flex gap-6">
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="flex-1 py-10 bg-[#FCF8FE] text-[#94a3b8] font-black text-[12px] uppercase tracking-[0.5em] rounded-[3rem] hover:bg-[#94a3b8] hover:text-white transition-all border border-[#8245EF]/10 font-mono active:scale-95"
+                  className="flex-1 py-5 bg-gray-50 text-gray-400 font-bold text-xs uppercase rounded-xl hover:bg-gray-100 transition-all border border-gray-200 active:scale-95"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!newCampaignName}
-                  className="flex-[2] py-10 bg-[#8245EF] text-white font-black text-[12px] uppercase tracking-[0.5em] rounded-[3rem] hover:bg-[#6d28d9] shadow-[0_30px_60px_rgba(130, 69, 239,0.3)] transition-all disabled:opacity-50 active:scale-95 font-mono border border-white/10"
+                  className="flex-[2] py-5 bg-[#8245EF] text-white font-bold text-xs uppercase rounded-xl hover:bg-[#6d28d9] shadow-lg transition-all disabled:opacity-50 active:scale-95 border border-white/10"
                 >
-                  Save Plan
+                  Save
                 </button>
               </div>
             </form>

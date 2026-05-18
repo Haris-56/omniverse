@@ -21,7 +21,8 @@ import {
   Shield,
   ShieldCheck,
   Cpu,
-  Hexagon
+  Hexagon,
+  Edit3
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -109,29 +110,29 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
           <Link href="/linkedin" className="p-4 bg-white border border-[#8245EF]/10 rounded-2xl text-[#94a3b8] hover:text-[#8245EF] transition-all shadow-sm hover:bg-[#FCF8FE] group">
             <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           </Link>
-          <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] font-mono text-[#94a3b8]">
-             <Link href="/linkedin" className="hover:text-[#8245EF] transition-colors">Professional_Nodes</Link>
+          <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+             <Link href="/linkedin" className="hover:text-[#8245EF] transition-colors">LinkedIn Accounts</Link>
              <span className="opacity-20">/</span>
-             <span className="text-[#8245EF]">Operational_Sequences</span>
+             <span className="text-[#8245EF]">Campaigns</span>
           </div>
         </div>
 
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 border-b border-[#8245EF]/10 pb-12">
           <div>
-            <div className="flex items-center gap-4 mb-6">
-               <div className="w-14 h-14 bg-[#8245EF]/10 rounded-2xl flex items-center justify-center text-[#8245EF] border border-[#8245EF]/20 shadow-sm">
-                  <Linkedin size={28} fill="currentColor" />
+            <div className="flex items-center gap-4 mb-4">
+               <div className="w-12 h-12 bg-[#8245EF]/10 rounded-xl flex items-center justify-center text-[#8245EF] border border-[#8245EF]/20 shadow-sm">
+                  <Linkedin size={24} fill="currentColor" />
                </div>
-               <span className="px-5 py-2 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-black uppercase tracking-[0.3em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono">
-                 <ShieldCheck size={14} className="animate-pulse" />
-                 Safe_Link::Established
+               <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
+                 <ShieldCheck size={14} />
+                 Connected
                </span>
             </div>
-            <h1 className="text-5xl font-black text-[#161932] tracking-tighter uppercase leading-tight">
-               {account?.email || "Unknown_Handler"}
+            <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
+               {account?.email || "Account"}
             </h1>
-            <p className="text-[#64748b] mt-4 text-xl font-medium italic">Overseeing {campaigns.length} autonomous outreach sequences on this professional node.</p>
+            <p className="text-gray-500 mt-2 text-xl font-medium">Managing {campaigns.length} active outreach campaigns on this account.</p>
           </div>
           
           <div className="flex items-center gap-6">
@@ -149,118 +150,122 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
                   <List size={20} />
                 </button>
              </div>
-             <button
+              <button
                 onClick={() => router.push(`/linkedin/${accountId}/campaigns/new`)}
-                className="px-12 py-6 bg-[#8245EF] text-white font-black text-[11px] uppercase tracking-[0.5em] rounded-[2rem] transition-all shadow-[0_20px_40px_rgba(130, 69, 239,0.3)] flex items-center justify-center gap-4 active:scale-95 font-mono border border-white/10 hover:bg-[#6d28d9]"
+                className="px-8 py-4 bg-[#8245EF] text-white font-bold uppercase text-xs tracking-widest rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95 border border-white/10 hover:bg-[#6d28d9]"
               >
-                <Plus size={22} />
-                Initialize_Sequence
+                <Plus size={20} />
+                New Campaign
               </button>
           </div>
         </div>
 
         {/* Global Search Matrix */}
-        <div className="bg-white p-10 rounded-[3.5rem] border border-[#8245EF]/10 shadow-sm relative overflow-hidden group">
-          <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#8245EF]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-          <div className="relative z-10 flex flex-col md:flex-row gap-8">
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+          <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1 relative">
-              <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-[#94a3b8]" size={24} />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder="Locate sequence by designation or signature..."
+                placeholder="Search campaigns..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-20 pr-8 py-6 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-[2.25rem] text-sm font-black text-[#161932] outline-none focus:border-[#8245EF] transition-all shadow-inner font-mono tracking-widest uppercase"
+                className="w-full pl-16 pr-8 py-4 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 transition-all placeholder:text-gray-300"
               />
             </div>
-            <button className="px-12 py-5 bg-white border border-[#8245EF]/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] text-[#64748b] flex items-center justify-center gap-4 hover:text-[#8245EF] hover:bg-[#FCF8FE] transition-all font-mono">
-              <Filter size={18} /> Protocol_Filter
+            <button className="px-8 py-4 bg-white border border-gray-100 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-500 flex items-center justify-center gap-3 hover:border-gray-200 transition-all">
+              <Filter size={16} /> Filter
             </button>
           </div>
         </div>
 
-        {loading && campaigns.length === 0 ? (
-           <div className="py-48 flex flex-col items-center justify-center space-y-10 animate-pulse text-center">
-              <div className="w-20 h-20 border-4 border-[#8245EF]/10 border-t-[#8245EF] rounded-full animate-spin shadow-sm" />
-              <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono">Reading_Neural_History...</p>
+        {loading ? (
+           <div className="py-40 flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8245EF] rounded-full animate-spin" />
+              <p className="text-xs font-bold text-gray-400">Loading campaigns...</p>
            </div>
         ) : campaigns.length === 0 ? (
-          <div className="bg-white rounded-[4rem] border border-dashed border-[#8245EF]/30 py-32 flex flex-col items-center text-center px-10 shadow-sm p-20 max-w-4xl mx-auto relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#8245EF]/5 to-transparent opacity-50" />
-            <div className="relative w-36 h-36 bg-[#FCF8FE] text-[#8245EF] rounded-[3.5rem] flex items-center justify-center mb-12 rotate-3 shadow-lg group-hover:rotate-0 transition-all duration-700 border border-[#8245EF]/10">
-               <Briefcase size={72} strokeWidth={1} className="opacity-40" />
+          <div className="bg-white rounded-3xl border border-dashed border-gray-200 py-24 flex flex-col items-center text-center px-10 max-w-2xl mx-auto relative group">
+            <div className="w-24 h-24 bg-gray-50 text-gray-300 rounded-3xl flex items-center justify-center mb-8 border border-gray-100 group-hover:scale-105 transition-all duration-500">
+               <Briefcase size={40} strokeWidth={1} />
             </div>
-            <h3 className="text-5xl font-black text-[#161932] tracking-tighter uppercase mb-6 leading-tight relative z-10">Null_Sequence_Cache</h3>
-            <p className="text-[#64748b] text-xl font-medium max-w-lg mb-16 italic leading-relaxed relative z-10">
-              No autonomous sequences detected for this handler node. Initialize your first professional outreach protocol.
+            <h3 className="text-3xl font-bold text-gray-900 tracking-tight mb-4">No Campaigns Found</h3>
+            <p className="text-gray-500 text-lg font-medium max-w-md mb-12">
+              You haven't created any campaigns for this account yet. Start your first outreach campaign now.
             </p>
             <button
               onClick={() => router.push(`/linkedin/${accountId}/campaigns/new`)}
-              className="px-14 py-6 bg-white border border-[#8245EF]/20 text-[#8245EF] text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.75rem] hover:bg-[#8245EF] hover:text-white transition-all shadow-md font-mono active:scale-95 relative z-10"
+              className="px-10 py-4 bg-[#8245EF] text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg active:scale-95"
             >
-              Start_Inception
+              Create Campaign
             </button>
           </div>
         ) : viewMode === "list" ? (
           /* List Matrix (Premium Terminal) */
-          <div className="bg-white rounded-[4rem] border border-[#8245EF]/10 overflow-hidden shadow-sm relative">
+          <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm">
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full text-left">
-                <thead className="bg-[#FCF8FE]/50 text-[10px] font-black uppercase text-[#94a3b8] tracking-[0.4em] font-mono border-b border-[#8245EF]/10">
+                <thead className="bg-gray-50/50 text-xs font-bold uppercase text-gray-400 tracking-widest border-b border-gray-100">
                   <tr>
-                    <th className="p-10 pl-14">Sequence_Designation</th>
-                    <th className="p-10">Operational_Status</th>
-                    <th className="p-10">Resource_Load</th>
-                    <th className="p-10">Time_Anchor</th>
-                    <th className="p-10 pr-14 text-right">Ops</th>
+                    <th className="p-8 pl-12">Campaign Name</th>
+                    <th className="p-8">Status</th>
+                    <th className="p-8">Activity</th>
+                    <th className="p-8">Timezone</th>
+                    <th className="p-8 pr-12 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#8245EF]/5">
                   {filteredCampaigns.map((camp, idx) => (
                     <tr key={camp._id} className="group hover:bg-[#FCF8FE]/30 transition-all cursor-default">
-                      <td className="p-10 pl-14 relative">
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#8245EF] opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="flex items-center gap-8">
-                           <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 rounded-[1.5rem] flex items-center justify-center text-[#94a3b8] font-black text-xl group-hover:bg-[#8245EF] group-hover:text-white transition-all shadow-inner font-mono">
+                      <td className="p-8 pl-12">
+                        <div className="flex items-center gap-6">
+                           <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 font-bold group-hover:bg-[#8245EF] group-hover:text-white transition-all">
                               {(idx + 1).toString().padStart(2, '0')}
                            </div>
                            <div>
-                              <p className="text-xl font-black text-[#161932] tracking-tighter uppercase leading-none">{camp.name}</p>
-                              <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mt-3 italic">UID:: {camp._id.toString().slice(-12).toUpperCase()}</p>
+                              <p className="text-lg font-bold text-gray-900 group-hover:text-[#8245EF] transition-colors">{camp.name}</p>
+                              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">ID: {camp._id.toString().slice(-12).toUpperCase()}</p>
                            </div>
                         </div>
                       </td>
-                      <td className="p-10">
-                         <div className={`inline-flex items-center gap-4 px-6 py-2.5 rounded-full border font-mono tracking-widest uppercase text-[10px] font-black transition-all ${camp.status === 'Active' ? 'bg-[#8245EF]/10 border-[#8245EF]/20 text-[#8245EF]' : 'bg-[#94a3b8]/5 border-[#94a3b8]/10 text-[#94a3b8]'}`}>
-                            <div className={`w-2 h-2 rounded-full ${camp.status === 'Active' ? 'bg-[#8245EF] animate-pulse shadow-[0_0_10px_rgba(130, 69, 239,0.6)]' : 'bg-[#94a3b8]'}`} />
+                      <td className="p-8">
+                         <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg border tracking-widest uppercase text-xs font-bold transition-all ${camp.status === 'Active' ? 'bg-green-50 border-green-100 text-green-600' : 'bg-gray-50 border-gray-100 text-gray-400'}`}>
+                            <div className={`w-1.5 h-1.5 rounded-full ${camp.status === 'Active' ? 'bg-green-500' : 'bg-gray-400'}`} />
                             {camp.status}
                          </div>
                       </td>
-                      <td className="p-10">
-                         <div className="flex items-center gap-5">
-                            <span className="text-3xl font-black text-[#161932] tracking-tighter font-sans">{camp.sentCount || 0}</span>
-                            <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono">Sequences_Sent</span>
+                      <td className="p-8">
+                         <div className="flex items-center gap-4">
+                            <span className="text-2xl font-bold text-gray-900">{camp.sentCount || 0}</span>
+                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Sent</span>
                          </div>
                       </td>
-                      <td className="p-10">
-                         <div className="flex items-center gap-4 text-[#94a3b8] font-mono tracking-widest text-[10px] font-black">
-                            <Clock size={16} className="opacity-60" />
-                            {camp.timezone || 'UTC_GRID'}
+                      <td className="p-8">
+                         <div className="flex items-center gap-2 text-gray-400 font-bold tracking-widest text-xs">
+                            <Clock size={14} className="opacity-60" />
+                            {camp.timezone || 'UTC'}
                          </div>
                       </td>
-                      <td className="p-10 pr-14 text-right">
-                         <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                      <td className="p-8 pr-12 text-right">
+                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                            <button 
+                               onClick={() => router.push(`/linkedin/${accountId}/campaigns/new?editId=${camp._id}`)}
+                               className="p-2 text-[#8245EF] hover:bg-[#8245EF] hover:text-white rounded-lg transition-all"
+                               title="Edit Campaign"
+                             >
+                                <Edit3 size={18} />
+                             </button>
                             <button 
                               onClick={() => handleToggleStatus(camp._id, camp.status)}
-                              className={`p-4 rounded-xl border transition-all active:scale-90 ${camp.status === 'Active' ? 'bg-[#8245EF]/10 border-[#8245EF]/20 text-[#8245EF] hover:bg-[#8245EF] hover:text-white shadow-sm' : 'bg-[#8245EF]/5 border-[#8245EF]/10 text-[#8245EF] hover:bg-[#8245EF] hover:text-white shadow-sm'}`}
+                              className="p-2 text-[#8245EF] hover:bg-[#8245EF] hover:text-white rounded-lg transition-all"
                             >
-                              {camp.status === 'Active' ? <Pause size={20} /> : <Play size={20} />}
+                              {camp.status === 'Active' ? <Pause size={18} /> : <Play size={18} />}
                             </button>
                             <button 
                               onClick={() => handleDeleteCampaign(camp._id)}
-                              className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all active:scale-90 shadow-sm"
+                              className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
                             >
-                               <Trash2 size={20} />
+                               <Trash2 size={18} />
                             </button>
                          </div>
                       </td>
@@ -276,48 +281,55 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
           /* Grid Matrix (High-Fidelity Neural Cards) */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {filteredCampaigns.map((camp) => (
-              <div key={camp._id} className="group bg-white rounded-[3.5rem] border border-[#8245EF]/10 transition-all duration-700 flex flex-col relative overflow-hidden h-full shadow-sm hover:shadow-[0_40px_80px_rgba(130, 69, 239,0.08)]">
-                <div className={`h-1.5 w-full absolute top-0 left-0 z-20 ${camp.status === 'Active' ? 'bg-[#8245EF] shadow-[0_2px_15px_rgba(130, 69, 239,0.4)]' : 'bg-[#94a3b8]'} transition-all duration-500`} />
+              <div key={camp._id} className="group bg-white rounded-3xl border border-[#8245EF]/10 transition-all duration-700 flex flex-col relative overflow-hidden h-full shadow-sm hover:shadow-xl">
+                <div className={`h-1.5 w-full absolute top-0 left-0 z-20 ${camp.status === 'Active' ? 'bg-[#8245EF]' : 'bg-[#94a3b8]'} transition-all duration-500`} />
                 
                 <div className="p-12 pb-14 flex-1 flex flex-col relative z-10">
                    <div className="flex justify-between items-start mb-12">
-                      <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 rounded-[1.75rem] flex items-center justify-center text-[#94a3b8] group-hover:text-[#8245EF] group-hover:bg-white transition-all shadow-inner group-hover:scale-110 group-hover:rotate-6 duration-700">
+                      <div className="w-16 h-16 bg-[#FCF8FE] border border-[#8245EF]/10 rounded-2xl flex items-center justify-center text-[#94a3b8] group-hover:text-[#8245EF] group-hover:bg-white transition-all shadow-inner group-hover:scale-105 duration-700">
                          <Target size={32} />
                       </div>
-                      <div className={`px-5 py-2 rounded-full border text-[10px] font-black uppercase tracking-[0.2em] font-mono transition-all ${camp.status === 'Active' ? 'bg-[#8245EF]/10 border-[#8245EF]/20 text-[#8245EF]' : 'bg-[#94a3b8]/5 border-[#94a3b8]/10 text-[#94a3b8]'}`}>
+                      <div className={`px-5 py-2 rounded-full border text-xs font-bold uppercase tracking-widest transition-all ${camp.status === 'Active' ? 'bg-[#8245EF]/10 border-[#8245EF]/20 text-[#8245EF]' : 'bg-[#94a3b8]/5 border-[#94a3b8]/10 text-[#94a3b8]'}`}>
                          {camp.status}
                       </div>
                    </div>
  
                    <div className="mb-12 flex-1">
-                      <h3 className="text-2xl font-black text-[#161932] tracking-tighter uppercase mb-4 leading-tight group-hover:text-[#8245EF] transition-colors duration-500 line-clamp-1">{camp.name}</h3>
-                      <p className="text-sm text-[#64748b] font-bold line-clamp-2 leading-relaxed h-10 italic">"{camp.message}"</p>
+                      <h3 className="text-2xl font-bold text-gray-900 tracking-tight mb-4 group-hover:text-[#8245EF] transition-colors duration-500 line-clamp-1">{camp.name}</h3>
+                      <p className="text-sm text-gray-500 font-medium line-clamp-2 leading-relaxed h-10 italic">"{camp.message}"</p>
                    </div>
  
-                   <div className="flex items-center justify-between p-8 bg-[#FCF8FE]/50 rounded-[2.5rem] border border-[#8245EF]/10 mb-12 shadow-inner group-hover:border-[#8245EF]/20 transition-all">
+                   <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl border border-gray-100 mb-8">
                       <div>
-                         <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mb-2 leading-none">Resource_Load</p>
-                         <p className="text-3xl font-black text-[#161932] tracking-tighter leading-none">{camp.sentCount || 0}</p>
+                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Activity</p>
+                         <p className="text-3xl font-bold text-gray-900 tracking-tight">{camp.sentCount || 0}</p>
                       </div>
                       <div className="text-right">
-                         <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mb-2 leading-none">Security</p>
-                         <span className="text-[10px] font-black text-[#8245EF] uppercase tracking-widest font-mono">Node_Verified</span>
+                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Weekly Limit</p>
+                         <span className="text-xl font-bold text-[#8245EF]">{camp.weeklyLimit || 100}</span>
                       </div>
                    </div>
  
-                   <div className="flex items-center gap-4">
+                   <div className="flex items-center gap-3">
                       <button 
                        onClick={() => handleToggleStatus(camp._id, camp.status)}
-                       className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.3em] transition-all font-mono active:scale-95 border ${camp.status === 'Active' ? 'bg-[#8245EF]/10 border-[#8245EF]/20 text-[#8245EF] hover:bg-[#8245EF] hover:text-white' : 'bg-[#8245EF]/5 border-[#8245EF]/10 text-[#8245EF] hover:bg-[#8245EF] hover:text-white'}`}
+                       className="flex-1 flex items-center justify-center gap-2 py-4 bg-gray-50 text-gray-500 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-[#8245EF] hover:text-white transition-all active:scale-95 border border-gray-100"
                      >
-                       {camp.status === 'Active' ? <Pause size={18} /> : <Play size={18} />}
-                       {camp.status === 'Active' ? 'Pause_Core' : 'Start_Sync'}
+                       {camp.status === 'Active' ? <Pause size={16} /> : <Play size={16} />}
+                       {camp.status === 'Active' ? 'Pause' : 'Start'}
                      </button>
+                      <button 
+                         onClick={() => router.push(`/linkedin/${accountId}/campaigns/new?editId=${camp._id}`)}
+                         className="p-4 bg-gray-50 text-gray-400 rounded-xl hover:bg-[#8245EF] hover:text-white transition-all active:scale-95 border border-gray-100"
+                         title="Edit Campaign"
+                      >
+                         <Edit3 size={18} />
+                      </button>
                      <button 
                         onClick={() => handleDeleteCampaign(camp._id)}
-                        className="p-5 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-[1.5rem] hover:bg-rose-500 hover:text-white transition-all active:scale-95 shadow-sm"
+                        className="p-4 bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all active:scale-95 border border-rose-100"
                      >
-                        <Trash2 size={20} />
+                        <Trash2 size={18} />
                      </button>
                    </div>
                 </div>
@@ -331,10 +343,10 @@ export default function LinkedInCampaignsPage({ params: paramsPromise }) {
  
       {/* Background Watermark */}
       <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03] select-none z-0 hidden lg:block grayscale">
-         <div className="flex items-center gap-8">
-            <Hexagon size={120} strokeWidth={1} className="text-[#8245EF]" />
-            <h1 className="text-[10rem] font-black font-sans -ml-8 tracking-tighter uppercase whitespace-nowrap text-[#8245EF]">LINKED</h1>
-         </div>
+          <div className="flex items-center gap-6">
+             <Hexagon size={80} strokeWidth={1} className="text-[#8245EF]" />
+             <h1 className="text-[8rem] font-bold -ml-4 tracking-tighter uppercase whitespace-nowrap text-[#8245EF]">LINKED</h1>
+          </div>
       </div>
     </div>
   );

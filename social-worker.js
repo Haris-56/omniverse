@@ -26,6 +26,10 @@ async function runSocialWorker() {
             const { processNexusCampaigns } = await import('./lib/social-automation/nexus-orchestrator.js');
             await processNexusCampaigns(db);
         } catch (e) { console.error("Nexus Engine Error:", e); }
+        try {
+            const { processAICreatorScrapes } = await import('./lib/queue/creator-scraper-worker.js');
+            await processAICreatorScrapes(db);
+        } catch (e) { console.error("AI Creator Scraper Error:", e); }
 
     } catch (err) {
         console.error("FATAL SOCIAL WORKER ERROR:", err);

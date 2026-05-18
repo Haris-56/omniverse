@@ -111,6 +111,14 @@ export async function POST(request) {
       createdAt: new Date(),
     };
 
+    // Enforce 1 active campaign per account
+    if (newCampaign.status === "Active") {
+      await db.collection("instagram_campaigns").updateMany(
+        { accountId, status: "Active", userId: session.user.id },
+        { $set: { status: "Paused" } }
+      );
+    }
+
     const result = await db.collection("instagram_campaigns").insertOne(newCampaign);
     
     return NextResponse.json({ ...newCampaign, _id: result.insertedId });
@@ -130,6 +138,17 @@ export async function PATCH(request) {
   try {
     const db = await getDb();
     const { id, status } = await request.json();
+
+    // Enforce 1 active campaign per account on status transition to Active
+    if (status === "Active") {
+      const existingCampaign = await db.collection("instagram_campaigns").findOne({ _id: new ObjectId(id), userId: session.user.id });
+      if (existingCampaign && existingCampaign.accountId) {
+        await db.collection("instagram_campaigns").updateMany(
+          { accountId: existingCampaign.accountId, status: "Active", userId: session.user.id, _id: { $ne: new ObjectId(id) } },
+          { $set: { status: "Paused" } }
+        );
+      }
+    }
 
     const result = await db.collection("instagram_campaigns").updateOne(
       { _id: new ObjectId(id), userId: session.user.id },

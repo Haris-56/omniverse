@@ -10,6 +10,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
   const router = useRouter();
 
   const handleLogin = async (e) => {
@@ -17,18 +19,59 @@ export default function Login() {
     setLoading(true);
     setError("");
 
-    await authClient.signIn.email({
-      email,
-      password,
-    }, {
-      onSuccess: () => {
-        router.push("/");
-      },
-      onError: (ctx) => {
-        setError(ctx.error.message || "Invalid login. Please check your email and password.");
+    if (!otpSent) {
+      // Step 1: Verify email & password and send OTP
+      try {
+        const res = await fetch("/api/auth/otp/login-request", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.status === "OTP_SENT") {
+          setOtpSent(true);
+        } else {
+          setError(data.error || "Failed to request verification code.");
+        }
+      } catch (err) {
+        setError("Network error. Please try again.");
+      } finally {
         setLoading(false);
-      },
-    });
+      }
+    } else {
+      // Step 2: Verify OTP code and log in
+      try {
+        const res = await fetch("/api/auth/otp/login-verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, code: otpCode })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          router.push("/");
+        } else {
+          setError(data.error || "Invalid verification code.");
+        }
+      } catch (err) {
+        setError("Verification failed. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/"
+      });
+    } catch (err) {
+      setError(err.message || "Google login failed.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -101,7 +144,11 @@ export default function Login() {
             <p className="text-[#64748b] font-bold text-xl uppercase tracking-[0.2em] text-xs opacity-60">Use Omniverse to talk to your customers</p>
           </div>
 
-          <button className="w-full group bg-white border border-[#8245EF]/15 p-8 rounded-[2.5rem] flex items-center gap-8 hover:border-[#8245EF]/40 hover:bg-[#FCF8FE] transition-all shadow-sm active:scale-[0.98]">
+          <button 
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full group bg-white border border-[#8245EF]/15 p-8 rounded-[2.5rem] flex items-center gap-8 hover:border-[#8245EF]/40 hover:bg-[#FCF8FE] transition-all shadow-sm active:scale-[0.98]"
+          >
              <div className="w-16 h-16 bg-[#FCF8FE] rounded-2xl flex items-center justify-center group-hover:rotate-12 transition-transform border border-[#8245EF]/10 shadow-inner">
                 <Chrome size={28} className="text-[#161932]" />
              </div>
@@ -127,6 +174,18 @@ export default function Login() {
               </div>
             )}
 
+            {otpSent && (
+              <div className="p-8 bg-indigo-50 border border-indigo-100 rounded-[2.5rem] flex items-center gap-8 animate-in fade-in duration-300">
+                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shrink-0 border border-indigo-200 shadow-sm text-indigo-500">
+                   <ShieldCheck size={28} />
+                </div>
+                <div className="text-left">
+                  <p className="text-[11px] font-black text-indigo-700 leading-tight uppercase tracking-[0.2em]">Verification Code Sent</p>
+                  <p className="text-[10px] text-[#64748b] font-mono tracking-tight mt-1">Please enter the 6-digit OTP code sent to your email.</p>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-6">
                <label className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.6em] ml-10 font-mono">Your email address</label>
                <div className="relative group/input">
@@ -139,30 +198,60 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full bg-white border border-[#8245EF]/15 px-24 py-8 rounded-[3rem] outline-none focus:border-[#8245EF]/40 transition-all font-black text-[#161932] text-xl shadow-sm group-hover/input:border-[#8245EF]/30"
+                    disabled={otpSent}
+                    className="w-full bg-white border border-[#8245EF]/15 px-24 py-8 rounded-[3rem] outline-none focus:border-[#8245EF]/40 transition-all font-black text-[#161932] text-xl shadow-sm group-hover/input:border-[#8245EF]/30 disabled:opacity-60"
                   />
                </div>
             </div>
 
-            <div className="space-y-6">
-               <div className="flex justify-between items-center px-10">
-                  <label className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono">Your password</label>
-                  <button type="button" className="text-[10px] font-black text-[#8245EF] uppercase tracking-[0.4em] hover:text-[#6d28d9] transition-all font-mono">Forgot password?</button>
-               </div>
-               <div className="relative group/input">
-                  <div className="absolute left-10 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/input:text-[#8245EF] transition-colors pointer-events-none">
-                     <Lock size={24} />
-                  </div>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full bg-white border border-[#8245EF]/15 px-24 py-8 rounded-[3rem] outline-none focus:border-[#8245EF]/40 transition-all font-black text-[#161932] text-xl shadow-sm group-hover/input:border-[#8245EF]/30"
-                  />
-               </div>
-            </div>
+            {!otpSent ? (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                 <div className="flex justify-between items-center px-10">
+                    <label className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono">Your password</label>
+                    <button type="button" className="text-[10px] font-black text-[#8245EF] uppercase tracking-[0.4em] hover:text-[#6d28d9] transition-all font-mono">Forgot password?</button>
+                 </div>
+                 <div className="relative group/input">
+                    <div className="absolute left-10 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/input:text-[#8245EF] transition-colors pointer-events-none">
+                       <Lock size={24} />
+                    </div>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="w-full bg-white border border-[#8245EF]/15 px-24 py-8 rounded-[3rem] outline-none focus:border-[#8245EF]/40 transition-all font-black text-[#161932] text-xl shadow-sm group-hover/input:border-[#8245EF]/30"
+                    />
+                 </div>
+              </div>
+            ) : (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                 <div className="flex justify-between items-center px-10">
+                    <label className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono">Enter 6-digit OTP Code</label>
+                    <button 
+                      type="button" 
+                      onClick={() => { setOtpSent(false); setOtpCode(""); setError(""); }} 
+                      className="text-[10px] font-black text-[#8245EF] uppercase tracking-[0.4em] hover:text-[#6d28d9] transition-all font-mono"
+                    >
+                      ← Back to password
+                    </button>
+                 </div>
+                 <div className="relative group/input">
+                    <div className="absolute left-10 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/input:text-[#8245EF] transition-colors pointer-events-none">
+                       <Lock size={24} />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="123456"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      required
+                      maxLength={6}
+                      className="w-full bg-white border border-[#8245EF]/15 px-24 py-8 rounded-[3rem] outline-none focus:border-[#8245EF]/40 transition-all font-black text-[#161932] text-xl shadow-sm group-hover/input:border-[#8245EF]/30 text-center tracking-[0.3em]"
+                    />
+                 </div>
+              </div>
+            )}
 
             <button
               type="submit"
@@ -173,7 +262,7 @@ export default function Login() {
                  <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  <span>Go to my account</span>
+                  <span>{otpSent ? "Verify Code & Login" : "Go to my account"}</span>
                   <ArrowRight size={24} strokeWidth={3} />
                 </>
               )}

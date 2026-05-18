@@ -124,8 +124,8 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
                 <Facebook size={36} fill="currentColor" />
              </div>
              <div>
-                <h2 className="text-3xl font-black text-[#161932] tracking-tighter uppercase">Facebook</h2>
-                <p className="text-[10px] font-black text-[#8245EF] uppercase tracking-[0.4em] mt-2 font-mono leading-none">Manage your social accounts here.</p>
+                <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Facebook</h2>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Connect and manage your Facebook accounts.</p>
              </div>
           </div>
           <button onClick={handleClose} className="p-4 bg-white hover:bg-[#8245EF] group/close rounded-2xl transition-all border border-[#8245EF]/10 text-[#94a3b8] hover:text-white shadow-sm active:scale-90">
@@ -141,21 +141,21 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
                   <div className="w-32 h-32 bg-white text-emerald-500 rounded-[3rem] flex items-center justify-center mx-auto mb-10 shadow-xl border border-emerald-500/10 transition-transform duration-1000 hover:scale-110">
                     <CheckCircle size={56} />
                   </div>
-                  <h3 className="text-4xl font-black text-[#161932] mb-4 tracking-tighter uppercase">Node_Activated</h3>
-                  <p className="text-[#64748b] font-black italic text-lg uppercase tracking-widest font-mono text-[12px]">Your Facebook identity is now synchronized with terminal.</p>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight uppercase">Account Connected</h3>
+                  <p className="text-gray-500 font-bold text-lg">Your Facebook account has been successfully connected.</p>
                 </>
               ) : (
                 <>
                   <div className="w-32 h-32 bg-rose-50 text-rose-500 rounded-[3rem] flex items-center justify-center mx-auto mb-10 shadow-inner border border-rose-500/20">
                     <AlertCircle size={56} />
                   </div>
-                  <h3 className="text-4xl font-black text-[#161932] mb-4 tracking-tighter uppercase">Signal_Loss</h3>
-                  <p className="text-rose-500 font-black mb-12 text-md italic uppercase tracking-widest font-mono">{result.reason}</p>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight uppercase">Connection Failed</h3>
+                  <p className="text-rose-500 font-bold mb-10 text-lg">{result.reason}</p>
                   <button 
                     onClick={() => setResult(null)}
-                    className="px-16 py-7 bg-[#8245EF] text-white font-black rounded-3xl hover:bg-[#6d28d9] transition-all shadow-2xl text-[12px] uppercase tracking-[0.5em] font-mono border border-white/10 active:scale-95"
+                    className="px-12 py-5 bg-[#8245EF] text-white font-bold rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg text-xs uppercase tracking-widest border border-white/10 active:scale-95"
                   >
-                    Retry_Handshake
+                    Try Again
                   </button>
                 </>
               )}
@@ -163,8 +163,8 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
           ) : (
             <form onSubmit={handleConnect} className="space-y-12">
               {error && (
-                <div className="p-8 bg-rose-50 border border-rose-500/10 text-rose-600 text-[10px] font-black rounded-[2rem] flex items-center gap-6 animate-pulse uppercase tracking-[0.3em] font-mono shadow-inner italic">
-                  <AlertCircle size={28} />
+                <div className="p-6 bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold rounded-2xl flex items-center gap-4 uppercase tracking-widest">
+                  <AlertCircle size={24} />
                   {error}
                 </div>
               )}
@@ -175,19 +175,19 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
                       <div className="p-6 bg-[#FCF8FE] rounded-3xl text-[#8245EF] border border-[#8245EF]/10 shadow-inner">
                          <Lock size={32} />
                       </div>
-                      <div>
-                         <p className="text-2xl font-black text-[#161932] uppercase tracking-tighter leading-none">Verification_Matrix</p>
-                         <p className="text-[10px] font-black text-[#94a3b8] mt-3 uppercase tracking-[0.4em] font-mono italic">Security code required to verify sequence protocol.</p>
-                      </div>
+                       <div>
+                          <p className="text-2xl font-bold text-gray-900 tracking-tight">Security Check</p>
+                          <p className="text-xs font-bold text-gray-400 mt-2 uppercase tracking-widest">Please enter the security code sent to your account.</p>
+                       </div>
                    </div>
 
                    <div className="space-y-4 text-center">
-                    <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono italic">Quantum_Passcode</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Security Code</label>
                     <input
                       type="text"
                       value={twoFactorCode}
                       onChange={(e) => setTwoFactorCode(e.target.value)}
-                      className="w-full bg-white border-2 border-transparent border-b-[#8245EF]/20 rounded-3xl px-12 py-8 text-center text-5xl font-black tracking-[1em] text-[#161932] outline-none focus:border-b-[#8245EF] transition-all font-mono shadow-inner italic focus:bg-[#FCF8FE]/50"
+                      className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-12 py-6 text-center text-5xl font-bold tracking-[1em] text-gray-900 outline-none focus:border-[#8245EF]/40 transition-all"
                       placeholder="000000"
                     />
                   </div>
@@ -199,15 +199,15 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
                          <Smartphone size={32} />
                       </div>
                       <div>
-                         <p className="text-2xl font-black text-[#161932] uppercase tracking-tighter leading-none">App_Confirmation</p>
-                         <p className="text-[10px] font-black text-[#94a3b8] mt-3 uppercase tracking-[0.4em] font-mono italic">Open Meta Authority and approve this terminal link.</p>
-                      </div>
+                          <p className="text-2xl font-bold text-gray-900 tracking-tight">App Approval</p>
+                          <p className="text-xs font-bold text-gray-400 mt-2 uppercase tracking-widest">Please open your Facebook app and approve the login request.</p>
+                       </div>
                    </div>
                    
                    <div className="py-10 text-center relative">
-                      <div className="inline-block px-12 py-6 bg-white text-[#8245EF] text-[11px] font-black uppercase tracking-[0.6em] rounded-full border border-[#8245EF]/15 animate-pulse font-mono shadow-md italic">
-                         WAITING_FOR_OPERATOR_AUTHORIZATION...
-                      </div>
+                       <div className="inline-block px-10 py-5 bg-white text-[#8245EF] text-[11px] font-bold uppercase tracking-widest rounded-full border border-[#8245EF]/10 animate-pulse">
+                          Waiting for approval...
+                       </div>
                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 opacity-10">
                          <Activity size={240} className="text-[#8245EF] animate-spin-slow" />
                       </div>
@@ -217,79 +217,77 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <div className="space-y-4">
-                      <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] ml-2 font-mono">Your account name</label>
+                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Email or Username</label>
                       <div className="relative group/input">
                          <User size={24} className="absolute left-8 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/input:text-[#8245EF] transition-colors" />
-                         <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full bg-white border-2 border-[#FCF8FE] border-b-[#8245EF]/10 rounded-[2rem] pl-20 pr-10 py-6 text-base font-bold text-[#161932] outline-none focus:border-b-[#8245EF] focus:bg-[#FCF8FE]/30 transition-all shadow-inner placeholder:text-[#94a3b8]/40"
-                          placeholder="Your username"
-                        />
+                          <input
+                           type="email"
+                           value={email}
+                           onChange={(e) => setEmail(e.target.value)}
+                           className="w-full bg-white border border-gray-100 rounded-2xl pl-16 pr-8 py-4 text-base font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 transition-all shadow-sm placeholder:text-gray-300"
+                           placeholder="Email or phone number"
+                         />
                       </div>
                     </div>
 
                     <div className="space-y-4">
-                      <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] ml-2 font-mono">Your account password</label>
+                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Password</label>
                       <div className="relative group/input">
                          <Key size={24} className="absolute left-8 top-1/2 -translate-y-1/2 text-[#94a3b8] group-focus-within/input:text-[#8245EF] transition-colors" />
-                         <input
-                          type="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="w-full bg-white border-2 border-[#FCF8FE] border-b-[#8245EF]/10 rounded-[2rem] pl-20 pr-10 py-6 text-base font-bold text-[#161932] outline-none focus:border-b-[#8245EF] focus:bg-[#FCF8FE]/30 transition-all shadow-inner placeholder:text-[#94a3b8]/40"
-                          placeholder="••••••••••••"
-                        />
+                          <input
+                           type="password"
+                           value={password}
+                           onChange={(e) => setPassword(e.target.value)}
+                           className="w-full bg-white border border-gray-100 rounded-2xl pl-16 pr-8 py-4 text-base font-bold text-gray-900 outline-none focus:border-[#8245EF]/40 transition-all shadow-sm placeholder:text-gray-300"
+                           placeholder="••••••••••••"
+                         />
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.4em] ml-2 font-mono italic">Cookie_Sequence_JSON</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Login Cookies</label>
                     <textarea
                       value={cookies}
                       onChange={(e) => setCookies(e.target.value)}
-                      className="w-full bg-white border-2 border-[#FCF8FE] border-b-[#8245EF]/10 rounded-[2.5rem] px-10 py-8 text-xs font-mono text-[#64748b] outline-none h-40 focus:border-b-[#8245EF] focus:bg-[#FCF8FE]/30 transition-all shadow-inner resize-none custom-scrollbar italic"
-                      placeholder='Inject session binary here...'
+                      className="w-full bg-white border border-gray-100 rounded-2xl px-8 py-6 text-xs font-bold text-gray-500 outline-none h-32 focus:border-[#8245EF]/40 transition-all shadow-sm resize-none"
+                      placeholder='Paste your JSON cookies here (optional)...'
                     />
                   </div>
                   
                    {/* Proxy Matrix */}
                    <div className="pt-10 border-t border-[#8245EF]/10 space-y-10">
-                    <div className="flex items-center gap-6 group cursor-pointer" onClick={() => setUseProxy(!useProxy)}>
-                       <div className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center transition-all ${useProxy ? 'bg-[#8245EF] border-[#8245EF] shadow-[0_0_15px_rgba(130, 69, 239,0.4)]' : 'border-[#8245EF]/20 bg-white hover:border-[#8245EF]'}`}>
-                          {useProxy && <CheckCircle size={18} className="text-white" />}
+                     <div className="flex items-center gap-4 group cursor-pointer" onClick={() => setUseProxy(!useProxy)}>
+                       <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${useProxy ? 'bg-[#8245EF] border-[#8245EF]' : 'border-gray-200 bg-white'}`}>
+                          {useProxy && <CheckCircle size={14} className="text-white" />}
                        </div>
-                       <span className="text-[11px] font-black text-[#64748b] uppercase tracking-[0.4em] font-mono group-hover:text-[#8245EF] transition-colors italic">
-                          Enable_Proxy_Tunneling
+                       <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+                          Use Proxy
                        </span>
                     </div>
 
-                    {useProxy && (
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 animate-in slide-in-from-top-4 duration-500">
-                          <div className="space-y-3">
-                             <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4 italic">Relay_IP_Host</label>
-                             <input
-                                type="text"
-                                value={proxyHost}
-                                onChange={(e) => setProxyHost(e.target.value)}
-                                className="w-full bg-white border border-[#8245EF]/15 rounded-2xl px-8 py-5 text-sm font-black text-[#161932] outline-none focus:border-[#8245EF] shadow-inner font-mono italic"
-                                placeholder="00.00.00.00"
-                             />
-                          </div>
-                          <div className="space-y-3">
-                             <label className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-4 italic">Tunnel_Port</label>
-                             <input
-                                type="text"
-                                value={proxyPort}
-                                onChange={(e) => setProxyPort(e.target.value)}
-                                className="w-full bg-white border border-[#8245EF]/15 rounded-2xl px-8 py-5 text-sm font-black text-[#161932] outline-none focus:border-[#8245EF] shadow-inner font-mono italic"
-                                placeholder="8080"
-                             />
-                          </div>
-                       </div>
-                    )}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in slide-in-from-top-4 duration-500">
+                           <div className="space-y-2">
+                              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Host</label>
+                              <input
+                                 type="text"
+                                 value={proxyHost}
+                                 onChange={(e) => setProxyHost(e.target.value)}
+                                 className="w-full bg-gray-50 border border-gray-100 rounded-xl px-6 py-3 text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40"
+                                 placeholder="0.0.0.0"
+                              />
+                           </div>
+                           <div className="space-y-2">
+                              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-2">Port</label>
+                              <input
+                                 type="text"
+                                 value={proxyPort}
+                                 onChange={(e) => setProxyPort(e.target.value)}
+                                 className="w-full bg-gray-50 border border-gray-100 rounded-xl px-6 py-3 text-sm font-bold text-gray-900 outline-none focus:border-[#8245EF]/40"
+                                 placeholder="8080"
+                              />
+                           </div>
+                        </div>
                    </div>
                 </>
               )}
@@ -297,17 +295,17 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#8245EF] text-white py-8 rounded-[2.5rem] font-black text-xl shadow-[0_30px_60px_rgba(130, 69, 239,0.3)] hover:bg-[#6d28d9] transition-all disabled:opacity-50 flex items-center justify-center gap-6 active:scale-[0.98] border border-white/10 mt-10 uppercase tracking-[0.6em] font-mono text-[12px] group/btn"
+                className="w-full bg-[#8245EF] text-white py-6 rounded-2xl font-bold text-base shadow-lg hover:bg-[#6d28d9] transition-all disabled:opacity-50 flex items-center justify-center gap-4 active:scale-[0.98] mt-8"
               >
                 {loading ? (
                   <>
-                    <Loader2 size={32} className="animate-spin opacity-80" />
-                    <span className="animate-pulse">Handshake_Inception...</span>
+                    <Loader2 size={24} className="animate-spin" />
+                    <span>Connecting...</span>
                   </>
                 ) : (
                   <>
+                    <Rocket size={24} />
                     <span>{result?.status === "Checkpoint" ? "Submit" : result?.status === "AppConfirmation" ? "Confirm" : "Connect Account"}</span>
-                    <Rocket size={32} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                   </>
                 )}
               </button>
@@ -316,11 +314,10 @@ export default function ConnectAccountModal({ isOpen, onClose, onAccountConnecte
         </div>
         
         {/* Footer info */}
-        <div className="p-10 bg-[#FCF8FE]/60 border-t border-[#8245EF]/10 flex items-center justify-center gap-6 relative overflow-hidden">
-           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8245EF]/20 to-transparent" />
-           <Activity size={24} className="text-[#8245EF] animate-pulse" />
-           <span className="text-[10px] font-black uppercase tracking-[0.6em] text-[#94a3b8] font-mono italic">END-TO-END_ENCRYPTION_STABLE</span>
-        </div>
+         <div className="p-8 bg-gray-50/50 border-t border-gray-100 flex items-center justify-center gap-4 relative">
+            <Activity size={20} className="text-[#8245EF] animate-pulse" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">SECURE CONNECTION</span>
+         </div>
 
         {/* Branding Decoration */}
         <div className="absolute top-1/2 left-10 -translate-y-1/2 opacity-[0.03] pointer-events-none -z-10 grayscale group-hover/modal:opacity-[0.06] transition-opacity duration-1000">

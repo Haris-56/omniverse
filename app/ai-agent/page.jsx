@@ -92,21 +92,21 @@ export default function AIAgentPage() {
         {/* Header Sector */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#8245EF]/15 pb-8">
           <div>
-            <div className="flex items-center gap-3 mb-4">
-               <span className="px-4 py-1.5 bg-[#8245EF]/10 text-[#8245EF] text-[9px] font-black uppercase tracking-[0.2em] rounded-full border border-[#8245EF]/20 flex items-center gap-2 font-mono">
+            <div className="flex items-center gap-4 mb-4">
+               <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
                  <ShieldCheck size={14} className="opacity-80" />
-                 Active Agents
+                 Active
                </span>
             </div>
-            <h1 className="text-3xl font-black text-[#161932] tracking-tighter uppercase leading-tight">AI Agents</h1>
-            <p className="text-[#64748b] mt-3 text-lg font-medium max-w-2xl leading-relaxed">Customize how your AI responds to messages and interacts with people.</p>
+            <h1>AI Assistants</h1>
+            <p className="text-gray-500 mt-2 text-xl">Teach your AI how to talk to people and answer messages.</p>
           </div>
           <button
             onClick={openCreateModal}
-            className="group px-10 py-5 bg-[#8245EF] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] hover:bg-[#6d28d9] transition-all shadow-[0_15px_30px_rgba(130, 69, 239,0.2)] flex items-center justify-center gap-3 active:scale-95 border border-white/10 font-mono"
+            className="group px-8 py-4 bg-[#8245EF] text-white text-xs font-bold rounded-xl hover:bg-[#6d28d9] transition-all shadow-lg flex items-center justify-center gap-2 active:scale-95 border border-white/10"
           >
             <Plus size={20} className="group-hover:rotate-90 transition-transform duration-500" />
-            Create AI Agent
+            New Assistant
           </button>
         </div>
 
@@ -118,7 +118,7 @@ export default function AIAgentPage() {
                    <Sparkles size={20} className="text-[#8245EF] animate-pulse" />
                 </div>
              </div>
-             <p className="text-[#94a3b8] font-black uppercase tracking-[0.3em] font-mono text-[9px]">Initializing AI...</p>
+             <p className="text-xs font-bold text-gray-400">Loading AI...</p>
           </div>
         ) : agents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2rem] border border-dashed border-[#8245EF]/20 text-center shadow-lg p-16 max-w-3xl mx-auto relative overflow-hidden group">
@@ -126,14 +126,14 @@ export default function AIAgentPage() {
             <div className="w-20 h-20 bg-[#FCF8FE] text-[#8245EF] rounded-3xl flex items-center justify-center mb-8 shadow-inner">
                <Bot size={44} />
             </div>
-            <h2 className="text-2xl font-black text-[#161932] uppercase tracking-tighter">No Agents Found</h2>
-            <p className="text-[#64748b] mt-4 max-w-md mx-auto leading-relaxed text-lg">Create an AI personality to automatically manage your replies and engage with your audience 24/7.</p>
-            <button 
-              onClick={openCreateModal}
-              className="mt-10 px-10 py-5 bg-[#8245EF]/10 text-[#8245EF] rounded-xl font-black text-[10px] uppercase tracking-[0.4em] hover:bg-[#8245EF] hover:text-white transition-all border border-[#8245EF]/20"
-            >
-              Build Your First Agent
-            </button>
+             <h2 className="text-2xl font-bold text-gray-900">No Assistants Yet</h2>
+             <p className="text-gray-500 mt-4 max-w-md mx-auto text-lg leading-relaxed">Set up an AI to reply to messages and talk to people for you.</p>
+             <button 
+               onClick={openCreateModal}
+               className="mt-10 px-8 py-4 bg-[#8245EF]/10 text-[#8245EF] rounded-xl font-bold text-xs hover:bg-[#8245EF] hover:text-white transition-all border border-[#8245EF]/20"
+             >
+               Create Assistant
+             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -163,10 +163,10 @@ export default function AIAgentPage() {
                     </div>
                  </div>
 
-                 <div className="space-y-1">
-                    <h3 className="text-xl font-black text-[#161932] tracking-tighter uppercase group-hover:text-[#8245EF] transition-colors line-clamp-1">{agent.name}</h3>
-                    <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest font-mono">ID: {agent._id.substring(0, 8)}</p>
-                 </div>
+                  <div className="space-y-1">
+                     <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#8245EF] transition-colors line-clamp-1">{agent.name}</h3>
+                     <p className="text-[10px] font-bold text-gray-400 mt-1">ID: {agent._id.substring(0, 8)}</p>
+                  </div>
 
                  <div className="mt-8 space-y-4 flex-1">
                     <p className="text-sm font-bold text-[#64748b] line-clamp-3 leading-relaxed italic border-l-4 border-[#8245EF]/20 pl-4 bg-[#FCF8FE]/30 py-3 rounded-r-xl">
@@ -175,31 +175,31 @@ export default function AIAgentPage() {
                  </div>
 
                  <div className="grid grid-cols-2 gap-3 mt-8">
-                    <div className="bg-[#FCF8FE]/50 p-4 rounded-2xl border border-[#8245EF]/5 group-hover:bg-[#FCF8FE] transition-colors">
-                       <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-widest font-mono mb-1">Knowledge</p>
-                       <div className="flex items-center gap-2">
-                          <Database size={12} className="text-[#8245EF]" />
-                          <span className="text-[10px] font-black text-[#161932] tracking-widest font-mono">Active</span>
-                       </div>
-                    </div>
-                    <div className="bg-[#FCF8FE]/50 p-4 rounded-2xl border border-[#8245EF]/5 group-hover:bg-[#FCF8FE] transition-colors">
-                       <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-widest font-mono mb-1">Brain</p>
-                       <div className="flex items-center gap-2">
-                          <Cpu size={12} className="text-[#8245EF]" />
-                          <span className="text-[10px] font-black text-[#161932] tracking-widest font-mono">Neural_X1</span>
-                       </div>
-                    </div>
+                     <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                        <p className="text-[10px] font-bold text-gray-400 mb-1">Storage</p>
+                        <div className="flex items-center gap-2">
+                           <Database size={12} className="text-[#8245EF]" />
+                           <span className="text-[10px] font-bold text-gray-900">Connected</span>
+                        </div>
+                     </div>
+                     <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                        <p className="text-[10px] font-bold text-gray-400 mb-1">AI Model</p>
+                        <div className="flex items-center gap-2">
+                           <Cpu size={12} className="text-[#8245EF]" />
+                           <span className="text-[10px] font-bold text-gray-900">Standard AI</span>
+                        </div>
+                     </div>
                  </div>
 
                  <div className="mt-8 pt-6 border-t border-[#8245EF]/10 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                       <span className="flex items-center gap-1.5 px-3 py-1 bg-[#8245EF]/10 text-[#8245EF] rounded-lg text-[8px] font-black uppercase tracking-widest border border-[#8245EF]/10">
-                          <Activity size={10} /> Online
-                       </span>
-                    </div>
-                    <button className="text-[9px] font-black text-[#8245EF] uppercase tracking-widest font-mono flex items-center gap-2 group/btn">
-                       Edit Settings <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                    </button>
+                     <div className="flex items-center gap-2">
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-lg text-[10px] font-bold border border-green-100">
+                           <Activity size={10} /> Active
+                        </span>
+                     </div>
+                     <button className="text-[10px] font-bold text-[#8245EF] flex items-center gap-1 group/btn">
+                        Edit <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                     </button>
                  </div>
               </div>
             ))}

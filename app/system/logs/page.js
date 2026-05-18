@@ -11,12 +11,12 @@ import {
 } from "lucide-react";
 
 const mockLogs = [
-  { id: "log_01", type: "IP_ASSIGNMENT", actor: "System Admin", target: "Alex Rivers", details: "Assigned 192.168.1.104", timestamp: "2024-02-03 14:22:15", severity: "info" },
-  { id: "log_02", type: "PLAN_CHANGE", actor: "System Admin", target: "Sarah Chen", details: "Upgraded from Starter to Pro", timestamp: "2024-02-03 13:05:44", severity: "info" },
-  { id: "log_03", type: "LIMIT_VIOLATION", actor: "Email Worker", target: "Mike Johnson", details: "Daily limit exceeded (52/50)", timestamp: "2024-02-03 12:44:02", severity: "warning" },
-  { id: "log_04", type: "USER_SUSPENSION", actor: "Anti-Fraud Bot", target: "John Doe", details: "Multiple login attempts from restricted IP", timestamp: "2024-02-03 11:12:09", severity: "critical" },
-  { id: "log_05", type: "SYSTEM_RESTART", actor: "System Monitor", target: "Infrastructure", details: "Worker node #4 restarted after high load", timestamp: "2024-02-03 09:30:00", severity: "info" },
-  { id: "log_06", type: "IP_ROTATION", actor: "Scheduler", target: "Elena Rodriguez", details: "Rotated IP from 91.200.41.122 to 185.22.1.44", timestamp: "2024-02-03 08:00:15", severity: "info" },
+  { id: "log_01", type: "IP Assignment", actor: "System Admin", target: "Alex Rivers", details: "Assigned IP address 192.168.1.104", timestamp: "2024-02-03 14:22:15", severity: "info" },
+  { id: "log_02", type: "Plan Change", actor: "System Admin", target: "Sarah Chen", details: "Upgraded user from Starter to Pro plan", timestamp: "2024-02-03 13:05:44", severity: "info" },
+  { id: "log_03", type: "Limit Warning", actor: "Email Worker", target: "Mike Johnson", details: "Daily email limit exceeded (52/50)", timestamp: "2024-02-03 12:44:02", severity: "warning" },
+  { id: "log_04", type: "User Suspended", actor: "Security Bot", target: "John Doe", details: "Account suspended due to multiple login failures", timestamp: "2024-02-03 11:12:09", severity: "critical" },
+  { id: "log_05", type: "System Restart", actor: "Monitor", target: "Server", details: "Worker node #4 restarted automatically", timestamp: "2024-02-03 09:30:00", severity: "info" },
+  { id: "log_06", type: "IP Rotation", actor: "Scheduler", target: "Elena Rodriguez", details: "Changed IP address to 185.22.1.44", timestamp: "2024-02-03 08:00:15", severity: "info" },
 ];
 
 export default function AuditLogs() {
@@ -26,21 +26,19 @@ export default function AuditLogs() {
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 border-b border-[#8245EF]/10 pb-16">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
-                 <span className="px-5 py-2 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#8245EF]/20 flex items-center gap-3 font-mono">
-                 <Terminal size={16} className="opacity-80" />
-                 Audit_Stream::Secured
+                 <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
+                 <Terminal size={14} className="opacity-80" />
+                 System Logs
                </span>
             </div>
-            <h1 className="text-7xl font-black text-[#161932] tracking-tighter uppercase leading-none">
-              System <span className="text-[#8245EF]">Logs</span>
-            </h1>
-            <p className="text-[#64748b] text-2xl font-medium max-w-3xl leading-relaxed italic">Immutable registry of administrative handshakes and infrastructure events.</p>
+            <h1 className="text-5xl font-bold text-gray-900 tracking-tight">System Activity</h1>
+            <p className="text-gray-500 text-xl font-medium">A complete record of all system and admin activity.</p>
           </div>
-          <button className="group px-12 py-6 bg-white text-[#161932] font-black uppercase text-[11px] tracking-[0.4em] rounded-[2rem] flex items-center justify-center gap-5 transition-all shadow-sm hover:bg-[#FCF8FE] active:scale-95 font-mono border border-[#8245EF]/15">
-            <Download size={24} className="group-hover:translate-y-1 transition-transform" /> 
-            Export_CSV_Payload
+          <button className="group px-8 py-4 bg-white text-gray-900 font-bold uppercase text-xs tracking-widest rounded-xl flex items-center justify-center gap-3 transition-all shadow-sm hover:bg-gray-50 active:scale-95 border border-gray-100">
+            <Download size={18} className="group-hover:translate-y-0.5 transition-transform" /> 
+            Download CSV
           </button>
         </div>
 
@@ -48,19 +46,19 @@ export default function AuditLogs() {
         <div className="bg-white p-12 rounded-[4rem] border border-[#8245EF]/15 shadow-sm relative overflow-hidden group">
           <div className="relative z-10 flex flex-col xl:flex-row gap-8 items-center">
             <div className="flex-1 relative w-full">
-              <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-[#94a3b8]" size={28} />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={24} />
               <input 
                 type="text" 
-                placeholder="Identify logs by actor, node target, or metadata..." 
-                className="w-full pl-20 pr-8 py-7 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-[2.5rem] outline-none focus:border-[#8245EF] font-bold text-[#161932] transition-all shadow-sm italic placeholder:text-[#94a3b8]"
+                placeholder="Search by user, action, or date..." 
+                className="w-full pl-16 pr-8 py-5 bg-gray-50/50 border border-gray-100 rounded-2xl outline-none focus:border-[#8245EF]/40 font-bold text-gray-900 transition-all shadow-sm placeholder:text-gray-300"
               />
             </div>
-            <div className="flex gap-6 w-full xl:w-auto">
-              <button className="flex-1 xl:flex-none px-12 py-6 bg-white border border-[#8245EF]/15 rounded-[2rem] font-black text-[11px] text-[#64748b] uppercase tracking-widest font-mono flex items-center gap-5 hover:border-[#8245EF]/30 transition-all shadow-sm">
-                <Calendar size={22} /> Last_24h_Cycle
+            <div className="flex gap-4 w-full xl:w-auto">
+              <button className="flex-1 xl:flex-none px-6 py-4 bg-white border border-gray-100 rounded-xl font-bold text-[10px] text-gray-500 uppercase tracking-widest flex items-center gap-3 hover:border-gray-200 transition-all shadow-sm">
+                <Calendar size={18} /> Last 24 Hours
               </button>
-              <button className="flex-1 xl:flex-none px-12 py-6 bg-white border border-[#8245EF]/15 rounded-[2rem] font-black text-[11px] text-[#64748b] uppercase tracking-widest font-mono flex items-center gap-5 hover:border-[#8245EF]/30 transition-all shadow-sm">
-                <Filter size={22} /> All_Events
+              <button className="flex-1 xl:flex-none px-6 py-4 bg-white border border-gray-100 rounded-xl font-bold text-[10px] text-gray-500 uppercase tracking-widest flex items-center gap-3 hover:border-gray-200 transition-all shadow-sm">
+                <Filter size={18} /> All Events
               </button>
             </div>
           </div>
@@ -68,12 +66,12 @@ export default function AuditLogs() {
 
         {/* Logs Chronology */}
         <div className="bg-white rounded-[4rem] overflow-hidden relative border border-[#8245EF]/10 shadow-sm">
-          <div className="p-12 border-b border-[#8245EF]/10 bg-[#FCF8FE]/50 flex items-center justify-between">
-            <div className="flex items-center gap-5">
-               <Activity size={24} className="text-[#8245EF] animate-pulse" />
-               <h3 className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.5em] font-mono">Live_Neural_Broadcasting</h3>
+          <div className="p-8 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+               <Activity size={20} className="text-[#8245EF] animate-pulse" />
+               <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Recent Activity</h3>
             </div>
-            <span className="px-8 py-3 bg-white text-[#8245EF] border border-[#8245EF]/15 rounded-2xl text-[10px] font-black uppercase tracking-widest font-mono shadow-sm">Status::Encrypted_Vault</span>
+            <span className="px-4 py-1.5 bg-white text-[#8245EF] border border-gray-100 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-sm">Active</span>
           </div>
 
           <div className="divide-y divide-[#8245EF]/5">
@@ -84,18 +82,18 @@ export default function AuditLogs() {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-5 mb-4">
-                    <span className="text-[12px] font-black text-[#8245EF] uppercase tracking-[0.3em] font-mono">{log.type.replace('_', ' ')}</span>
-                    <span className="text-[#94a3b8]/20 font-black">•</span>
-                    <div className="flex items-center gap-4 text-[#94a3b8] font-black text-[11px] font-mono tracking-widest uppercase">
-                      <Clock size={16} className="text-[#8245EF] opacity-60" />
+                  <div className="flex flex-wrap items-center gap-4 mb-2">
+                    <span className="text-[10px] font-bold text-[#8245EF] uppercase tracking-widest">{log.type}</span>
+                    <span className="text-gray-200">•</span>
+                    <div className="flex items-center gap-2 text-gray-400 font-bold text-[10px] uppercase tracking-widest">
+                      <Clock size={14} className="text-[#8245EF] opacity-60" />
                       {log.timestamp}
                     </div>
                   </div>
-                  <h4 className="text-3xl font-black text-[#161932] tracking-tighter uppercase leading-tight group-hover:text-[#8245EF] transition-colors">
-                    {log.actor} <span className="text-[#64748b] font-bold italic mx-3 lowercase opacity-60 tracking-normal text-2xl">executed on</span> {log.target}
+                  <h4 className="text-xl font-bold text-gray-900 group-hover:text-[#8245EF] transition-colors">
+                    {log.actor} <span className="text-gray-400 font-medium normal-case mx-1">acted on</span> {log.target}
                   </h4>
-                  <p className="text-[#64748b] font-bold text-base mt-4 font-mono tracking-wide max-w-4xl border-l-2 border-[#8245EF]/20 pl-6 leading-relaxed italic">{log.details}</p>
+                  <p className="text-gray-500 font-medium text-sm mt-3 border-l-2 border-gray-100 pl-4">{log.details}</p>
                 </div>
 
                 <div className="shrink-0 flex items-center gap-6 ml-auto">
@@ -107,10 +105,9 @@ export default function AuditLogs() {
             ))}
           </div>
 
-          {/* Pagination */}
-          <div className="p-16 text-center bg-[#FCF8FE]/20 border-t border-[#8245EF]/10 relative">
-            <button className="px-12 py-6 bg-white text-[#94a3b8] hover:text-[#8245EF] rounded-[2rem] text-[11px] font-black uppercase tracking-[0.5em] font-mono transition-all border border-[#8245EF]/15 hover:border-[#8245EF]/40 shadow-sm">
-              Load_Historical_Registry
+          <div className="p-12 text-center bg-gray-50/20 border-t border-gray-100">
+            <button className="px-8 py-3 bg-white text-gray-400 hover:text-[#8245EF] rounded-xl text-xs font-bold uppercase tracking-widest transition-all border border-gray-100 hover:border-gray-200 shadow-sm">
+              Load More
             </button>
             <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
           </div>
@@ -128,15 +125,15 @@ function LogIcon({ type, severity }) {
   };
 
   const getIcon = () => {
-    if (type.includes('USER')) return <User size={32} />;
-    if (type.includes('PLAN')) return <CreditCard size={32} />;
-    if (type.includes('IP')) return <MapPin size={32} />;
-    if (type.includes('LIMIT')) return <AlertTriangle size={32} />;
-    return <Shield size={32} />;
+    if (type.includes('User')) return <User size={24} />;
+    if (type.includes('Plan')) return <CreditCard size={24} />;
+    if (type.includes('IP')) return <MapPin size={24} />;
+    if (type.includes('Limit')) return <AlertTriangle size={24} />;
+    return <Shield size={24} />;
   };
 
   return (
-    <div className={`w-24 h-24 rounded-[2.5rem] flex items-center justify-center border shadow-sm transition-all duration-700 group-hover:rotate-6 group-hover:scale-105 ${getStyle()}`}>
+    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border transition-all duration-500 group-hover:scale-105 ${getStyle()}`}>
       {getIcon()}
     </div>
   );

@@ -101,43 +101,39 @@ export default function UserManagement() {
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 border-b border-[#8245EF]/10 pb-16">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
-               <span className="px-5 py-2 bg-[#8245EF]/10 text-[#8245EF] text-[10px] font-black uppercase tracking-[0.4em] rounded-full border border-[#8245EF]/20 flex items-center gap-3 font-mono">
-                 <ShieldCheck size={16} className="opacity-80" />
-                 Authority_Center::Active
+               <span className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full border border-green-100 flex items-center gap-2">
+                 <ShieldCheck size={14} className="opacity-80" />
+                 Admin Panel
                </span>
             </div>
-            <h1 className="text-7xl font-black text-[#161932] tracking-tighter uppercase leading-none">
-              User <span className="text-[#8245EF]">Registry</span>
-            </h1>
-            <p className="text-[#64748b] text-2xl font-medium max-w-3xl leading-relaxed italic">Administer high-fidelity identity nodes and modulate neural access hierarchies.</p>
+            <h1 className="text-5xl font-bold text-gray-900 tracking-tight">Users</h1>
+            <p className="text-gray-500 text-xl font-medium">Manage users and their account permissions.</p>
           </div>
           <button 
             onClick={fetchData}
-            className="group px-12 py-6 bg-white text-[#161932] font-black uppercase text-[11px] tracking-[0.4em] rounded-[2rem] flex items-center justify-center gap-5 transition-all shadow-sm hover:bg-[#FCF8FE] active:scale-95 font-mono border border-[#8245EF]/15"
+            className="group px-8 py-4 bg-white text-gray-900 font-bold uppercase text-xs tracking-widest rounded-xl flex items-center justify-center gap-3 transition-all shadow-sm hover:bg-gray-50 active:scale-95 border border-gray-100"
           >
-            <RefreshCw size={22} className={loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-700"} /> 
-            Sync_Fleet
+            <RefreshCw size={18} className={loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-700"} /> 
+            Refresh
           </button>
         </div>
 
         {/* Global Search Interface */}
-        <div className="bg-white p-12 rounded-[4rem] border border-[#8245EF]/15 shadow-sm relative overflow-hidden group">
           <div className="relative z-10">
-            <label className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.4em] font-mono ml-8 mb-6 block leading-none">Search_Matrix</label>
+            <label className="text-xs font-bold text-gray-400 ml-4 mb-4 block">Search Users</label>
             <div className="relative">
-              <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-[#94a3b8]" size={28} />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={24} />
               <input 
                 type="text" 
-                placeholder="Identify user by name, email or secure ID token..." 
-                className="w-full pl-20 pr-8 py-7 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-[2.5rem] outline-none focus:border-[#8245EF] font-bold text-[#161932] transition-all shadow-sm italic placeholder:text-[#94a3b8]"
+                placeholder="Search by name, email, or ID..." 
+                className="w-full pl-16 pr-8 py-5 bg-gray-50/50 border border-gray-100 rounded-2xl outline-none focus:border-[#8245EF]/40 font-bold text-gray-900 transition-all shadow-sm placeholder:text-gray-300"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
-        </div>
 
         {/* Grid Display */}
         {loading ? (
@@ -148,21 +144,21 @@ export default function UserManagement() {
                    <Hexagon size={40} className="text-[#8245EF]" />
                 </div>
              </div>
-             <p className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono">Decoding_Neural_Nodes...</p>
+             <p className="text-xs font-bold text-gray-400">Loading users...</p>
           </div>
         ) : (
           <div className="bg-white rounded-[4rem] overflow-hidden relative border border-[#8245EF]/10 shadow-sm">
-             <div className="absolute inset-x-0 bottom-0 h-[3px] bg-gradient-to-r from-transparent via-[#8245EF]/30 to-transparent" />
+             <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full text-left">
-                <thead className="bg-[#FCF8FE]/50 text-[11px] font-black uppercase text-[#94a3b8] tracking-[0.4em] font-mono border-b border-[#8245EF]/10">
+                <thead className="bg-gray-50/50 text-[10px] font-bold uppercase text-gray-400 tracking-widest border-b border-gray-100">
                   <tr>
-                    <th className="p-12">Identity_Node</th>
-                    <th className="p-12">Tier_Hierarchy</th>
-                    <th className="p-12">Subsystem_Status</th>
-                    <th className="p-12 text-center">Load</th>
-                    <th className="p-12">Induction_ST</th>
-                    <th className="p-12 text-right px-16">Operations</th>
+                    <th className="p-8">User</th>
+                    <th className="p-8">Plan</th>
+                    <th className="p-8">Status</th>
+                    <th className="p-8 text-center">Activity</th>
+                    <th className="p-8">Joined</th>
+                    <th className="p-8 text-right px-12">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#8245EF]/5">
@@ -170,43 +166,43 @@ export default function UserManagement() {
                     <tr key={user.id || user._id} className="hover:bg-[#FCF8FE]/30 transition-all group cursor-default">
                       <td className="p-12">
                         <div className="flex items-center gap-8">
-                          <div className="w-20 h-20 bg-[#FCF8FE] border border-[#8245EF]/10 text-[#8245EF] rounded-[2rem] flex items-center justify-center font-black text-3xl shadow-sm group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
+                          <div className="w-16 h-16 bg-gray-50 border border-gray-100 text-[#8245EF] rounded-2xl flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-105 transition-all duration-500">
                             {user.name?.charAt(0) || 'U'}
                           </div>
                           <div>
-                            <h4 className="font-black text-[#161932] text-2xl tracking-tighter uppercase leading-none">{user.name || "UNIDENTIFIED"}</h4>
-                            <p className="text-[#64748b] font-black text-[11px] mt-4 font-mono group-hover:text-[#8245EF] transition-colors uppercase tracking-widest italic">{user.email}</p>
+                            <h4 className="font-bold text-gray-900 text-lg leading-none">{user.name || "User"}</h4>
+                            <p className="text-gray-400 font-bold text-[11px] mt-2 group-hover:text-[#8245EF] transition-colors">{user.email}</p>
                           </div>
                         </div>
                       </td>
                       <td className="p-12">
-                        <div className="flex items-center gap-4">
-                          <div className="w-3 h-3 rounded-full bg-[#8245EF] shadow-[0_0_12px_rgba(130, 69, 239,0.4)]" />
-                          <span className="font-black text-[#64748b] text-[12px] uppercase tracking-[0.2em] font-mono">Plan::{user.plan}</span>
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-[#8245EF]" />
+                          <span className="font-bold text-gray-500 text-[11px] uppercase tracking-wider">{user.plan}</span>
                         </div>
                       </td>
                       <td className="p-12">
-                        <span className={`inline-flex items-center gap-4 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] font-mono border ${user.status === 'Active' ? 'bg-[#8245EF]/10 text-[#8245EF] border-[#8245EF]/20' : 'bg-rose-50 text-rose-500 border-rose-200'} shadow-sm`}>
-                          <div className={`w-2 h-2 rounded-full ${user.status === 'Active' ? 'bg-[#8245EF] animate-pulse' : 'bg-rose-500'}`} />
+                        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border ${user.status === 'Active' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-rose-50 text-rose-500 border-rose-100'}`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'Active' ? 'bg-green-500' : 'bg-rose-500'}`} />
                           {user.status}
                         </span>
                       </td>
                       <td className="p-12 text-center">
-                        <span className="px-6 py-3 bg-[#FCF8FE] border border-[#8245EF]/10 text-[#64748b] rounded-[1.25rem] text-[11px] font-black font-mono shadow-sm group-hover:text-[#8245EF] transition-colors uppercase tracking-widest">
-                          {user.stats?.campaigns || 0} U
+                        <span className="px-3 py-1 bg-gray-50 border border-gray-100 text-gray-500 rounded-lg text-[10px] font-bold uppercase">
+                          {user.stats?.campaigns || 0} Plans
                         </span>
                       </td>
                       <td className="p-12">
-                         <p className="text-[#94a3b8] font-black text-[11px] uppercase tracking-[0.3em] font-mono group-hover:text-[#64748b] transition-colors italic">
+                         <p className="text-gray-400 font-bold text-[11px] uppercase tracking-wider">
                            {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '---'}
                          </p>
                       </td>
                       <td className="p-12 text-right px-16">
                         <button 
                           onClick={() => setSelectedUser(user)}
-                          className="px-10 py-5 bg-white border border-[#8245EF]/20 text-[#94a3b8] rounded-[2rem] text-[11px] font-black uppercase tracking-[0.4em] hover:bg-[#8245EF] hover:text-white transition-all active:scale-95 font-mono shadow-sm"
+                          className="px-6 py-2 bg-white border border-gray-100 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-[#8245EF] hover:text-white transition-all active:scale-95"
                         >
-                          Calibrate_Node
+                          Edit
                         </button>
                       </td>
                     </tr>
@@ -218,7 +214,7 @@ export default function UserManagement() {
                             <div className="w-28 h-28 bg-[#FCF8FE] rounded-[3.5rem] border border-[#8245EF]/10 flex items-center justify-center text-[#94a3b8] shadow-sm">
                               <UserX size={56} />
                             </div>
-                            <p className="text-[12px] font-black text-[#94a3b8] uppercase tracking-[0.6em] font-mono italic">Zero_Result_Set</p>
+                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">No users found</p>
                           </div>
                        </td>
                     </tr>
@@ -235,132 +231,125 @@ export default function UserManagement() {
         <div className="fixed inset-0 z-[600] flex items-center justify-center p-4 lg:p-8 overflow-y-auto custom-scrollbar">
           <div className="fixed inset-0 bg-[#161932]/60 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setSelectedUser(null)} />
           
-          <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-[#8245EF]/10 relative z-10 overflow-hidden flex flex-col xl:flex-row animate-in zoom-in-95 duration-500 my-auto">
-             <div className="absolute inset-x-0 bottom-0 h-1bg-gradient-to-r from-transparent via-[#8245EF]/40 to-transparent" />
+          <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-purple-500/10 relative z-10 overflow-hidden flex flex-col xl:flex-row animate-in zoom-in-95 duration-500 my-auto">
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
             
             {/* Left Sector: Core Identity */}
-            <div className="xl:w-2/5 bg-[#FCF8FE]/50 p-10 flex flex-col items-center border-r border-[#8245EF]/10 shrink-0 relative">
-               <div className="w-24 h-24 bg-white rounded-2xl shadow-sm flex items-center justify-center text-4xl font-black text-[#8245EF] mb-6 border border-[#8245EF]/10 group relative transition-all duration-700 hover:scale-105">
-                  <div className="absolute inset-0 bg-[#8245EF]/5 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="relative z-10">{selectedUser.name?.charAt(0)}</span>
-               </div>
-               
-               <h3 className="text-3xl font-black text-[#161932] mb-2 tracking-tighter uppercase text-center leading-tight">{selectedUser.name}</h3>
-               <p className="text-[#64748b] font-bold text-[10px] mb-8 uppercase tracking-widest font-mono italic">{selectedUser.email}</p>
-               
-               <div className="w-full space-y-6 mb-8">
-                  <div className="p-6 bg-white rounded-2xl border border-[#8245EF]/10 shadow-sm transition-all hover:border-[#8245EF]/30">
-                    <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider mb-4 font-mono leading-none">Authorization Tier</p>
-                    <div className="space-y-4">
-                      <div className="relative group">
-                        <select 
-                          value={selectedUser.planId || ""}
-                          disabled={updating}
-                          onChange={(e) => handleUpdateUser(selectedUser.id || selectedUser._id, { planId: e.target.value })}
-                          className="w-full p-4 bg-[#FCF8FE]/50 border border-[#8245EF]/10 rounded-xl text-[11px] font-bold text-[#161932] outline-none focus:border-[#8245EF] transition-all appearance-none cursor-pointer font-mono tracking-widest uppercase shadow-sm"
-                        >
-                          <option value="" disabled>IDENT PLAN SELECTOR...</option>
-                          {plans.map(p => (
-                            <option key={p._id} value={p._id}>
-                              NODE::{p.name.toUpperCase()} — ${p.price}/LC
-                            </option>
-                          ))}
-                        </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#94a3b8]">
-                           <Settings size={16} />
-                        </div>
-                      </div>
+            <div className="xl:w-2/5 bg-purple-50/50 p-10 flex flex-col items-center border-r border-purple-500/10 shrink-0 relative">
+              <div className="w-24 h-24 bg-white rounded-2xl shadow-sm flex items-center justify-center text-4xl font-black text-purple-600 mb-6 border border-purple-500/10 group relative">
+                <span className="relative z-10">{selectedUser.name?.charAt(0)}</span>
+              </div>
+              
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{selectedUser.name}</h3>
+              <p className="text-gray-400 font-bold text-xs mb-8">{selectedUser.email}</p>
+              
+              <div className="w-full space-y-6 mb-8">
+                <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">User Plan</p>
+                  <div className="relative group">
+                    <select 
+                      value={selectedUser.planId || ""}
+                      disabled={updating}
+                      onChange={(e) => handleUpdateUser(selectedUser.id || selectedUser._id, { planId: e.target.value })}
+                      className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-purple-500/40 transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled>Select Plan...</option>
+                      {plans.map(p => (
+                        <option key={p._id} value={p._id}>
+                          {p.name.toUpperCase()} — ${p.price}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                      <Settings size={16} />
                     </div>
                   </div>
-                  
-                  <div className="p-6 bg-white rounded-2xl border border-[#8245EF]/10 shadow-sm transition-all hover:border-[#8245EF]/30">
-                    <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider mb-4 font-mono leading-none">Mission State</p>
-                    <div className="flex gap-4">
-                       <button 
-                         onClick={() => handleUpdateUser(selectedUser.id || selectedUser._id, { status: "Active" })}
-                         disabled={updating}
-                         className={`flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all font-mono border ${selectedUser.status === 'Active' ? 'bg-[#8245EF]/10 text-[#8245EF] border-[#8245EF]/30 shadow-sm' : 'bg-[#FCF8FE] text-[#94a3b8] border-[#8245EF]/10 hover:border-[#8245EF]/30'}`}
-                       >Active Link</button>
-                       <button 
-                         onClick={() => handleUpdateUser(selectedUser.id || selectedUser._id, { status: "Suspended" })}
-                         disabled={updating}
-                         className={`flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all font-mono border ${selectedUser.status === 'Suspended' ? 'bg-rose-50 text-rose-500 border-rose-200 shadow-sm' : 'bg-[#FCF8FE] text-[#94a3b8] border-[#8245EF]/10 hover:border-[#8245EF]/30'}`}
-                       >Decommission</button>
-                    </div>
-                  </div>
-               </div>
+                </div>
 
-               <button 
-                 onClick={() => setSelectedUser(null)}
-                 className="w-full py-4 bg-white text-[#94a3b8] rounded-xl font-bold text-[10px] uppercase tracking-widest hover:text-[#161932] hover:bg-[#FCF8FE] transition-all mt-auto font-mono border border-[#8245EF]/15 shadow-sm"
-               >
-                 Close Manifest Registry
-               </button>
+                <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Account Status</p>
+                  <div className="flex gap-4">
+                    <button 
+                      onClick={() => handleUpdateUser(selectedUser.id || selectedUser._id, { status: "Active" })}
+                      disabled={updating}
+                      className={`flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border ${selectedUser.status === 'Active' ? 'bg-green-50 text-green-600 border-green-200' : 'bg-gray-50 text-gray-400 border-gray-100'}`}
+                    >Active</button>
+                    <button 
+                      onClick={() => handleUpdateUser(selectedUser.id || selectedUser._id, { status: "Suspended" })}
+                      disabled={updating}
+                      className={`flex-1 py-3 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border ${selectedUser.status === 'Suspended' ? 'bg-rose-50 text-rose-500 border-rose-200' : 'bg-gray-50 text-gray-400 border-gray-100'}`}
+                    >Suspend</button>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setSelectedUser(null)}
+                className="w-full py-4 bg-white text-gray-400 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:text-gray-900 hover:bg-gray-50 transition-all mt-auto border border-gray-100"
+              >
+                Close
+              </button>
             </div>
 
-            {/* Right Sector: Telemetry & Records */}
+            {/* Right Sector: Activity */}
             <div className="flex-1 p-10 overflow-y-auto custom-scrollbar relative">
-               <div className="mb-10 relative z-10 flex justify-between items-end">
-                 <div>
-                    <h4 className="text-2xl font-bold text-[#161932] tracking-tight uppercase leading-none">Neural Telemetry</h4>
-                    <p className="text-[#64748b] font-bold text-[10px] uppercase tracking-widest mt-3 font-mono flex items-center gap-3">
-                       <Activity size={14} className="text-[#8245EF]" />
-                       Operational Resource Metrics
-                    </p>
-                 </div>
-                 {updating && <Loader2 size={24} className="animate-spin text-[#8245EF] opacity-60" />}
-               </div>
+              <div className="mb-10 flex justify-between items-end">
+                <div>
+                  <h4 className="text-2xl font-bold text-gray-900">User Activity</h4>
+                  <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <Activity size={14} className="text-purple-600" />
+                    Usage Stats
+                  </p>
+                </div>
+                {updating && <Loader2 size={24} className="animate-spin text-purple-600 opacity-60" />}
+              </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 relative z-10">
-                 <div className="p-8 bg-[#FCF8FE]/30 rounded-3xl border border-[#8245EF]/10 shadow-sm group hover:bg-white hover:border-[#8245EF]/30 transition-all duration-500">
-                    <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider mb-4 font-mono leading-none">Neural Chains</p>
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-5xl font-black text-[#161932] tracking-tighter leading-none">{selectedUser.stats?.campaigns || 0}</span>
-                      <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest font-mono">Units</span>
-                    </div>
-                 </div>
-                 <div className="p-8 bg-[#FCF8FE]/30 rounded-3xl border border-[#8245EF]/10 shadow-sm group hover:bg-white hover:border-[#8245EF]/30 transition-all duration-500">
-                    <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider mb-4 font-mono leading-none">Identity Links</p>
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-5xl font-black text-[#161932] tracking-tighter leading-none">{selectedUser.stats?.accounts || 0}</span>
-                      <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-widest font-mono">Nodes</span>
-                    </div>
-                 </div>
-               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100 shadow-sm">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Plans</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold text-gray-900">{selectedUser.stats?.campaigns || 0}</span>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase">Total</span>
+                  </div>
+                </div>
+                <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100 shadow-sm">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Accounts</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold text-gray-900">{selectedUser.stats?.accounts || 0}</span>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase">Nodes</span>
+                  </div>
+                </div>
+              </div>
 
-               <div className="space-y-8 relative z-10">
-                 <div className="flex items-center justify-between border-b border-[#8245EF]/10 pb-6">
-                    <h4 className="text-[10px] font-bold text-[#161932] uppercase tracking-wider font-mono leading-none">Node Metadata Signature</h4>
-                    <span className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-wider font-mono select-all bg-[#FCF8FE] px-3 py-1.5 rounded-lg border border-[#8245EF]/5 shadow-inner">UUID: {selectedUser.id || selectedUser._id}</span>
-                 </div>
-                 
-                 <div className="p-8 bg-rose-50 rounded-3xl border border-rose-200 relative overflow-hidden group shadow-sm">
-                    <div className="flex items-center gap-4 mb-6">
-                       <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-rose-500 border border-rose-200 shadow-sm transition-transform duration-700 group-hover:rotate-6">
-                          <Trash2 size={24} />
-                       </div>
-                       <h5 className="text-xl font-bold text-rose-500 uppercase tracking-tighter leading-none">Destructive Commands</h5>
+              <div className="space-y-8">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                  <h4 className="text-[10px] font-bold text-gray-900 uppercase tracking-widest leading-none">User ID</h4>
+                  <span className="text-[10px] font-bold text-gray-400 select-all bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">{selectedUser.id || selectedUser._id}</span>
+                </div>
+                <div className="p-6 bg-rose-50 rounded-2xl border border-rose-100 shadow-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-rose-500 border border-rose-100">
+                      <Trash2 size={20} />
                     </div>
-                    <p className="text-sm font-medium text-[#64748b] mb-8 leading-relaxed max-w-lg italic opacity-70">
-                      "Execute terminal deletion of this identity record. Action results in immediate cluster disconnection."
-                    </p>
-                    <div className="flex flex-wrap gap-4">
-                       <button className="px-6 py-3 bg-white hover:bg-rose-50 text-[#64748b] rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all active:scale-95 border border-rose-200 font-mono shadow-sm">
-                         Trigger Password Reset
-                       </button>
-                       <button 
-                         onClick={() => handleDeleteUser(selectedUser.id || selectedUser._id)}
-                         className="px-6 py-3 bg-rose-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider shadow-md hover:bg-rose-600 transition-all active:scale-95 border border-white/10 font-mono"
-                       >
-                         Execute Purge
-                       </button>
-                    </div>
-                 </div>
-               </div>
+                    <h5 className="text-lg font-bold text-rose-500 uppercase tracking-tight">Danger Zone</h5>
+                  </div>
+                  <p className="text-xs font-medium text-gray-500 mb-6 leading-relaxed">
+                    Delete this user account. This action cannot be undone.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <button className="px-4 py-2 bg-white text-gray-500 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border border-gray-100 shadow-sm">
+                      Reset Password
+                    </button>
+                    <button 
+                      onClick={() => handleDeleteUser(selectedUser.id || selectedUser._id)}
+                      className="px-4 py-2 bg-rose-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-md hover:bg-rose-600 transition-all border border-white/10"
+                    >
+                      Delete User
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            {/* Background Texture */}
-            <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
           </div>
         </div>
       )}

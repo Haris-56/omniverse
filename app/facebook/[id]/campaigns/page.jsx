@@ -18,7 +18,8 @@ import {
   Clock,
   ExternalLink,
   Target,
-  Hexagon
+  Hexagon,
+  Edit3
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -248,7 +249,14 @@ export default function AccountCampaignsPage({ params: paramsPromise }) {
                       <td className="p-10 pr-14 text-right">
                          <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500">
                             <button 
-                              onClick={() => handleToggleStatus(camp._id, camp.status)}
+                               onClick={() => router.push(`/facebook/${accountId}/campaigns/new?editId=${camp._id}`)}
+                               className="p-4 bg-[#8245EF]/10 border border-[#8245EF]/20 text-[#8245EF] hover:bg-[#8245EF] hover:text-white rounded-xl transition-all active:scale-90 shadow-sm"
+                               title="Edit Campaign"
+                            >
+                                <Edit3 size={20} />
+                            </button>
+                            <button 
+                               onClick={() => handleToggleStatus(camp._id, camp.status)}
                               className={`p-4 rounded-xl border transition-all active:scale-90 ${camp.status === 'Active' ? 'bg-[#8245EF]/10 border-[#8245EF]/20 text-[#8245EF] hover:bg-[#8245EF] hover:text-white shadow-sm' : 'bg-[#8245EF]/5 border-[#8245EF]/10 text-[#8245EF] hover:bg-[#8245EF] hover:text-white shadow-sm'}`}
                             >
                               {camp.status === 'Active' ? <Pause size={20} /> : <Play size={20} />}
@@ -291,31 +299,38 @@ export default function AccountCampaignsPage({ params: paramsPromise }) {
                       <p className="text-sm text-[#64748b] font-bold line-clamp-2 leading-relaxed h-10 italic">"{camp.message}"</p>
                    </div>
  
-                   <div className="flex items-center justify-between p-8 bg-[#FCF8FE]/50 rounded-[2.5rem] border border-[#8245EF]/10 mb-12 shadow-inner group-hover:border-[#8245EF]/20 transition-all">
+                                       <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl border border-gray-100 mb-8">
                       <div>
-                         <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mb-2 leading-none">Resource_Load</p>
-                         <p className="text-3xl font-black text-[#161932] tracking-tighter leading-none">{camp.sentCount || 0}</p>
+                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Activity</p>
+                         <p className="text-3xl font-bold text-gray-900 tracking-tight">{camp.sentCount || 0}</p>
                       </div>
                       <div className="text-right">
-                         <p className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.3em] font-mono mb-2 leading-none">Security</p>
-                         <span className="text-[10px] font-black text-[#8245EF] uppercase tracking-widest font-mono">Node_Verified</span>
+                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Weekly Limit</p>
+                         <span className="text-xl font-bold text-[#8245EF]">{camp.weeklyLimit || 100}</span>
                       </div>
-                   </div>
- 
-                   <div className="flex items-center gap-4">
+                    </div>
+
+                                       <div className="flex items-center gap-3">
                       <button 
                        onClick={() => handleToggleStatus(camp._id, camp.status)}
-                       className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-[1.5rem] font-black text-[10px] uppercase tracking-[0.3em] transition-all font-mono active:scale-95 border ${camp.status === 'Active' ? 'bg-[#8245EF]/10 border-[#8245EF]/20 text-[#8245EF] hover:bg-[#8245EF] hover:text-white' : 'bg-[#8245EF]/5 border-[#8245EF]/10 text-[#8245EF] hover:bg-[#8245EF] hover:text-white'}`}
+                       className="flex-grow flex items-center justify-center gap-2 py-4 bg-gray-50 text-gray-500 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-[#8245EF] hover:text-white transition-all active:scale-95 border border-gray-100"
                      >
-                       {camp.status === 'Active' ? <Pause size={18} /> : <Play size={18} />}
-                       {camp.status === 'Active' ? 'Pause_Core' : 'Start_Sync'}
+                       {camp.status === 'Active' ? <Pause size={16} /> : <Play size={16} />}
+                       {camp.status === 'Active' ? 'Pause' : 'Start'}
                      </button>
-                     <button 
-                        onClick={() => handleDeleteCampaign(camp._id)}
-                        className="p-5 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-[1.5rem] hover:bg-rose-500 hover:text-white transition-all active:scale-95 shadow-sm"
-                     >
-                        <Trash2 size={20} />
-                     </button>
+                      <button 
+                         onClick={() => router.push(`/facebook/${accountId}/campaigns/new?editId=${camp._id}`)}
+                         className="p-4 bg-gray-50 text-gray-400 rounded-xl hover:bg-[#8245EF] hover:text-white transition-all active:scale-95 border border-gray-100"
+                         title="Edit Campaign"
+                      >
+                         <Edit3 size={18} />
+                      </button>
+                      <button 
+                         onClick={() => handleDeleteCampaign(camp._id)}
+                         className="p-4 bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all active:scale-95 border border-rose-100"
+                      >
+                         <Trash2 size={18} />
+                      </button>
                    </div>
                 </div>
                 {/* Texture */}

@@ -58,7 +58,9 @@ export async function POST(request) {
       blacklist,
       connectionNote, // LinkedIn specific
       sendAfterAccepted, // LinkedIn specific
-      runWithoutProxy // LinkedIn specific
+      weeklyLimit,
+      aiCloserId,
+      aiAgentTargetType
     } = body;
 
     if (!accountId || !name || !listId || !message) {
@@ -81,12 +83,22 @@ export async function POST(request) {
       blacklist: blacklist || [],
       connectionNote: connectionNote || "",
       sendAfterAccepted: !!sendAfterAccepted,
-      runWithoutProxy: !!runWithoutProxy,
+      weeklyLimit: parseInt(weeklyLimit) || 100,
+      aiCloserId: aiCloserId || null,
+      aiAgentTargetType: aiAgentTargetType || "leads_only",
       status: "Active",
       sentCount: 0,
       nextRunAt: new Date(),
       createdAt: new Date(),
     };
+
+    // Enforce 1 active campaign per account
+    if (newCampaign.status === "Active") {
+      await db.collection("linkedin_campaigns").updateMany(
+        { accountId, status: "Active", userId: session.user.id },
+        { $set: { status: "Paused" } }
+      );
+    }
 
     const result = await db.collection("linkedin_campaigns").insertOne(newCampaign);
     
@@ -106,7 +118,7 @@ export async function PATCH(request) {
 
   try {
     const db = await getDb();
-    const { id, status, name, listId, message, dailyLimit, minDelay, maxDelay, timezone, hours, sequences, stopOnReply, blacklist, connectionNote, sendAfterAccepted, runWithoutProxy } = await request.json();
+    const { id, status, name, listId, message, dailyLimit, weeklyLimit, aiCloserId, aiAgentTargetType, minDelay, maxDelay, timezone, hours, sequences, stopOnReply, blacklist, connectionNote, sendAfterAccepted } = await request.json();
 
     const updateData = { updatedAt: new Date() };
     if (status !== undefined) updateData.status = status;
@@ -123,8 +135,21 @@ export async function PATCH(request) {
     if (blacklist !== undefined) updateData.blacklist = blacklist;
     if (connectionNote !== undefined) updateData.connectionNote = connectionNote;
     if (sendAfterAccepted !== undefined) updateData.sendAfterAccepted = !!sendAfterAccepted;
-    if (runWithoutProxy !== undefined) updateData.runWithoutProxy = !!runWithoutProxy;
+    if (weeklyLimit !== undefined) updateData.weeklyLimit = parseInt(weeklyLimit);
+    if (aiCloserId !== undefined) updateData.aiCloserId = aiCloserId;
+    if (aiAgentTargetType !== undefined) updateData.aiAgentTargetType = aiAgentTargetType;
     
+    // Enforce 1 active campaign per account on status transition to Active
+    if (status === "Active") {
+      const existingCampaign = await db.collection("linkedin_campaigns").findOne({ _id: new ObjectId(id), userId: session.user.id });
+      if (existingCampaign && existingCampaign.accountId) {
+        await db.collection("linkedin_campaigns").updateMany(
+          { accountId: existingCampaign.accountId, status: "Active", userId: session.user.id, _id: { $ne: new ObjectId(id) } },
+          { $set: { status: "Paused" } }
+        );
+      }
+    }
+
     // Smart scheduling: Recalculate on edit/activate
     // Always trigger a new run immediately on edit or status change to Active
     updateData.nextRunAt = new Date();

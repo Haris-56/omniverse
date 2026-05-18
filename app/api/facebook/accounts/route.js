@@ -43,13 +43,13 @@ export async function POST(request) {
     }
 
     // Format for automation usage (flatten auth)
-    const proxy = {
+    const proxy = assignedProxyDoc ? {
         host: assignedProxyDoc.host,
         port: assignedProxyDoc.port,
         protocol: assignedProxyDoc.protocol,
         username: assignedProxyDoc.auth?.username,
         password: assignedProxyDoc.auth?.password
-    };
+    } : null;
 
     // Check for existing account
     const existing = await db.collection("facebook_accounts").findOne({ 
